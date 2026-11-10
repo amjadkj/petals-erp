@@ -13,6 +13,7 @@ import { ClinicalHistoryModule } from './clinical-history/clinical-history.modul
 import { ClientModule } from './client/client.module';
 import { ClinicalModule } from './clinical/clinical.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { FinanceModule } from './finance/finance.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -34,6 +35,7 @@ import { AppService } from './app.service';
     ClientModule,
     ClinicalModule,
     AppointmentModule,
+    FinanceModule,
     CommonModule,
   ],
   controllers: [AppController],

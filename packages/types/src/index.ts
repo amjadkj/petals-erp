@@ -58,6 +58,24 @@ export enum LeaveStatus {
   CANCELLED = 'CANCELLED',
 }
 
+export enum RevenueCategory {
+  CLINICAL_THERAPY = 'CLINICAL_THERAPY',
+  ASSESSMENT_FEE = 'ASSESSMENT_FEE',
+}
+
+export enum InvoiceStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  ADVANCE = 'ADVANCE',
+}
+
+export enum PaymentMethod {
+  CASH = 'CASH',
+  UPI = 'UPI',
+  CARD = 'CARD',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+}
+
 export enum AppModule {
   DASHBOARD = 'DASHBOARD',
   APPOINTMENTS = 'APPOINTMENTS',

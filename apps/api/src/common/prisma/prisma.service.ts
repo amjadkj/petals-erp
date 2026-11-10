@@ -181,6 +181,14 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     return this._extended.$transaction(fn, options);
   }
 
+  /**
+   * Delegate $queryRaw so services can run tagged template queries directly.
+   */
+  async $queryRaw<T = unknown>(query: Prisma.Sql): Promise<T> {
+    const client = this._extended ?? this._client;
+    return client.$queryRaw(query);
+  }
+
   // ─── Query counting for tests ───
 
   startQueryCount(): void {

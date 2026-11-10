@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794332360.9577644,
-    "seen": 1794333002.1580238,
-    "ast_hash": "e200488437d3e7f2b4e66ff300fd2451",
+    "mtime": 1794334177.4433718,
+    "seen": 1794335683.3787162,
+    "ast_hash": "e1bc0b38118b2873830d0c014a0e6305",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -306,9 +306,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.ts": {
-    "mtime": 1794319706.677454,
-    "seen": 1794319956.4572794,
-    "ast_hash": "6ec4da2536ed1213a324f7e70ca22997",
+    "mtime": 1794334223.9364336,
+    "seen": 1794335683.4720967,
+    "ast_hash": "02c517874ac2e84640ac0a11085c185b",
     "semantic_hash": ""
   },
   "apps/api/src/common/rate-limit/index.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794332186.8694923,
-    "seen": 1794333002.4271896,
-    "ast_hash": "8054da7de8b06bbecaddb08df29c1628",
+    "mtime": 1794333886.0445313,
+    "seen": 1794333949.8725543,
+    "ast_hash": "1644814803bf7c8eb1b06bde9df49075",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -1224,93 +1224,177 @@
     "semantic_hash": ""
   },
   "apps/api/src/appointment/appointment.controller.ts": {
-    "mtime": 1794332338.2867236,
-    "seen": 1794333002.1610155,
-    "ast_hash": "5b35f67c70ac90ff58100435d4dba5f1",
+    "mtime": 1794333024.5984251,
+    "seen": 1794333949.8350468,
+    "ast_hash": "0c4cd31cddae5b855d4b898fc616015a",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/appointment.module.ts": {
-    "mtime": 1794332348.630606,
-    "seen": 1794333002.1610155,
-    "ast_hash": "84fee8d22f26d12bb680c51a36547eb2",
+    "mtime": 1794333024.8320503,
+    "seen": 1794333949.8350468,
+    "ast_hash": "752faa93cad23bd7df23b85623d9f204",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/appointment.service.spec.ts": {
-    "mtime": 1794332396.3499324,
-    "seen": 1794333002.1610155,
-    "ast_hash": "b234f4aa39470cc68278fe2d255db183",
+    "mtime": 1794333024.86817,
+    "seen": 1794333949.8350468,
+    "ast_hash": "6195bfef8724d2a312b98154c25c6772",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/appointment.service.ts": {
-    "mtime": 1794332321.48552,
-    "seen": 1794333002.1610155,
-    "ast_hash": "12232bf6b72868a1123a17fefb0922e2",
+    "mtime": 1794333024.2775955,
+    "seen": 1794333949.8350468,
+    "ast_hash": "9fade70918ac641754cc9e21ab627aa7",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/appointment-query.dto.ts": {
-    "mtime": 1794332238.8638985,
-    "seen": 1794333002.1610155,
-    "ast_hash": "d933d76f8e3a3d13beec23159d5d53cb",
+    "mtime": 1794333026.01959,
+    "seen": 1794333949.8350468,
+    "ast_hash": "0069b1087109b6681d1cc17065e66e55",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/cancel-appointment.dto.ts": {
-    "mtime": 1794332224.6767843,
-    "seen": 1794333002.1610155,
-    "ast_hash": "bae5d843106664c2107306d7948bec26",
+    "mtime": 1794333026.388153,
+    "seen": 1794333949.8350468,
+    "ast_hash": "447e2261995a50b92eb980d0e31b0c1a",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/client-appointment-query.dto.ts": {
-    "mtime": 1794332250.9777527,
-    "seen": 1794333002.1610155,
-    "ast_hash": "ce6c78f50c067e096414eef6ce186d00",
+    "mtime": 1794333026.388153,
+    "seen": 1794333949.8350468,
+    "ast_hash": "66c6f3bf441b98448c009f5222d82bdc",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/create-appointment.dto.ts": {
-    "mtime": 1794332207.1325724,
-    "seen": 1794333002.1610155,
-    "ast_hash": "0506a81e10832a7a6cae201641792c80",
+    "mtime": 1794333026.5505095,
+    "seen": 1794333949.8350468,
+    "ast_hash": "f19dbbffa0e2f422d02799135a7ddd90",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/create-schedule.dto.ts": {
-    "mtime": 1794332214.0763023,
-    "seen": 1794333002.1610155,
-    "ast_hash": "6b9d5cd51a24b04e7542d5f0c9ac6627",
+    "mtime": 1794333026.592637,
+    "seen": 1794333949.8350468,
+    "ast_hash": "03107cbe8c396f02adf424a085a0b573",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/daily-schedule-query.dto.ts": {
-    "mtime": 1794332245.0476186,
-    "seen": 1794333002.1610155,
-    "ast_hash": "41283f972072164ac3df23a1a9e0926f",
+    "mtime": 1794333025.7496755,
+    "seen": 1794333949.8350468,
+    "ast_hash": "47f6826f470a5ad2ae837efa31299026",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/index.ts": {
-    "mtime": 1794332257.8360045,
-    "seen": 1794333002.1610155,
-    "ast_hash": "9afea5640cce07594a4a6c47678a9ba2",
+    "mtime": 1794333027.7761593,
+    "seen": 1794333949.8350468,
+    "ast_hash": "e24a636fad3706d1ba54d78822afd652",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/reschedule-appointment.dto.ts": {
-    "mtime": 1794332220.0816972,
-    "seen": 1794333002.1610155,
-    "ast_hash": "ed9aca6406da939fcc03a2a21541b79d",
+    "mtime": 1794333027.9525604,
+    "seen": 1794333949.8350468,
+    "ast_hash": "e5f9f2904aa76b9ef89e5679c722ebb1",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/update-appointment-status.dto.ts": {
-    "mtime": 1794332231.0942774,
-    "seen": 1794333002.1610155,
-    "ast_hash": "78cf77b08b044efa96162300a63ba51c",
+    "mtime": 1794333027.9535553,
+    "seen": 1794333949.8350468,
+    "ast_hash": "4be3a4af396f77f46f11edb33a8c4bb6",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/schedule-generator.helper.ts": {
-    "mtime": 1794332271.3445652,
-    "seen": 1794333002.1610155,
-    "ast_hash": "263943f31998655942531a42cb75faab",
+    "mtime": 1794333028.0888405,
+    "seen": 1794333949.8350468,
+    "ast_hash": "0d5f9f12d76cac13b20474b1986f51d1",
     "semantic_hash": ""
   },
   "apps/api/test/appointments-schedule.e2e-spec.ts": {
     "mtime": 1794332536.18419,
     "seen": 1794333002.3884215,
     "ast_hash": "7847f27f662c02b79257c3304cd28481",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/create-expense.dto.ts": {
+    "mtime": 1794333960.525176,
+    "seen": 1794335683.4910896,
+    "ast_hash": "8b4b618eff075a0c159a3b12cf74300a",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/create-invoice.dto.ts": {
+    "mtime": 1794333943.8478286,
+    "seen": 1794335683.4910896,
+    "ast_hash": "89dafb486dfa527fe35467bae6f106b3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/expense-query.dto.ts": {
+    "mtime": 1794333981.885855,
+    "seen": 1794335683.4910896,
+    "ast_hash": "2eb6620999ee4e4a5a9d2c586b021052",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/export-finance.dto.ts": {
+    "mtime": 1794335034.4962873,
+    "seen": 1794335683.4910896,
+    "ast_hash": "a4f5080773ebbc86e8618b891a5f7b4b",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/index.ts": {
+    "mtime": 1794334002.579512,
+    "seen": 1794335683.4910896,
+    "ast_hash": "06d200a1b4336eefe2aa7c104440a934",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/invoice-query.dto.ts": {
+    "mtime": 1794333967.668098,
+    "seen": 1794335683.4910896,
+    "ast_hash": "ffa713c77fabdc7e8842e8bc6ceb31a3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/payment-query.dto.ts": {
+    "mtime": 1794333974.744812,
+    "seen": 1794335683.4910896,
+    "ast_hash": "c80c9a317e94dd6bf181563908757475",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/pnl-query.dto.ts": {
+    "mtime": 1794333988.4105954,
+    "seen": 1794335683.4910896,
+    "ast_hash": "55498864b4501addee5fd6c9c91cdd4f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/dto/record-payment.dto.ts": {
+    "mtime": 1794333950.6162465,
+    "seen": 1794335683.4910896,
+    "ast_hash": "7cb7d0af7636512eca4404f90a4805df",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/finance.controller.ts": {
+    "mtime": 1794335041.6662292,
+    "seen": 1794335683.4910896,
+    "ast_hash": "d41e78f2c7f69d7ad643252a3b088522",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/finance.module.ts": {
+    "mtime": 1794334098.290802,
+    "seen": 1794335683.4910896,
+    "ast_hash": "4d0ccfcf0a913a97a45d893cfa064695",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/finance.service.spec.ts": {
+    "mtime": 1794335257.5227392,
+    "seen": 1794335683.4910896,
+    "ast_hash": "626b7d5cbf02b1c9bb83268af5dd043c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/finance/finance.service.ts": {
+    "mtime": 1794335250.7921727,
+    "seen": 1794335683.4910896,
+    "ast_hash": "d53073cfc17efbc5772a4adb7336a16f",
+    "semantic_hash": ""
+  },
+  "apps/api/test/finance.e2e-spec.ts": {
+    "mtime": 1794335114.451866,
+    "seen": 1794335683.5081005,
+    "ast_hash": "7a2d2041177f628c95ede064b614f9a9",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {
