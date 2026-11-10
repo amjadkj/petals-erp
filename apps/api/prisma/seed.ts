@@ -78,6 +78,7 @@ const ROLE_PERMISSIONS_CONFIG: Record<RoleKey, RoleSeedConfig> = {
     modules: {
       [AppModule.DASHBOARD]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.APPOINTMENTS]: { enabled: true, actions: [PermissionAction.VIEW] },
+      [AppModule.CLIENTS]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.PROFILE_OVERVIEW]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.PROFILE_PAYMENT_PLAN]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.PROFILE_ASSESSMENT]: { enabled: true, actions: [PermissionAction.VIEW] },

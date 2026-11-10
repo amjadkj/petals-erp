@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "apps/api/prisma/seed.ts": {
-    "mtime": 1794309341.4862652,
-    "seen": 1794311294.5701778,
-    "ast_hash": "3789258d4e6148856081fdfd8e41ee47",
+    "mtime": 1794319499.7594893,
+    "seen": 1794319956.3326697,
+    "ast_hash": "99cc227327b4dfc390066ba80475467b",
     "semantic_hash": ""
   },
   "apps/api/src/app.controller.ts": {
@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794311772.2635458,
-    "seen": 1794317411.2222323,
-    "ast_hash": "9b2ac005847f71a0191a1f55b09adbcf",
+    "mtime": 1794318003.0107188,
+    "seen": 1794319956.34155,
+    "ast_hash": "1acc241f5f7a75843c8720b3e6fd2c49",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/guards/auth.guard.ts": {
-    "mtime": 1794307106.692998,
-    "seen": 1794308776.5685482,
-    "ast_hash": "08e5362405fc4c0d5aace12c5d413e62",
+    "mtime": 1794319465.292853,
+    "seen": 1794319956.4239576,
+    "ast_hash": "c1b90471a0db969a0be64ac77989c402",
     "semantic_hash": ""
   },
   "apps/api/src/common/guards/index.ts": {
@@ -306,9 +306,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.ts": {
-    "mtime": 1794294338.4390974,
-    "seen": 1794306615.4734232,
-    "ast_hash": "8f52ef7cb1a4e36d4b8e5469e9b2b614",
+    "mtime": 1794319706.677454,
+    "seen": 1794319956.4572794,
+    "ast_hash": "6ec4da2536ed1213a324f7e70ca22997",
     "semantic_hash": ""
   },
   "apps/api/src/common/rate-limit/index.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794307046.5197217,
-    "seen": 1794308776.599979,
-    "ast_hash": "8a18aa977c99b7904bc73c7e88601200",
+    "mtime": 1794318104.8923044,
+    "seen": 1794319956.5661135,
+    "ast_hash": "635c8227ff69b893b545c708dc85c734",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -1047,6 +1047,72 @@
     "mtime": 1794316713.390951,
     "seen": 1794317411.3023314,
     "ast_hash": "19adc26677492f246a86b7a9ad94a1ba",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/client.controller.ts": {
+    "mtime": 1794317973.2246127,
+    "seen": 1794319956.3837187,
+    "ast_hash": "b1c45d6165184990ea7c4c4dde8ee2a7",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/client.module.ts": {
+    "mtime": 1794317980.5028074,
+    "seen": 1794319956.3837187,
+    "ast_hash": "1ec243f5aa922d1a1a98e912abf3ff68",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/client.service.spec.ts": {
+    "mtime": 1794318369.7754545,
+    "seen": 1794319956.3837187,
+    "ast_hash": "154bf6d82a3a9d0fd78a5d86ea6004ec",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/client.service.ts": {
+    "mtime": 1794318456.869864,
+    "seen": 1794319956.3837187,
+    "ast_hash": "66344757957ed809bd3336f27e182282",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/dto/client-query.dto.ts": {
+    "mtime": 1794317883.9161751,
+    "seen": 1794319956.3837187,
+    "ast_hash": "f549db23a4bd21632825c6b65e1483ec",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/dto/create-client.dto.ts": {
+    "mtime": 1794317864.2260623,
+    "seen": 1794319956.3837187,
+    "ast_hash": "b8f602b461906075764a71bfd8254490",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/dto/create-guardian.dto.ts": {
+    "mtime": 1794317831.4348829,
+    "seen": 1794319956.3837187,
+    "ast_hash": "4ca433b0c44ead1d56dbedfa47ae1f48",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/dto/index.ts": {
+    "mtime": 1794317894.834042,
+    "seen": 1794319956.3837187,
+    "ast_hash": "65b36cb938680b57bd41a6d6f9882bbb",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/dto/update-client.dto.ts": {
+    "mtime": 1794317874.7643173,
+    "seen": 1794319956.3837187,
+    "ast_hash": "91ee869da0017c942598dd225828699a",
+    "semantic_hash": ""
+  },
+  "apps/api/src/client/no-store.interceptor.ts": {
+    "mtime": 1794317817.2803888,
+    "seen": 1794319956.3837187,
+    "ast_hash": "4fc8dbcf7f5f962b46b493dc9373e649",
+    "semantic_hash": ""
+  },
+  "apps/api/test/client-guardian.e2e-spec.ts": {
+    "mtime": 1794319544.6107602,
+    "seen": 1794319956.5414686,
+    "ast_hash": "d5f385d4758c103a7019d912b0e056a3",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

@@ -1,31 +1,31 @@
 # Graph Report - petals-erp  (2026-11-10)
 
 ## Corpus Check
-- 177 files · ~49,189 words
+- 188 files · ~55,093 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: .example 1, (none) 1, .toml 1)
 
 ## Summary
-- 1182 nodes · 2421 edges · 94 communities (43 shown, 51 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 72 edges (avg confidence: 0.85)
+- 1269 nodes · 2693 edges · 100 communities (43 shown, 57 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 83 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0caa1573`
+- Built from commit: `f475d2e7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- redis/index.ts
+- client.service.ts
 - otp.service.ts
 - 4.1 Director
 - CacheService
-- access.e2e-spec.ts
+- Roles
 - env
 - audit.interceptor.ts
 - web/package.json
 - redis
-- common/index.ts
+- employee.service.ts
 - compilerOptions
 - src/index.ts
 - AppModule
@@ -49,68 +49,73 @@
 - tsconfig.build.json
 - roles.guard.spec.ts
 - department.controller.ts
-- CurrentUser
+- AuthController
 - UpdateUserDto
 - class-validator
 - Ponytail, lazy senior dev mode
 - RoleKey
 - auth.guard.ts
 - @nestjs/common
-- PrismaService
-- UpdateRoleModulesDto
+- RoleKey
+- UserController
 - UpdateRolePermissionsDto
 - VersionService
-- UpdateUserOverridesDto
+- update-user-overrides.dto.ts
 - LoginDto
 - common/index.ts
 - CreateUserDto
 - AuthGuard
-- RoleKey
+- src/index.ts
 - auth.service.ts
-- LockoutService
-- AuthService
+- OtpService
 - OffsetPaginationDto
-- EnvironmentVariables
+- CurrentUser
+- AccessService
 - auth.controller.ts
-- prisma.service.ts
+- AuthService
 - AssignBranchDto
-- AppController
-- TokenBucketGuard
-- ChangePasswordDto
+- .getHealth
+- CreateBranchDto
+- LoginDto
 - ts-loader@^9.5.2
+- pagination/index.ts
+- UserQueryDto
+- BranchQueryDto
+- PermissionGuard
+- EmployeeQueryDto
 
 ## God Nodes (most connected - your core abstractions)
-1. `@nestjs/common` - 72 edges
-2. `RoleKey` - 48 edges
-3. `AppModule` - 46 edges
-4. `PrismaService` - 34 edges
-5. `PermissionAction` - 30 edges
-6. `Roles()` - 29 edges
-7. `CurrentUser` - 29 edges
-8. `IRequestContext` - 28 edges
-9. `AccessService` - 24 edges
-10. `@nestjs/swagger` - 24 edges
+1. `@nestjs/common` - 78 edges
+2. `RoleKey` - 69 edges
+3. `AppModule` - 48 edges
+4. `CurrentUser` - 37 edges
+5. `PrismaService` - 34 edges
+6. `PermissionAction` - 32 edges
+7. `Roles()` - 29 edges
+8. `@nestjs/swagger` - 29 edges
+9. `IRequestContext` - 28 edges
+10. `AccessService` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Decisions Made` --references--> `CacheService`  [INFERRED]
   docs/PROGRESS.md → apps/api/src/common/redis/cache.service.ts
 - `Decisions Made` --references--> `LockoutService`  [INFERRED]
   docs/PROGRESS.md → apps/api/src/common/rate-limit/lockout.service.ts
-- `AuthTokens` --references--> `RoleKey`  [EXTRACTED]
-  apps/api/src/auth/auth.service.ts → packages/types/src/index.ts
 - `CachedUserData` --references--> `RoleKey`  [EXTRACTED]
   apps/api/src/common/guards/auth.guard.ts → packages/types/src/index.ts
-- `RolePermissionItemDto` --references--> `AppModule`  [EXTRACTED]
-  apps/api/src/access/dto/update-role-permissions.dto.ts → packages/types/src/index.ts
+- `AuthTokens` --references--> `RoleKey`  [EXTRACTED]
+  apps/api/src/auth/auth.service.ts → packages/types/src/index.ts
+- `IRequestContext` --references--> `RoleKey`  [EXTRACTED]
+  apps/api/src/common/context/request-context.ts → packages/types/src/index.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (94 total, 51 thin omitted)
+## Communities (100 total, 57 thin omitted)
 
-### Community 0 - "redis/index.ts"
-Cohesion: 0.23
-Nodes (4): MemoryCacheEntry, REDIS_CLIENT, RedisModule, ioredis
+### Community 0 - "client.service.ts"
+Cohesion: 0.05
+Nodes (16): ALL_PROFILE_TABS, CLIENT_SORT_FIELDS, TAB_MODULE_MAP, ClientQueryDto, CreateClientDto, CreateGuardianDto, UpdateClientDto, AppointmentStatus (+8 more)
 
 ### Community 1 - "otp.service.ts"
 Cohesion: 0.18
@@ -119,10 +124,6 @@ Nodes (9): @nestjs/config@^4.0.0, @nestjs/jwt@^11.0.2, AuthModule, ConsoleOtpSen
 ### Community 2 - "4.1 Director"
 Cohesion: 0.04
 Nodes (44): 10. Release Phasing, 11. Assumptions, 12. Decisions and Remaining Open Questions, 13.1 Proposed Stack, 13.2 RBAC Implementation, 13.3 Authentication, 13.4 PWA Requirements, 13.5 Suggested Build Order (+36 more)
-
-### Community 4 - "access.e2e-spec.ts"
-Cohesion: 0.23
-Nodes (6): AppModule, GlobalExceptionFilter, bootstrap(), cookie-parser, @nestjs/testing, supertest
 
 ### Community 5 - "env"
 Cohesion: 0.05
@@ -140,9 +141,9 @@ Nodes (29): dependencies, next@^15.1.7, @petals/types@workspace:*, react@^19.0.0
 Cohesion: 0.07
 Nodes (30): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_PASSWORD, interval, retries, test, timeout (+22 more)
 
-### Community 9 - "common/index.ts"
-Cohesion: 0.10
-Nodes (16): BRANCH_SORT_FIELDS, BranchQueryDto, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy(), CursorPaginatedResponse (+8 more)
+### Community 9 - "employee.service.ts"
+Cohesion: 0.29
+Nodes (8): BRANCH_SORT_FIELDS, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy(), EMPLOYEE_SORT_FIELDS, USER_SORT_FIELDS
 
 ### Community 10 - "compilerOptions"
 Cohesion: 0.08
@@ -150,11 +151,11 @@ Nodes (24): compilerOptions, alwaysStrict, declaration, declarationMap, emitDeco
 
 ### Community 11 - "src/index.ts"
 Cohesion: 0.15
-Nodes (14): ResolvedModulePermissions, ResolvedPermissionsMap, PaginationMetaCursor, PaginationMetaOffset, PermissionAction, CREATE, DELETE, UPDATE (+6 more)
+Nodes (12): ResolvedModulePermissions, ResolvedPermissionsMap, PermissionAction, CREATE, DELETE, UPDATE, VIEW, VIEW_ALL (+4 more)
 
 ### Community 12 - "AppModule"
-Cohesion: 0.06
-Nodes (24): AccessService, sanitizeAuditMetadata(), PermissionGuard, AppModule, APPOINTMENTS, CLIENTS, COMMUNICATION, DASHBOARD (+16 more)
+Cohesion: 0.10
+Nodes (21): AppModule, APPOINTMENTS, CLIENTS, COMMUNICATION, DASHBOARD, EMPLOYEE_SALARY, EMPLOYEES, FINANCIAL (+13 more)
 
 ### Community 13 - "dependencies"
 Cohesion: 0.07
@@ -197,8 +198,8 @@ Cohesion: 0.11
 Nodes (17): helmet@^8.0.0, rate-limiter-flexible@^5.0.5, @nestjs/cli@^11.0.2, tsconfig-paths@^4.2.0, @types/express@^5.0.0, @types/jsonwebtoken@^9.0.10, @types/qrcode@^1.5.5, name (+9 more)
 
 ### Community 23 - "BranchService"
-Cohesion: 0.09
-Nodes (4): BranchController, BranchService, CreateBranchDto, UpdateBranchDto
+Cohesion: 0.13
+Nodes (3): BranchController, BranchService, UpdateBranchDto
 
 ### Community 24 - "allowBuilds"
 Cohesion: 0.22
@@ -225,80 +226,84 @@ Cohesion: 0.50
 Nodes (3): exclude, extends, ./tsconfig.json
 
 ### Community 32 - "department.controller.ts"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (3): DepartmentController, DepartmentModule, DepartmentService
-
-### Community 33 - "CurrentUser"
-Cohesion: 0.07
-Nodes (9): AccessController, AuthController, CurrentUser, Public(), RequirePermission(), Roles(), UserController, UserService (+1 more)
 
 ### Community 36 - "Ponytail, lazy senior dev mode"
 Cohesion: 0.50
 Nodes (3): Before you write, Ponytail, lazy senior dev mode, The smallest complete change
 
 ### Community 37 - "RoleKey"
-Cohesion: 0.31
-Nodes (3): IRequestContext, RequestContextMiddleware, RequestContext
+Cohesion: 0.26
+Nodes (4): IRequestContext, RequestContext, CachedUserData, @nestjs/core
 
 ### Community 38 - "auth.guard.ts"
-Cohesion: 0.24
-Nodes (6): CurrentBranch, IS_PUBLIC_KEY, PERMISSION_KEY, PermissionRequirement, ROLES_KEY, CachedUserData
+Cohesion: 0.32
+Nodes (5): CurrentBranch, IS_PUBLIC_KEY, PERMISSION_KEY, PermissionRequirement, ROLES_KEY
 
 ### Community 39 - "@nestjs/common"
-Cohesion: 0.14
-Nodes (8): AccessModule, AppService, AuditModule, BranchModule, ClinicalHistoryModule, EmployeeModule, @nestjs/common, @nestjs/core
+Cohesion: 0.05
+Nodes (24): AccessModule, AppController, AppModule, AppService, AuditModule, sanitizeAuditMetadata(), BranchModule, ClientModule (+16 more)
+
+### Community 69 - "RoleKey"
+Cohesion: 0.15
+Nodes (6): ClientService, RoleKey, DIRECTOR, MANAGER, PARENT, THERAPIST
 
 ### Community 72 - "VersionService"
 Cohesion: 0.13
 Nodes (4): AuditSensitiveRead(), ClinicalHistoryController, VersionHistoryQueryDto, VersionService
 
+### Community 73 - "update-user-overrides.dto.ts"
+Cohesion: 0.12
+Nodes (4): RoleModuleItemDto, UpdateRoleModulesDto, UpdateUserOverridesDto, UserOverrideItemDto
+
 ### Community 74 - "LoginDto"
-Cohesion: 0.11
-Nodes (6): LoginDto, RequestOtpDto, VerifyOtpDto, Disable2faDto, Enable2faDto, Verify2faLoginDto
+Cohesion: 0.20
+Nodes (5): RequestOtpDto, VerifyOtpDto, Disable2faDto, Enable2faDto, Verify2faLoginDto
 
 ### Community 75 - "common/index.ts"
-Cohesion: 0.23
-Nodes (7): CommonModule, LockoutResult, MemoryLockEntry, RateLimitModule, Throttle(), THROTTLE_KEY, ThrottleOptions
+Cohesion: 0.06
+Nodes (20): CommonModule, EnvironmentVariables, validate(), RequestContextMiddleware, PrismaModule, LockoutResult, LockoutService, MemoryLockEntry (+12 more)
 
-### Community 78 - "RoleKey"
-Cohesion: 0.11
-Nodes (8): RecordVersionParams, UserModule, RoleKey, DIRECTOR, MANAGER, PARENT, THERAPIST, @nestjs/swagger
+### Community 78 - "src/index.ts"
+Cohesion: 0.23
+Nodes (4): NoStoreInterceptor, PaginationMetaCursor, PaginationMetaOffset, @nestjs/swagger
 
 ### Community 79 - "auth.service.ts"
-Cohesion: 0.24
-Nodes (9): AuthTokens, TokenPayload, decryptSecret(), encryptSecret(), generateRandomToken(), getEncryptionKey(), hashPassword(), sha256() (+1 more)
-
-### Community 80 - "LockoutService"
-Cohesion: 0.17
-Nodes (4): LockoutService, Decisions Made, Open Items, Petals ERP – Build Progress
+Cohesion: 0.29
+Nodes (8): AuthTokens, TokenPayload, decryptSecret(), encryptSecret(), generateRandomToken(), getEncryptionKey(), hashPassword(), sha256()
 
 ### Community 82 - "OffsetPaginationDto"
-Cohesion: 0.21
+Cohesion: 0.23
 Nodes (3): RestoreEntityDto, CursorPaginationDto, OffsetPaginationDto
 
-### Community 88 - "prisma.service.ts"
-Cohesion: 0.28
-Nodes (4): PrismaModule, BRANCH_SCOPED_MODELS, FILTERABLE_READ_OPS, SCOPED_WRITE_OPS
+### Community 83 - "CurrentUser"
+Cohesion: 0.24
+Nodes (3): ClientController, CurrentUser, RequirePermission()
+
+### Community 94 - "pagination/index.ts"
+Cohesion: 0.46
+Nodes (4): CursorPaginatedResponse, CursorPaginationMeta, OffsetPaginatedResponse, OffsetPaginationMeta
 
 ## Knowledge Gaps
-- **35 isolated node(s):** `CREATE`, `DELETE`, `UPDATE`, `VIEW`, `VIEW_ALL` (+30 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 519 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **51 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **42 isolated node(s):** `DIRECTOR`, `MANAGER`, `THERAPIST`, `PARENT`, `ACTIVE` (+37 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 556 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `@nestjs/common` connect `@nestjs/common` to `redis/index.ts`, `otp.service.ts`, `access.e2e-spec.ts`, `audit.interceptor.ts`, `common/index.ts`, `src/index.ts`, `dependencies`, `api/package.json`, `BranchService`, `roles.guard.spec.ts`, `department.controller.ts`, `RoleKey`, `auth.guard.ts`, `PrismaService`, `common/index.ts`, `RoleKey`, `auth.service.ts`, `auth.controller.ts`, `prisma.service.ts`?**
-  _High betweenness centrality (0.098) - this node is a cross-community bridge._
-- **What connects `CREATE`, `DELETE`, `UPDATE` to the rest of the system?**
-  _35 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `@nestjs/common` connect `@nestjs/common` to `client.service.ts`, `otp.service.ts`, `department.controller.ts`, `RoleKey`, `audit.interceptor.ts`, `RoleKey`, `auth.guard.ts`, `employee.service.ts`, `src/index.ts`, `common/index.ts`, `dependencies`, `src/index.ts`, `auth.service.ts`, `api/package.json`, `auth.controller.ts`, `roles.guard.spec.ts`?**
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
+- **What connects `DIRECTOR`, `MANAGER`, `THERAPIST` to the rest of the system?**
+  _42 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `client.service.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.05319148936170213 - nodes in this community are weakly interconnected._
+- **Why does `RoleKey` connect `RoleKey` to `client.service.ts`, `department.controller.ts`, `Roles`, `RoleKey`, `auth.guard.ts`, `@nestjs/common`, `employee.service.ts`, `src/index.ts`, `src/index.ts`, `auth.service.ts`, `CreateEmployeeDto`, `CurrentUser`, `AccessService`, `auth.controller.ts`, `roles.guard.spec.ts`?**
+  _High betweenness centrality (0.047) - this node is a cross-community bridge._
 - **Should `4.1 Director` be split into smaller, more focused modules?**
   _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
-- **Why does `AppModule` connect `AppModule` to `CurrentUser`, `class-validator`, `access.e2e-spec.ts`, `UpdateRoleModulesDto`, `auth.guard.ts`, `UpdateRolePermissionsDto`, `UpdateUserOverridesDto`, `common/index.ts`, `src/index.ts`, `RoleKey`?**
-  _High betweenness centrality (0.052) - this node is a cross-community bridge._
+- **Why does `@nestjs/swagger` connect `src/index.ts` to `client.service.ts`, `department.controller.ts`, `class-validator`, `RoleKey`, `UpdateRolePermissionsDto`, `@nestjs/common`, `update-user-overrides.dto.ts`, `LoginDto`, `dependencies`, `api/package.json`, `auth.controller.ts`, `CreateBranchDto`, `LoginDto`, `pagination/index.ts`, `audit-log-query.dto.ts`?**
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Should `env` be split into smaller, more focused modules?**
   _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
-- **Why does `@nestjs/swagger` connect `RoleKey` to `class-validator`, `access.e2e-spec.ts`, `auth.guard.ts`, `@nestjs/common`, `UpdateUserOverridesDto`, `LoginDto`, `common/index.ts`, `dependencies`, `OffsetPaginationDto`, `BranchService`, `api/package.json`, `auth.controller.ts`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Should `audit.interceptor.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06606606606606606 - nodes in this community are weakly interconnected._

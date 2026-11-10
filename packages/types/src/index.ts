@@ -5,6 +5,19 @@ export enum RoleKey {
   PARENT = 'PARENT',
 }
 
+export enum ClientStatus {
+  ACTIVE = 'ACTIVE',
+  ON_HOLD = 'ON_HOLD',
+  DISCHARGED = 'DISCHARGED',
+}
+
+export enum AppointmentStatus {
+  SCHEDULED = 'SCHEDULED',
+  ATTENDED = 'ATTENDED',
+  CANCELLED = 'CANCELLED',
+  NO_SHOW = 'NO_SHOW',
+}
+
 export enum AppModule {
   DASHBOARD = 'DASHBOARD',
   APPOINTMENTS = 'APPOINTMENTS',

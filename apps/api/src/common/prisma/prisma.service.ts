@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger, ForbiddenException } from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
+import { RoleKey } from '@petals/types';
 import { RequestContext } from '../context/request-context';
 
 /**
@@ -76,8 +77,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
           async $allOperations({ model, operation, args, query }) {
             const ctx = RequestContext.current();
 
-            // No context or no branch restriction → pass through
-            if (!ctx?.branchIds?.length || !model || !BRANCH_SCOPED_MODELS.has(model)) {
+            // No context, no branch restriction, or Director (unrestricted access) → pass through
+            if (!ctx?.branchIds?.length || !model || !BRANCH_SCOPED_MODELS.has(model) || ctx?.roleKey === RoleKey.DIRECTOR) {
               return query(args);
             }
 
