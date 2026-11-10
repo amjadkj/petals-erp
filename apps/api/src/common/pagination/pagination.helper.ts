@@ -47,10 +47,12 @@ export function buildOrderBy(
 /**
  * Builds Prisma skip/take from offset pagination params.
  */
-export function buildOffsetPagination(page: number, pageSize: number) {
+export function buildOffsetPagination(page: number = 1, pageSize: number = 20) {
+  const p = page > 0 ? page : 1;
+  const ps = pageSize > 0 ? pageSize : 20;
   return {
-    skip: (page - 1) * pageSize,
-    take: pageSize,
+    skip: (p - 1) * ps,
+    take: ps,
   };
 }
 
@@ -58,26 +60,29 @@ export function buildOffsetPagination(page: number, pageSize: number) {
  * Builds Prisma cursor/take from cursor pagination params.
  * Returns skip:1 + cursor when a cursor is provided (skip the cursor row itself).
  */
-export function buildCursorPagination(cursor: string | undefined, limit: number) {
+export function buildCursorPagination(cursor: string | undefined, limit: number = 20) {
+  const l = limit > 0 ? limit : 20;
   if (cursor) {
     return {
       skip: 1,
-      take: limit,
+      take: l,
       cursor: { id: cursor },
     };
   }
-  return { take: limit };
+  return { take: l };
 }
 
 /**
  * Builds offset pagination meta from count and params.
  */
-export function buildOffsetMeta(total: number, page: number, pageSize: number) {
+export function buildOffsetMeta(total: number, page: number = 1, pageSize: number = 20) {
+  const p = page > 0 ? page : 1;
+  const ps = pageSize > 0 ? pageSize : 20;
   return {
-    page,
-    pageSize,
+    page: p,
+    pageSize: ps,
     total,
-    hasNext: page * pageSize < total,
+    hasNext: p * ps < total,
   };
 }
 

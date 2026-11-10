@@ -2,10 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../common/prisma';
 import { CacheService } from '../common/redis';
+import { AuditService } from '../audit/audit.service';
 import { RoleKey, AppModule, PermissionAction, PermissionScope } from '@petals/types';
 
 export interface ResolvedModulePermissions {
@@ -20,11 +20,10 @@ export type ResolvedPermissionsMap = Record<AppModule, ResolvedModulePermissions
 
 @Injectable()
 export class AccessService {
-  private readonly logger = new Logger(AccessService.name);
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
+    private readonly auditService: AuditService,
   ) {}
 
   /**
@@ -320,7 +319,7 @@ export class AccessService {
     await this.invalidateAllUserPermissions();
 
     // Audit log
-    await this.writeAuditLog({
+    await this.auditService.log({
       userId: directorUserId,
       action: 'UPDATE_ROLE_MODULES',
       entity: 'Role',
@@ -372,7 +371,7 @@ export class AccessService {
     await this.invalidateAllUserPermissions();
 
     // Audit log
-    await this.writeAuditLog({
+    await this.auditService.log({
       userId: directorUserId,
       action: 'UPDATE_ROLE_PERMISSIONS',
       entity: 'Role',
@@ -450,7 +449,7 @@ export class AccessService {
     await this.invalidateUserPermissions(targetUserId);
 
     // Audit log
-    await this.writeAuditLog({
+    await this.auditService.log({
       userId: directorUserId,
       action: 'UPDATE_USER_OVERRIDES',
       entity: 'UserOverride',
@@ -482,7 +481,7 @@ export class AccessService {
 
     await this.invalidateUserPermissions(targetUserId);
 
-    await this.writeAuditLog({
+    await this.auditService.log({
       userId: directorUserId,
       action: 'DELETE_USER_OVERRIDE',
       entity: 'UserOverride',
@@ -506,35 +505,6 @@ export class AccessService {
    */
   async invalidateAllUserPermissions(): Promise<void> {
     await this.cache.deleteByPrefix('user_perms:');
-  }
-
-  /**
-   * Temporary audit log writer until Phase 06.
-   */
-  private async writeAuditLog(params: {
-    userId: string;
-    action: string;
-    entity: string;
-    entityId?: string;
-    branchId?: string;
-    metadata?: any;
-    ipAddress?: string;
-  }) {
-    try {
-      await this.prisma.unscopedClient.auditLog.create({
-        data: {
-          userId: params.userId,
-          action: params.action,
-          entity: params.entity,
-          entityId: params.entityId,
-          branchId: params.branchId,
-          metadata: params.metadata,
-          ipAddress: params.ipAddress,
-        },
-      });
-    } catch (err) {
-      this.logger.warn(`Failed to write audit log: ${(err as Error).message}`);
-    }
   }
 }
 

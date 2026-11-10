@@ -5,6 +5,7 @@ describe('AccessService', () => {
   let service: AccessService;
   let mockPrisma: any;
   let mockCache: any;
+  let mockAuditService: any;
 
   beforeEach(() => {
     mockPrisma = {
@@ -43,7 +44,11 @@ describe('AccessService', () => {
       deleteByPrefix: jest.fn().mockResolvedValue(1),
     };
 
-    service = new AccessService(mockPrisma, mockCache);
+    mockAuditService = {
+      log: jest.fn().mockResolvedValue(null),
+    };
+
+    service = new AccessService(mockPrisma, mockCache, mockAuditService as any);
   });
 
   describe('resolvePermission', () => {
@@ -235,7 +240,7 @@ describe('AccessService', () => {
       );
 
       expect(mockCache.deleteByPrefix).toHaveBeenCalledWith('user_perms:');
-      expect(mockPrisma.unscopedClient.auditLog.create).toHaveBeenCalled();
+      expect(mockAuditService.log).toHaveBeenCalled();
     });
 
     it('should invalidate specific user cache when user override is updated', async () => {
@@ -251,7 +256,7 @@ describe('AccessService', () => {
       );
 
       expect(mockCache.del).toHaveBeenCalledWith('user_perms:target-user-1');
-      expect(mockPrisma.unscopedClient.auditLog.create).toHaveBeenCalled();
+      expect(mockAuditService.log).toHaveBeenCalled();
     });
   });
 });

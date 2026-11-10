@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794309615.8491926,
-    "seen": 1794311294.5784693,
-    "ast_hash": "b9645b7a05bccf8ee4d8a6ca0b839bb2",
+    "mtime": 1794311772.2635458,
+    "seen": 1794317411.2222323,
+    "ast_hash": "9b2ac005847f71a0191a1f55b09adbcf",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/pagination/pagination.dto.ts": {
-    "mtime": 1794294047.1098037,
-    "seen": 1794306615.4734232,
+    "mtime": 1794312166.3320794,
+    "seen": 1794317411.2666352,
     "ast_hash": "c0eae9f6ac907f693315ea033859c361",
     "semantic_hash": ""
   },
@@ -282,9 +282,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/pagination/pagination.helper.ts": {
-    "mtime": 1794294047.1685617,
-    "seen": 1794306615.4734232,
-    "ast_hash": "0c492c7e76391e962ab872a04c95bce6",
+    "mtime": 1794312121.435274,
+    "seen": 1794317411.2689106,
+    "ast_hash": "4966d91167454b99af227bb6a7351796",
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/index.ts": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "apps/api/test/jest-e2e.json": {
-    "mtime": 1794290752.279966,
-    "seen": 1794306615.4734232,
-    "ast_hash": "8908882e6576a4ce0df8411d20341b59",
+    "mtime": 1794317146.8691127,
+    "seen": 1794317411.305328,
+    "ast_hash": "4d5f735d362416088c942e23b950fcdb",
     "semantic_hash": ""
   },
   "apps/api/tsconfig.build.json": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794311266.3519776,
-    "seen": 1794311294.8242354,
-    "ast_hash": "b775944cea71ab2b3f728ef1d7c7dcb5",
+    "mtime": 1794317382.6665542,
+    "seen": 1794317411.3306386,
+    "ast_hash": "39df760256242d95ba25a32465f7d065",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -702,21 +702,21 @@
     "semantic_hash": ""
   },
   "apps/api/src/access/access.module.ts": {
-    "mtime": 1794307367.8222637,
-    "seen": 1794308776.5389397,
-    "ast_hash": "bdf3848a05c1539ead273ba64a9eb7fd",
+    "mtime": 1794311738.501198,
+    "seen": 1794317411.2191565,
+    "ast_hash": "cd9cbc504a049cf2ec9891774be2edda",
     "semantic_hash": ""
   },
   "apps/api/src/access/access.service.spec.ts": {
-    "mtime": 1794309104.9836535,
-    "seen": 1794311294.573176,
-    "ast_hash": "46077fbeaf0a51c2ace8474871d81959",
+    "mtime": 1794311996.0273278,
+    "seen": 1794317411.2191565,
+    "ast_hash": "d3b7a3fd7670a2738350dfa0a7c319ba",
     "semantic_hash": ""
   },
   "apps/api/src/access/access.service.ts": {
-    "mtime": 1794311044.6656058,
-    "seen": 1794311294.573176,
-    "ast_hash": "a610b700326ac2cd24615c12b9e0ddd4",
+    "mtime": 1794311839.1956022,
+    "seen": 1794317411.2191565,
+    "ast_hash": "955178db7b25b7265de206a27a118db9",
     "semantic_hash": ""
   },
   "apps/api/src/access/dto/index.ts": {
@@ -945,6 +945,108 @@
     "mtime": 1794310615.9078841,
     "seen": 1794311294.7717037,
     "ast_hash": "2005671e8d767e9967e4ae498dc3207c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.controller.ts": {
+    "mtime": 1794311800.9227374,
+    "seen": 1794317411.2242546,
+    "ast_hash": "cb98593c63b7b660d25eca967d20809f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.decorators.ts": {
+    "mtime": 1794311801.0724373,
+    "seen": 1794317411.2242546,
+    "ast_hash": "5157446c6800f5e13962f48525281071",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.interceptor.ts": {
+    "mtime": 1794312586.7956471,
+    "seen": 1794317411.2242546,
+    "ast_hash": "7ef538157d27bde795e1736819f4c0f3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.module.ts": {
+    "mtime": 1794312343.2665076,
+    "seen": 1794317411.2242546,
+    "ast_hash": "2671783169abac72e7e39e89bb53e9a5",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.sanitizer.ts": {
+    "mtime": 1794311801.7405784,
+    "seen": 1794317411.2242546,
+    "ast_hash": "6d6f170096f72c2766e76d1e4d1242fb",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.service.spec.ts": {
+    "mtime": 1794312135.136891,
+    "seen": 1794317411.2242546,
+    "ast_hash": "f1567ce708285ea165bb30f50099e011",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/audit.service.ts": {
+    "mtime": 1794311845.389623,
+    "seen": 1794317411.2242546,
+    "ast_hash": "831ca17acc92ff52083e607aff73278e",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/dto/audit-log-query.dto.ts": {
+    "mtime": 1794311802.893605,
+    "seen": 1794317411.2242546,
+    "ast_hash": "f24830c7356e6bb41bf207320aeb2d14",
+    "semantic_hash": ""
+  },
+  "apps/api/src/audit/dto/index.ts": {
+    "mtime": 1794311803.1350663,
+    "seen": 1794317411.2242546,
+    "ast_hash": "364e05fe34b369b97752f27b988cb63c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/clinical-history.controller.ts": {
+    "mtime": 1794311851.6081562,
+    "seen": 1794317411.2438295,
+    "ast_hash": "89441496aadff57eec18f926952ba18a",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/clinical-history.module.ts": {
+    "mtime": 1794311803.4694035,
+    "seen": 1794317411.2438295,
+    "ast_hash": "397ba65b530aaf158361d0a53e9da3b7",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/dto/index.ts": {
+    "mtime": 1794311803.6589262,
+    "seen": 1794317411.2438295,
+    "ast_hash": "6d86c9de8ea74c8371ab113d1ed4d3b6",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/dto/restore-entity.dto.ts": {
+    "mtime": 1794311803.7983503,
+    "seen": 1794317411.2438295,
+    "ast_hash": "592219a8915db66a704ee71a35c82aa1",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/dto/version-history-query.dto.ts": {
+    "mtime": 1794311803.9412165,
+    "seen": 1794317411.2438295,
+    "ast_hash": "ae3a621bcddf8219c32e328dc0920aec",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/version.service.spec.ts": {
+    "mtime": 1794311804.3128357,
+    "seen": 1794317411.2438295,
+    "ast_hash": "c4469beaf94d302ae5752ff767d9e586",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical-history/version.service.ts": {
+    "mtime": 1794311867.546026,
+    "seen": 1794317411.2438295,
+    "ast_hash": "89a165454e958f279b70c031e87eba0c",
+    "semantic_hash": ""
+  },
+  "apps/api/test/audit-version-history.e2e-spec.ts": {
+    "mtime": 1794316713.390951,
+    "seen": 1794317411.3023314,
+    "ast_hash": "19adc26677492f246a86b7a9ad94a1ba",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

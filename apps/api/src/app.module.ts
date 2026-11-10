@@ -8,6 +8,8 @@ import { BranchModule } from './branch/branch.module';
 import { DepartmentModule } from './department/department.module';
 import { UserModule } from './user/user.module';
 import { EmployeeModule } from './employee/employee.module';
+import { AuditModule } from './audit/audit.module';
+import { ClinicalHistoryModule } from './clinical-history/clinical-history.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -24,6 +26,8 @@ import { AppService } from './app.service';
     DepartmentModule,
     UserModule,
     EmployeeModule,
+    AuditModule,
+    ClinicalHistoryModule,
     CommonModule,
   ],
   controllers: [AppController],

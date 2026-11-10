@@ -4,9 +4,11 @@ import { AccessService } from './access.service';
 import { AccessController } from './access.controller';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { PermissionGuard } from '../common/guards/permission.guard';
+import { AuditModule } from '../audit/audit.module';
 
 @Global()
 @Module({
+  imports: [AuditModule],
   controllers: [AccessController],
   providers: [
     AccessService,
