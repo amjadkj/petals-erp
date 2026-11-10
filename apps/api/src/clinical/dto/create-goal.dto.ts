@@ -38,3 +38,4 @@ export class CreateGoalDto {
   @IsDateString()
   targetDate?: string;
 }
+

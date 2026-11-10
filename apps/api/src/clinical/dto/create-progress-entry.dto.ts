@@ -38,3 +38,4 @@ export class CreateProgressEntryDto {
   @IsUUID('4')
   appointmentId?: string;
 }
+

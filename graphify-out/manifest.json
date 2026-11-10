@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "apps/api/prisma/seed.ts": {
-    "mtime": 1794321591.4779,
-    "seen": 1794331944.2736783,
-    "ast_hash": "dc037c0e4a3886900013f8e400da250a",
+    "mtime": 1794332375.3324027,
+    "seen": 1794333002.1464791,
+    "ast_hash": "1bd504eaf562d198cd8cd9f923a5f1f1",
     "semantic_hash": ""
   },
   "apps/api/src/app.controller.ts": {
@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794321539.0553248,
-    "seen": 1794331944.2848701,
-    "ast_hash": "5c7cfd659631e9c9d80f2807a449254b",
+    "mtime": 1794332360.9577644,
+    "seen": 1794333002.1580238,
+    "ast_hash": "e200488437d3e7f2b4e66ff300fd2451",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794320885.0667713,
-    "seen": 1794331944.4871094,
-    "ast_hash": "117f3926691be071f009cb969bae70c8",
+    "mtime": 1794332186.8694923,
+    "seen": 1794333002.4271896,
+    "ast_hash": "8054da7de8b06bbecaddb08df29c1628",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794331917.2758534,
-    "seen": 1794331944.5021102,
-    "ast_hash": "381bf9c06b148717131c2ce3fd04d92c",
+    "mtime": 1794332959.2068968,
+    "seen": 1794333002.440981,
+    "ast_hash": "884de5f5b07041d0f40b01aebe22b0c6",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1116,15 +1116,15 @@
     "semantic_hash": ""
   },
   "apps/api/src/clinical/clinical.controller.ts": {
-    "mtime": 1794321490.7163026,
-    "seen": 1794331944.3534036,
-    "ast_hash": "62d593dda9d9fbac7324759e5652f4be",
+    "mtime": 1794331961.6067328,
+    "seen": 1794333002.2442224,
+    "ast_hash": "b6b84683e71af6722f7476de837556c4",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/clinical.module.ts": {
-    "mtime": 1794321502.489052,
-    "seen": 1794331944.3534036,
-    "ast_hash": "15807b247617446db5f5e9fbe82e5493",
+    "mtime": 1794331963.0847676,
+    "seen": 1794333002.2442224,
+    "ast_hash": "fed305759079da5f08319a5db054c6f8",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/clinical.service.spec.ts": {
@@ -1140,87 +1140,177 @@
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/assessment-query.dto.ts": {
-    "mtime": 1794321024.0870638,
-    "seen": 1794331944.3534036,
-    "ast_hash": "ebbc733d2cd2a6fe888bbff0880117b5",
+    "mtime": 1794331964.187679,
+    "seen": 1794333002.2485723,
+    "ast_hash": "692e9f37e0e5ff58fe9385db7434ce2f",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/create-assessment.dto.ts": {
-    "mtime": 1794321001.0643182,
-    "seen": 1794331944.3534036,
-    "ast_hash": "b76c3805eae08f1971d1e4788a931fd7",
+    "mtime": 1794331964.3243437,
+    "seen": 1794333002.2485723,
+    "ast_hash": "07dafbda48d3f8b6615790539ea4d5f5",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/create-goal.dto.ts": {
-    "mtime": 1794321088.3211772,
-    "seen": 1794331944.3534036,
-    "ast_hash": "d79a72968fe68a9de52f5c0ff7688ab1",
+    "mtime": 1794331964.4792557,
+    "seen": 1794333002.2485723,
+    "ast_hash": "f42ebe8fe005202aa6413102eacf0ede",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/create-progress-entry.dto.ts": {
-    "mtime": 1794321179.423592,
-    "seen": 1794331944.3534036,
-    "ast_hash": "5572336cab6aa639c96f3ac927b06a26",
+    "mtime": 1794331964.6234741,
+    "seen": 1794333002.2485723,
+    "ast_hash": "df99ea52af45616428b869cb558151de",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/create-subgoal.dto.ts": {
-    "mtime": 1794321134.4417472,
-    "seen": 1794331944.3534036,
-    "ast_hash": "fda45c1e159ea493e5a63f4f8b6c99ac",
+    "mtime": 1794331964.7656424,
+    "seen": 1794333002.2485723,
+    "ast_hash": "9d53efbbf2be4c7f2af5da7a784eb404",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/create-treatment-plan.dto.ts": {
-    "mtime": 1794321039.449129,
-    "seen": 1794331944.3534036,
-    "ast_hash": "634e2287192fc733d4e318c2d2ab5a55",
+    "mtime": 1794331965.3176312,
+    "seen": 1794333002.2485723,
+    "ast_hash": "3b4392c9109dd995a95413533d9037b5",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/index.ts": {
-    "mtime": 1794321317.3952527,
-    "seen": 1794331944.3534036,
-    "ast_hash": "e628a21fe158f2ac33971497acb4430c",
+    "mtime": 1794331965.45303,
+    "seen": 1794333002.2485723,
+    "ast_hash": "5cbd90a22ee0187bb88a5e4fd0f554c7",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/progress-entry-query.dto.ts": {
-    "mtime": 1794321302.1907613,
-    "seen": 1794331944.3534036,
-    "ast_hash": "a43363156da2ca935263038dc0b7c562",
+    "mtime": 1794331966.0400386,
+    "seen": 1794333002.2485723,
+    "ast_hash": "fe5d3514818bb9d54802d207bcf2fdd6",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/update-assessment.dto.ts": {
-    "mtime": 1794321016.547443,
-    "seen": 1794331944.3534036,
-    "ast_hash": "46db1925767679bbaceff1a1ed8cdab1",
+    "mtime": 1794331966.0410368,
+    "seen": 1794333002.2485723,
+    "ast_hash": "b1075d6a214b1b34c5bb4c24b868c106",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/update-goal.dto.ts": {
-    "mtime": 1794321105.16886,
-    "seen": 1794331944.3534036,
-    "ast_hash": "e9d7b5a9924f357c80076b7167a5e469",
+    "mtime": 1794331966.0410368,
+    "seen": 1794333002.2485723,
+    "ast_hash": "e173063bda4f260431de13a8306560f2",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/update-progress-entry.dto.ts": {
-    "mtime": 1794321227.653233,
-    "seen": 1794331944.3544047,
-    "ast_hash": "200807a3b9b2b9b5fd808810ea70e401",
+    "mtime": 1794331966.3534644,
+    "seen": 1794333002.2485723,
+    "ast_hash": "8147e28acc172cba2283866fc033e74c",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/update-subgoal.dto.ts": {
-    "mtime": 1794321159.7921197,
-    "seen": 1794331944.3544047,
-    "ast_hash": "cda93037f4d85ff9530c24e9f1a6a438",
+    "mtime": 1794331966.4636228,
+    "seen": 1794333002.2485723,
+    "ast_hash": "6e5671964eef09f67b88a2314dd75982",
     "semantic_hash": ""
   },
   "apps/api/src/clinical/dto/update-treatment-plan.dto.ts": {
-    "mtime": 1794321056.502659,
-    "seen": 1794331944.3544047,
-    "ast_hash": "24c7306986a390359dd2d07c4f1aaafc",
+    "mtime": 1794331966.6358664,
+    "seen": 1794333002.2485723,
+    "ast_hash": "af511bb4c8cf18ae11d66ed5e515bbcf",
     "semantic_hash": ""
   },
   "apps/api/test/clinical.e2e-spec.ts": {
     "mtime": 1794331767.6345205,
     "seen": 1794331944.466809,
     "ast_hash": "78b37d9ebff29b57fcf3d4384b100557",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/appointment.controller.ts": {
+    "mtime": 1794332338.2867236,
+    "seen": 1794333002.1610155,
+    "ast_hash": "5b35f67c70ac90ff58100435d4dba5f1",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/appointment.module.ts": {
+    "mtime": 1794332348.630606,
+    "seen": 1794333002.1610155,
+    "ast_hash": "84fee8d22f26d12bb680c51a36547eb2",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/appointment.service.spec.ts": {
+    "mtime": 1794332396.3499324,
+    "seen": 1794333002.1610155,
+    "ast_hash": "b234f4aa39470cc68278fe2d255db183",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/appointment.service.ts": {
+    "mtime": 1794332321.48552,
+    "seen": 1794333002.1610155,
+    "ast_hash": "12232bf6b72868a1123a17fefb0922e2",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/appointment-query.dto.ts": {
+    "mtime": 1794332238.8638985,
+    "seen": 1794333002.1610155,
+    "ast_hash": "d933d76f8e3a3d13beec23159d5d53cb",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/cancel-appointment.dto.ts": {
+    "mtime": 1794332224.6767843,
+    "seen": 1794333002.1610155,
+    "ast_hash": "bae5d843106664c2107306d7948bec26",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/client-appointment-query.dto.ts": {
+    "mtime": 1794332250.9777527,
+    "seen": 1794333002.1610155,
+    "ast_hash": "ce6c78f50c067e096414eef6ce186d00",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/create-appointment.dto.ts": {
+    "mtime": 1794332207.1325724,
+    "seen": 1794333002.1610155,
+    "ast_hash": "0506a81e10832a7a6cae201641792c80",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/create-schedule.dto.ts": {
+    "mtime": 1794332214.0763023,
+    "seen": 1794333002.1610155,
+    "ast_hash": "6b9d5cd51a24b04e7542d5f0c9ac6627",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/daily-schedule-query.dto.ts": {
+    "mtime": 1794332245.0476186,
+    "seen": 1794333002.1610155,
+    "ast_hash": "41283f972072164ac3df23a1a9e0926f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/index.ts": {
+    "mtime": 1794332257.8360045,
+    "seen": 1794333002.1610155,
+    "ast_hash": "9afea5640cce07594a4a6c47678a9ba2",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/reschedule-appointment.dto.ts": {
+    "mtime": 1794332220.0816972,
+    "seen": 1794333002.1610155,
+    "ast_hash": "ed9aca6406da939fcc03a2a21541b79d",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/dto/update-appointment-status.dto.ts": {
+    "mtime": 1794332231.0942774,
+    "seen": 1794333002.1610155,
+    "ast_hash": "78cf77b08b044efa96162300a63ba51c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/appointment/schedule-generator.helper.ts": {
+    "mtime": 1794332271.3445652,
+    "seen": 1794333002.1610155,
+    "ast_hash": "263943f31998655942531a42cb75faab",
+    "semantic_hash": ""
+  },
+  "apps/api/test/appointments-schedule.e2e-spec.ts": {
+    "mtime": 1794332536.18419,
+    "seen": 1794333002.3884215,
+    "ast_hash": "7847f27f662c02b79257c3304cd28481",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

@@ -11,3 +11,4 @@ export class AssessmentQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+

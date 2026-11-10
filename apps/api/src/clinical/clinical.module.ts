@@ -10,3 +10,4 @@ import { ClinicalHistoryModule } from '../clinical-history/clinical-history.modu
   exports: [ClinicalService],
 })
 export class ClinicalModule {}
+

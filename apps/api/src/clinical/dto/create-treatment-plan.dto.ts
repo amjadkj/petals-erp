@@ -53,3 +53,4 @@ export class CreateTreatmentPlanDto {
   @IsEnum(PlanStatus)
   status?: PlanStatus = PlanStatus.ACTIVE;
 }
+

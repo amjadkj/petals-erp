@@ -51,6 +51,13 @@ export enum ProgressLevel {
   ACHIEVED = 'ACHIEVED',
 }
 
+export enum LeaveStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
+}
+
 export enum AppModule {
   DASHBOARD = 'DASHBOARD',
   APPOINTMENTS = 'APPOINTMENTS',

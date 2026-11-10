@@ -281,3 +281,4 @@ export class ClinicalController {
     return this.clinicalService.deleteProgressEntry(id, userId, roleKey);
   }
 }
+

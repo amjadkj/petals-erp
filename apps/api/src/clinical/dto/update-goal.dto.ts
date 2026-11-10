@@ -38,3 +38,4 @@ export class UpdateGoalDto {
   @IsDateString()
   targetDate?: string;
 }
+
