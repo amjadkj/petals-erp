@@ -50,3 +50,4 @@ export class UpdateLeadDto {
   @IsEnum(LeadStage)
   stage?: LeadStage;
 }
+

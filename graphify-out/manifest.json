@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794337485.1173022,
-    "seen": 1794337540.9466372,
-    "ast_hash": "946cd52ab389dd355c5e60c8f8e437f2",
+    "mtime": 1794340372.6267946,
+    "seen": 1794340442.5374014,
+    "ast_hash": "a460ed12c7765ac9507b18fed4b6cf2a",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1488,27 +1488,27 @@
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/board-query.dto.ts": {
-    "mtime": 1794338399.6048102,
-    "seen": 1794340339.21541,
-    "ast_hash": "5fb2223b4ad7d41404093daff5ba5ea7",
+    "mtime": 1794340396.755578,
+    "seen": 1794340442.5134032,
+    "ast_hash": "c7445f1380c56cda0ffcb2cdf913a8d4",
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/convert-lead.dto.ts": {
-    "mtime": 1794338406.3834305,
-    "seen": 1794340339.21541,
-    "ast_hash": "1dea36a245358db1bb8ef2ec05d9f5a2",
+    "mtime": 1794340396.775174,
+    "seen": 1794340442.5134032,
+    "ast_hash": "61b7ae04b98842c139f084238ab2f8c5",
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/create-lead.dto.ts": {
-    "mtime": 1794338380.5769017,
-    "seen": 1794340339.21541,
-    "ast_hash": "f5bb98937df67b0bc5aeacab5e47f80c",
+    "mtime": 1794340397.0541618,
+    "seen": 1794340442.5134032,
+    "ast_hash": "d93ef9dbb4eba153c4301ee8a996edf7",
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/index.ts": {
-    "mtime": 1794338414.0126493,
-    "seen": 1794340339.21541,
-    "ast_hash": "22d3b006a6dcb93c5a40b834759ed0c3",
+    "mtime": 1794340397.0551605,
+    "seen": 1794340442.5134032,
+    "ast_hash": "c82d5e756f455274c0f3aed394250b9c",
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/lead-query.dto.ts": {
@@ -1518,9 +1518,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/lead/dto/update-lead.dto.ts": {
-    "mtime": 1794338388.1032524,
-    "seen": 1794340339.21541,
-    "ast_hash": "1c343ad092549f19444197ef62bff197",
+    "mtime": 1794340397.2260785,
+    "seen": 1794340442.5143974,
+    "ast_hash": "4fb6a6fd574027aceed11acda8b842dc",
     "semantic_hash": ""
   },
   "apps/api/src/lead/lead.controller.ts": {
@@ -1530,9 +1530,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/lead/lead.module.ts": {
-    "mtime": 1794338506.8101447,
-    "seen": 1794340339.21541,
-    "ast_hash": "0fc9bb99133e66af2631fe4c2dbf9dc1",
+    "mtime": 1794340397.3520794,
+    "seen": 1794340442.5143974,
+    "ast_hash": "11cde879adf5fde8de6cb48a1f60c720",
     "semantic_hash": ""
   },
   "apps/api/src/lead/lead.service.spec.ts": {

@@ -48,3 +48,4 @@ export class ConvertLeadDto {
   @IsBoolean()
   guardianConsent?: boolean = false;
 }
+

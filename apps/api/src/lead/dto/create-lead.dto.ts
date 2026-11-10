@@ -55,3 +55,4 @@ export class CreateLeadDto {
   @IsEnum(LeadStage)
   stage?: LeadStage;
 }
+
