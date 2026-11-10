@@ -11,6 +11,8 @@ import { RoleKey, AppModule, PermissionAction, PermissionScope } from '@petals/t
 export interface ResolvedModulePermissions {
   enabled: boolean;
   actions: Record<PermissionAction, boolean>;
+  /** Actions that came from a UserOverride (not role permissions). */
+  overriddenActions: PermissionAction[];
   scope: PermissionScope;
 }
 
@@ -50,13 +52,21 @@ export class AccessService {
     const permsMap = await this.getOrLoadUserPermissionsMap(userId, roleId, roleKey);
     const modPerm = permsMap[module];
 
-    // 2. Check if module is enabled
+    // 2. Check if module is enabled.
+    // Exception: if the user has an explicit UserOverride allowing this action,
+    // that override can bypass the module-disabled check (Director granted individual access).
     if (!modPerm || !modPerm.enabled) {
-      return {
-        allowed: false,
-        scope: PermissionScope.OWN,
-        reason: `Module ${module} is disabled for this role`,
-      };
+      // Only a user-level override (not a role permission) can bypass disabled module
+      const hasUserOverride = modPerm?.overriddenActions?.includes(action) && modPerm.actions[action] === true;
+      if (!hasUserOverride) {
+        return {
+          allowed: false,
+          scope: PermissionScope.OWN,
+          reason: `Module ${module} is disabled for this role`,
+        };
+      }
+      // User override grants access even when module is disabled
+      return { allowed: true, scope: PermissionScope.OWN };
     }
 
     // 3 & 4. Check action permission
@@ -189,6 +199,8 @@ export class AccessService {
         [PermissionAction.DELETE]: false,
       };
 
+      const overriddenActions: PermissionAction[] = [];
+
       for (const act of Object.values(PermissionAction)) {
         if (isDirector) {
           actions[act] = true;
@@ -199,6 +211,7 @@ export class AccessService {
         const overrideKey = `${mod}:${act}`;
         if (overridesMap.has(overrideKey)) {
           actions[act] = overridesMap.get(overrideKey)!;
+          overriddenActions.push(act);
         } else {
           actions[act] = rolePermsMap.get(overrideKey) ?? false;
         }
@@ -221,6 +234,7 @@ export class AccessService {
       result[mod] = {
         enabled,
         actions,
+        overriddenActions,
         scope,
       };
     }

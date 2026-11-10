@@ -107,3 +107,4 @@ describe('PermissionGuard', () => {
     await expect(guard.canActivate(ctx)).rejects.toThrow(ForbiddenException);
   });
 });
+

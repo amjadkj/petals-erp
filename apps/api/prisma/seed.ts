@@ -156,7 +156,24 @@ async function main() {
   }
   console.log('Roles, modules, and default permissions seeded successfully.');
 
-  // 2. Primary Branch
+  // 2. Departments
+  const departments = [
+    { name: 'Speech Therapy', code: 'ST' },
+    { name: 'Occupational Therapy', code: 'OT' },
+    { name: 'Physiotherapy', code: 'PT' },
+    { name: 'ABA / Behavioral Therapy', code: 'ABA' },
+    { name: 'Child Psychotherapy', code: 'CP' },
+  ];
+  for (const d of departments) {
+    await prisma.department.upsert({
+      where: { code: d.code },
+      update: { name: d.name },
+      create: d,
+    });
+  }
+  console.log('Seeded departments:', departments.map((d) => d.code).join(', '));
+
+  // 3. Primary Branch
   const mainBranch = await prisma.branch.upsert({
     where: { code: 'KOC-01' },
     update: {},
