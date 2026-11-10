@@ -31,3 +31,4 @@ export class RecordPaymentDto {
   @IsDateString()
   paidAt?: string;
 }
+

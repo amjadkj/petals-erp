@@ -39,3 +39,4 @@ export class InvoiceQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+

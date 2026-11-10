@@ -58,6 +58,20 @@ export enum LeaveStatus {
   CANCELLED = 'CANCELLED',
 }
 
+export enum ReportType {
+  ASSESSMENT = 'ASSESSMENT',
+  PROGRESS = 'PROGRESS',
+  DISCHARGE = 'DISCHARGE',
+  OTHER = 'OTHER',
+}
+
+export enum ReportStatus {
+  DRAFT = 'DRAFT',
+  SUBMITTED = 'SUBMITTED',
+  REVIEWED = 'REVIEWED',
+  SHARED = 'SHARED',
+}
+
 export enum RevenueCategory {
   CLINICAL_THERAPY = 'CLINICAL_THERAPY',
   ASSESSMENT_FEE = 'ASSESSMENT_FEE',

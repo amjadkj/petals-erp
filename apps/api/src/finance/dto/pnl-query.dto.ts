@@ -22,3 +22,4 @@ export class PnlQueryDto {
   @IsString()
   month?: string;
 }
+

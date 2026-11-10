@@ -35,3 +35,4 @@ export class CreateExpenseDto {
   @IsString()
   notes?: string;
 }
+

@@ -34,3 +34,4 @@ export class PaymentQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+

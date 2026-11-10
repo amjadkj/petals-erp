@@ -14,6 +14,7 @@ import { ClientModule } from './client/client.module';
 import { ClinicalModule } from './clinical/clinical.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { FinanceModule } from './finance/finance.module';
+import { ReportModule } from './report/report.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -36,6 +37,7 @@ import { AppService } from './app.service';
     ClinicalModule,
     AppointmentModule,
     FinanceModule,
+    ReportModule,
     CommonModule,
   ],
   controllers: [AppController],
