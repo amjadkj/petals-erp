@@ -11,3 +11,4 @@ import { ReportController } from './report.controller';
   exports: [ReportService, StorageService],
 })
 export class ReportModule {}
+

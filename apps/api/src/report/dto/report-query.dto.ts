@@ -19,3 +19,4 @@ export class ReportQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+

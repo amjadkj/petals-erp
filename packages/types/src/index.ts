@@ -72,6 +72,14 @@ export enum ReportStatus {
   SHARED = 'SHARED',
 }
 
+export enum LeadStage {
+  NEW = 'NEW',
+  CONTACTED = 'CONTACTED',
+  ASSESSMENT_SCHEDULED = 'ASSESSMENT_SCHEDULED',
+  CONVERTED = 'CONVERTED',
+  LOST = 'LOST',
+}
+
 export enum RevenueCategory {
   CLINICAL_THERAPY = 'CLINICAL_THERAPY',
   ASSESSMENT_FEE = 'ASSESSMENT_FEE',

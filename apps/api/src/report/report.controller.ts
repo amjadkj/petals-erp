@@ -198,3 +198,4 @@ export class ReportController {
     return this.reportService.getDocumentDownloadUrl(id, userId, roleKey, branchIds);
   }
 }
+

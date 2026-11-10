@@ -27,3 +27,4 @@ export class CreateDocumentDto {
   @IsBoolean()
   sharedWithParent?: boolean;
 }
+

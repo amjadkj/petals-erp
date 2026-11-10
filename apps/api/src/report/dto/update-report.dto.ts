@@ -38,3 +38,4 @@ export class UpdateReportDto {
   @IsEnum(ReportStatus)
   status?: ReportStatus;
 }
+

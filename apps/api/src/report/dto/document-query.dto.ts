@@ -8,3 +8,4 @@ export class DocumentQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+

@@ -31,3 +31,4 @@ export class DueReportQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
+
