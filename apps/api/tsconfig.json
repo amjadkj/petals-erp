@@ -1,0 +1,12 @@
+{
+  "extends": "@petals/config/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*", "prisma/**/*"]
+}
+

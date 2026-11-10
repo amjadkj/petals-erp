@@ -1,0 +1,954 @@
+// Therapy Clinic ERP - Prisma schema (PostgreSQL, multi-branch)
+//
+// Conventions
+//  - Table and column names are snake_case in the database (@@map / @map); fields are camelCase in code.
+//  - Every id and foreign key is a native Postgres uuid.
+//  - Branch scoping: branch-owned tables carry branchId. Enforce it in one place
+//    (Prisma Client extension or Postgres row-level security), not in each query.
+//  - Soft delete: clinical tables carry deletedAt. Edits/deletes also write a row to
+//    clinical_entry_versions (done in the service layer, inside one transaction).
+//
+// Add these in a raw SQL migration (Prisma cannot express them):
+//  1. CREATE EXTENSION IF NOT EXISTS btree_gist;
+//     ALTER TABLE appointments ADD CONSTRAINT no_therapist_overlap
+//       EXCLUDE USING gist (therapist_id WITH =, tstzrange(starts_at, ends_at) WITH &&)
+//       WHERE (status IN ('SCHEDULED','ATTENDED'));
+//     (same idea for client_id if you want to block client double-booking; there is no room entity, every department has its own room)
+//  2. Row-level security policies on branch-owned tables.
+//  3. CHECK (amount > 0) on payments and invoices.
+//  4. Cursor pagination relies on the (createdAt/sentAt/changedAt, id) indexes on the append-heavy tables.
+//  5. Secrets: twoFactorSecret must be encrypted by the application before it is stored.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+enum AppModule {
+  DASHBOARD
+  APPOINTMENTS
+  CLIENTS
+  PROFILE_OVERVIEW
+  PROFILE_ASSESSMENT
+  PROFILE_PAYMENT_PLAN
+  PROFILE_PROGRESS
+  PROFILE_REPORTS
+  PROFILE_DOCUMENTS
+  PROFILE_SESSIONS
+  FINANCIAL
+  FINANCIAL_PNL
+  COMMUNICATION
+  SCHEDULE_PLANNING
+  HRMS
+  EMPLOYEES
+  EMPLOYEE_SALARY
+  LEADS
+  REPORTS
+  ROLE_ACCESS
+}
+
+enum PermissionAction {
+  CREATE
+  UPDATE
+  VIEW
+  VIEW_ALL
+  DELETE
+}
+
+enum ClientStatus {
+  ACTIVE
+  ON_HOLD
+  DISCHARGED
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  ASSESSMENT_SCHEDULED
+  CONVERTED
+  LOST
+}
+
+enum PlanStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum GoalTerm {
+  LONG
+  SHORT
+}
+
+enum GoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  ACHIEVED
+  DISCONTINUED
+}
+
+enum SubgoalFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ProgressLevel {
+  REGRESSED
+  NO_CHANGE
+  EMERGING
+  PROGRESSING
+  ACHIEVED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  ATTENDED
+  CANCELLED
+  NO_SHOW
+}
+
+enum ReportType {
+  ASSESSMENT
+  PROGRESS
+  DISCHARGE
+  OTHER
+}
+
+enum ReportStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+  SHARED
+}
+
+enum RevenueCategory {
+  CLINICAL_THERAPY
+  ASSESSMENT_FEE
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  ADVANCE
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  CARD
+  BANK_TRANSFER
+}
+
+enum CommunicationChannel {
+  WHATSAPP
+  EMAIL
+  CALL
+}
+
+enum MessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum TemplateStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  PAID
+  UNPAID
+  OTHER
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum ChangeType {
+  EDIT
+  DELETE
+  RESTORE
+}
+
+enum RoleKey {
+  DIRECTOR
+  MANAGER
+  THERAPIST
+  PARENT
+}
+
+enum OtpPurpose {
+  LOGIN
+  PASSWORD_RESET
+}
+
+// ───────────────────── Branches and access control ─────────────────────
+
+model Branch {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  code      String   @unique
+  city      String?
+  address   String?
+  phone     String?
+  timezone  String   @default("Asia/Kolkata")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users        UserBranch[]
+  clients      Client[]
+  leads        Lead[]
+  appointments Appointment[]
+  invoices     Invoice[]
+  expenses     Expense[]
+  attendance   AttendanceRecord[]
+  holidays     Holiday[]
+
+  @@map("branches")
+}
+
+model UserBranch {
+  userId    String @db.Uuid @map("user_id")
+  branchId  String @db.Uuid @map("branch_id")
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@id([userId, branchId])
+  @@index([branchId])
+  @@map("user_branches")
+}
+
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  key         RoleKey @unique
+  name        String  @unique
+  description String?
+  isSystem    Boolean @default(false) @map("is_system")
+
+  users       User[]
+  modules     RoleModule[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model RoleModule {
+  roleId  String @db.Uuid @map("role_id")
+  module  AppModule
+  enabled Boolean   @default(false)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, module])
+  @@map("role_modules")
+}
+
+model RolePermission {
+  roleId  String @db.Uuid @map("role_id")
+  module  AppModule
+  action  PermissionAction
+  allowed Boolean          @default(false)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, module, action])
+  @@map("role_permissions")
+}
+
+model UserOverride {
+  userId  String @db.Uuid @map("user_id")
+  module  AppModule
+  action  PermissionAction
+  allowed Boolean
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, module, action])
+  @@map("user_overrides")
+}
+
+// ───────────────────────────── People ─────────────────────────────
+
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  roleId           String @db.Uuid @map("role_id")
+  name             String
+  email            String    @unique
+  phone            String?
+  passwordHash     String @map("password_hash")
+  twoFactorEnabled Boolean   @default(false) @map("two_factor_enabled")
+  // Store encrypted (application-level encryption), never plain text
+  twoFactorSecret  String? @map("two_factor_secret")
+  // Director marks themselves unavailable; a Manager may then approve leave as backup
+  awayUntil        DateTime? @map("away_until")
+  isActive         Boolean   @default(true) @map("is_active")
+  lastLoginAt      DateTime? @map("last_login_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  role              Role                    @relation(fields: [roleId], references: [id])
+  employee          Employee?
+  guardian          Guardian?
+  branches          UserBranch[]
+  overrides         UserOverride[]
+  auditLogs         AuditLog[]
+  communications    CommunicationLog[]
+  expensesRecorded  Expense[]
+  paymentsRecorded  Payment[]
+  documentsUploaded Document[]
+  versionsChanged   ClinicalEntryVersion[]
+  templatesApproved WhatsappTemplate[]
+  leaveDecisions    LeaveRequest[]
+  sessions          Session[]
+  notifications     Notification[]
+  pushSubscriptions PushSubscription[]
+
+  @@index([roleId])
+  @@map("users")
+}
+
+model Department {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+  code String @unique
+
+  employees Employee[]
+  plans     TreatmentPlan[]
+
+  @@map("departments")
+}
+
+model Employee {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @unique @db.Uuid @map("user_id")
+  departmentId String? @db.Uuid @map("department_id")
+  employeeCode String   @unique @map("employee_code")
+  designation  String?
+  salary       Decimal? @db.Decimal(12, 2)
+  joinedOn     DateTime @db.Date @map("joined_on")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id])
+  department Department? @relation(fields: [departmentId], references: [id])
+
+  leads           Lead[]
+  assessments     Assessment[]
+  plans           TreatmentPlan[]
+  progressEntries ProgressEntry[]
+  appointments    Appointment[]
+  reports         Report[]
+  leaveRequests   LeaveRequest[]
+  leaveBalances   LeaveBalance[]
+  attendance      AttendanceRecord[]
+
+  @@index([departmentId])
+  @@map("employees")
+}
+
+model Guardian {
+  id         String  @id @default(uuid()) @db.Uuid
+  userId     String  @unique @db.Uuid @map("user_id")
+  name       String
+  whatsappNo String? @map("whatsapp_no")
+  whatsappConsent  Boolean   @default(false) @map("whatsapp_consent")
+  emailConsent     Boolean   @default(false) @map("email_consent")
+  consentRecordedAt DateTime? @map("consent_recorded_at")
+
+  user    User             @relation(fields: [userId], references: [id])
+  clients ClientGuardian[]
+
+  @@map("guardians")
+}
+
+model Client {
+  id          String       @id @default(uuid()) @db.Uuid
+  branchId    String @db.Uuid @map("branch_id")
+  leadId      String?      @unique @db.Uuid @map("lead_id")
+  clientCode  String @map("client_code")
+  name        String
+  dob         DateTime     @db.Date
+  gender      String?
+  caseHistory String?      @db.Text @map("case_history")
+  status      ClientStatus @default(ACTIVE)
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  branch Branch @relation(fields: [branchId], references: [id])
+  lead   Lead?  @relation(fields: [leadId], references: [id])
+
+  guardians      ClientGuardian[]
+  assessments    Assessment[]
+  plans          TreatmentPlan[]
+  appointments   Appointment[]
+  reports        Report[]
+  documents      Document[]
+  invoices       Invoice[]
+  communications CommunicationLog[]
+
+  @@unique([branchId, clientCode])
+  @@index([branchId, status])
+  @@map("clients")
+}
+
+model ClientGuardian {
+  clientId             String @db.Uuid @map("client_id")
+  guardianId           String @db.Uuid @map("guardian_id")
+  relation             String
+  isPrimary            Boolean @default(false) @map("is_primary")
+  canViewOverview      Boolean @default(true) @map("can_view_overview")
+  canViewAssessment    Boolean @default(false) @map("can_view_assessment")
+  canViewPaymentPlan   Boolean @default(true) @map("can_view_payment_plan")
+  canViewReports       Boolean @default(false) @map("can_view_reports")
+
+  client   Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  guardian Guardian @relation(fields: [guardianId], references: [id], onDelete: Cascade)
+
+  @@id([clientId, guardianId])
+  @@index([guardianId])
+  @@map("client_guardians")
+}
+
+model Lead {
+  id           String    @id @default(uuid()) @db.Uuid
+  branchId     String @db.Uuid @map("branch_id")
+  ownerId      String? @db.Uuid @map("owner_id")
+  name         String
+  contact      String
+  childAge     Int? @map("child_age")
+  concern      String?
+  source       String?
+  stage        LeadStage @default(NEW)
+  nextFollowUp DateTime? @db.Date @map("next_follow_up")
+  notes        String?   @db.Text
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  branch Branch    @relation(fields: [branchId], references: [id])
+  owner  Employee? @relation(fields: [ownerId], references: [id])
+  client Client?
+
+  @@index([branchId, stage, nextFollowUp])
+  @@index([ownerId])
+  @@map("leads")
+}
+
+// ───────────────────── Clinical: assessment to progress ─────────────────────
+
+model Assessment {
+  id          String    @id @default(uuid()) @db.Uuid
+  clientId    String @db.Uuid @map("client_id")
+  assessorId  String @db.Uuid @map("assessor_id")
+  assessedOn  DateTime  @db.Date @map("assessed_on")
+  tool        String?
+  observation String?   @db.Text
+  scores      Json?
+  summary     String?   @db.Text
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  client   Client   @relation(fields: [clientId], references: [id])
+  assessor Employee @relation(fields: [assessorId], references: [id])
+
+  @@index([clientId, assessedOn])
+  @@index([assessorId])
+  @@map("assessments")
+}
+
+model TreatmentPlan {
+  id             String     @id @default(uuid()) @db.Uuid
+  clientId       String @db.Uuid @map("client_id")
+  departmentId   String @db.Uuid @map("department_id")
+  therapistId    String @db.Uuid @map("therapist_id")
+  sessionsPerWeek Int @map("sessions_per_week")
+  sessionMinutes Int        @default(45) @map("session_minutes")
+  feePerSession  Decimal    @db.Decimal(12, 2) @map("fee_per_session")
+  startDate      DateTime   @db.Date @map("start_date")
+  endDate        DateTime?  @db.Date @map("end_date")
+  status         PlanStatus @default(ACTIVE)
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  client     Client     @relation(fields: [clientId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+  therapist  Employee   @relation(fields: [therapistId], references: [id])
+
+  goals     Goal[]
+  schedules Schedule[]
+  invoices  Invoice[]
+
+  @@index([clientId, status])
+  @@index([therapistId, status])
+  @@index([departmentId])
+  @@map("treatment_plans")
+}
+
+model Goal {
+  id          String     @id @default(uuid()) @db.Uuid
+  planId      String @db.Uuid @map("plan_id")
+  term        GoalTerm
+  title       String
+  baseline    String?    @db.Text
+  description String?    @db.Text
+  status      GoalStatus @default(NOT_STARTED)
+  targetDate  DateTime?  @db.Date @map("target_date")
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  plan     TreatmentPlan @relation(fields: [planId], references: [id])
+  subgoals Subgoal[]
+
+  @@index([planId, term])
+  @@map("goals")
+}
+
+model Subgoal {
+  id          String           @id @default(uuid()) @db.Uuid
+  goalId      String @db.Uuid @map("goal_id")
+  frequency   SubgoalFrequency
+  description String           @db.Text
+  status      GoalStatus       @default(NOT_STARTED)
+  startDate   DateTime?        @db.Date @map("start_date")
+  endDate     DateTime?        @db.Date @map("end_date")
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  goal            Goal            @relation(fields: [goalId], references: [id])
+  progressEntries ProgressEntry[]
+
+  @@index([goalId, frequency])
+  @@map("subgoals")
+}
+
+model ProgressEntry {
+  id            String        @id @default(uuid()) @db.Uuid
+  subgoalId     String @db.Uuid @map("subgoal_id")
+  appointmentId String? @db.Uuid @map("appointment_id")
+  authorId      String @db.Uuid @map("author_id")
+  entryDate     DateTime      @db.Date @map("entry_date")
+  description   String?       @db.Text
+  response      String?       @db.Text
+  remarks       String?       @db.Text
+  level         ProgressLevel @default(NO_CHANGE)
+  deletedAt     DateTime? @map("deleted_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  subgoal     Subgoal      @relation(fields: [subgoalId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+  author      Employee     @relation(fields: [authorId], references: [id])
+
+  @@index([subgoalId, entryDate])
+  @@index([authorId, entryDate])
+  @@index([appointmentId])
+  @@map("progress_entries")
+}
+
+model Report {
+  id               String       @id @default(uuid()) @db.Uuid
+  clientId         String @db.Uuid @map("client_id")
+  authorId         String @db.Uuid @map("author_id")
+  type             ReportType
+  title            String
+  content          String?      @db.Text
+  fileUrl          String? @map("file_url")
+  dueOn            DateTime?    @db.Date @map("due_on")
+  submittedAt      DateTime? @map("submitted_at")
+  status           ReportStatus @default(DRAFT)
+  sharedWithParent Boolean      @default(false) @map("shared_with_parent")
+  deletedAt        DateTime? @map("deleted_at")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  client Client   @relation(fields: [clientId], references: [id])
+  author Employee @relation(fields: [authorId], references: [id])
+
+  @@index([status, dueOn])
+  @@index([clientId])
+  @@index([authorId, status])
+  @@map("reports")
+}
+
+model Document {
+  id               String    @id @default(uuid()) @db.Uuid
+  clientId         String @db.Uuid @map("client_id")
+  uploadedById     String @db.Uuid @map("uploaded_by_id")
+  title            String
+  fileUrl          String @map("file_url")
+  mimeType         String? @map("mime_type")
+  sharedWithParent Boolean   @default(false) @map("shared_with_parent")
+  deletedAt        DateTime? @map("deleted_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  client     Client @relation(fields: [clientId], references: [id])
+  uploadedBy User   @relation(fields: [uploadedById], references: [id])
+
+  @@index([clientId])
+  @@index([uploadedById])
+  @@map("documents")
+}
+
+model ClinicalEntryVersion {
+  id              String     @id @default(uuid()) @db.Uuid
+  changedById     String @db.Uuid @map("changed_by_id")
+  entityType      String @map("entity_type")
+  entityId        String @db.Uuid @map("entity_id")
+  versionNo       Int @map("version_no")
+  changeType      ChangeType @map("change_type")
+  previousContent Json @map("previous_content")
+  reason          String?
+  changedAt       DateTime   @default(now()) @map("changed_at")
+
+  changedBy User @relation(fields: [changedById], references: [id])
+
+  @@unique([entityType, entityId, versionNo])
+  @@index([changedById, changedAt])
+  @@index([changedAt, id])
+  @@map("clinical_entry_versions")
+}
+
+// ───────────────────────── Scheduling ─────────────────────────
+
+model Schedule {
+  id              String    @id @default(uuid()) @db.Uuid
+  planId          String @db.Uuid @map("plan_id")
+  recurrenceRule  String @map("recurrence_rule")
+  startTime       DateTime  @db.Time(0) @map("start_time")
+  durationMinutes Int       @default(45) @map("duration_minutes")
+  startsOn        DateTime  @db.Date @map("starts_on")
+  endsOn          DateTime? @db.Date @map("ends_on")
+  isActive        Boolean   @default(true) @map("is_active")
+
+  plan         TreatmentPlan @relation(fields: [planId], references: [id])
+  appointments Appointment[]
+
+  @@index([planId])
+  @@map("schedules")
+}
+
+model Appointment {
+  id           String            @id @default(uuid()) @db.Uuid
+  branchId     String @db.Uuid @map("branch_id")
+  scheduleId   String? @db.Uuid @map("schedule_id")
+  clientId     String @db.Uuid @map("client_id")
+  therapistId  String @db.Uuid @map("therapist_id")
+  startsAt     DateTime @map("starts_at")
+  endsAt       DateTime @map("ends_at")
+  status       AppointmentStatus @default(SCHEDULED)
+  cancelReason String? @map("cancel_reason")
+  cancelledAt  DateTime? @map("cancelled_at")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  branch    Branch    @relation(fields: [branchId], references: [id])
+  schedule  Schedule? @relation(fields: [scheduleId], references: [id])
+  client    Client    @relation(fields: [clientId], references: [id])
+  therapist Employee  @relation(fields: [therapistId], references: [id])
+
+  progressEntries ProgressEntry[]
+
+  @@index([branchId, startsAt])
+  @@index([therapistId, startsAt])
+  @@index([clientId, startsAt])
+  @@index([status, startsAt])
+  @@index([scheduleId])
+  @@map("appointments")
+}
+
+// ───────────────────────────── Finance ─────────────────────────────
+
+model Invoice {
+  id              String          @id @default(uuid()) @db.Uuid
+  branchId        String @db.Uuid @map("branch_id")
+  clientId        String @db.Uuid @map("client_id")
+  planId          String? @db.Uuid @map("plan_id")
+  invoiceNo       String @map("invoice_no")
+  revenueCategory RevenueCategory @map("revenue_category")
+  amount          Decimal         @db.Decimal(12, 2)
+  issuedOn        DateTime        @db.Date @map("issued_on")
+  dueOn           DateTime        @db.Date @map("due_on")
+  status          InvoiceStatus   @default(PENDING)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  branch Branch         @relation(fields: [branchId], references: [id])
+  client Client         @relation(fields: [clientId], references: [id])
+  plan   TreatmentPlan? @relation(fields: [planId], references: [id])
+
+  payments Payment[]
+
+  @@unique([branchId, invoiceNo])
+  @@index([branchId, status, dueOn])
+  @@index([clientId])
+  @@index([planId])
+  @@map("invoices")
+}
+
+model Payment {
+  id           String        @id @default(uuid()) @db.Uuid
+  invoiceId    String @db.Uuid @map("invoice_id")
+  recordedById String? @db.Uuid @map("recorded_by_id")
+  amount       Decimal       @db.Decimal(12, 2)
+  method       PaymentMethod
+  receiptNo    String        @unique @map("receipt_no")
+  paidAt       DateTime      @default(now()) @map("paid_at")
+
+  invoice    Invoice @relation(fields: [invoiceId], references: [id])
+  recordedBy User?   @relation(fields: [recordedById], references: [id])
+
+  @@index([invoiceId])
+  @@index([paidAt])
+  @@index([recordedById])
+  @@map("payments")
+}
+
+model Expense {
+  id           String   @id @default(uuid()) @db.Uuid
+  branchId     String @db.Uuid @map("branch_id")
+  recordedById String @db.Uuid @map("recorded_by_id")
+  category     String
+  amount       Decimal  @db.Decimal(12, 2)
+  spentOn      DateTime @db.Date @map("spent_on")
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  branch     Branch @relation(fields: [branchId], references: [id])
+  recordedBy User   @relation(fields: [recordedById], references: [id])
+
+  @@index([branchId, spentOn])
+  @@index([recordedById])
+  @@map("expenses")
+}
+
+// ─────────────────────────── Communication ───────────────────────────
+
+model WhatsappTemplate {
+  id          String         @id @default(uuid()) @db.Uuid
+  approvedById String? @db.Uuid @map("approved_by_id")
+  name        String         @unique
+  language    String         @default("en")
+  body        String         @db.Text
+  status      TemplateStatus @default(DRAFT)
+  providerRef String? @map("provider_ref")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  approvedBy User?              @relation(fields: [approvedById], references: [id])
+  messages   CommunicationLog[]
+
+  @@index([approvedById])
+  @@map("whatsapp_templates")
+}
+
+model CommunicationLog {
+  id          String               @id @default(uuid()) @db.Uuid
+  clientId    String @db.Uuid @map("client_id")
+  sentById    String @db.Uuid @map("sent_by_id")
+  templateId  String? @db.Uuid @map("template_id")
+  channel     CommunicationChannel
+  recipient   String
+  message     String?              @db.Text
+  status      MessageStatus        @default(QUEUED)
+  providerRef String? @map("provider_ref")
+  sentAt      DateTime             @default(now()) @map("sent_at")
+
+  client   Client            @relation(fields: [clientId], references: [id])
+  sentBy   User              @relation(fields: [sentById], references: [id])
+  template WhatsappTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([clientId, sentAt])
+  @@index([sentById])
+  @@index([sentAt, id])
+  @@index([templateId])
+  @@map("communication_logs")
+}
+
+// ───────────────────────────── HRMS ─────────────────────────────
+
+model LeaveRequest {
+  id             String      @id @default(uuid()) @db.Uuid
+  employeeId     String @db.Uuid @map("employee_id")
+  decidedById    String? @db.Uuid @map("decided_by_id")
+  leaveType      LeaveType @map("leave_type")
+  fromDate       DateTime    @db.Date @map("from_date")
+  toDate         DateTime    @db.Date @map("to_date")
+  reason         String?
+  status         LeaveStatus @default(PENDING)
+  backupApproval Boolean     @default(false) @map("backup_approval")
+  decisionNote   String? @map("decision_note")
+  decidedAt      DateTime? @map("decided_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  employee  Employee @relation(fields: [employeeId], references: [id])
+  decidedBy User?    @relation(fields: [decidedById], references: [id])
+
+  @@index([employeeId, status])
+  @@index([status, fromDate])
+  @@index([decidedById])
+  @@map("leave_requests")
+}
+
+model AttendanceRecord {
+  id         String    @id @default(uuid()) @db.Uuid
+  employeeId String @db.Uuid @map("employee_id")
+  branchId   String @db.Uuid @map("branch_id")
+  workDate   DateTime  @db.Date @map("work_date")
+  checkIn    DateTime? @map("check_in")
+  checkOut   DateTime? @map("check_out")
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  branch   Branch   @relation(fields: [branchId], references: [id])
+
+  @@unique([employeeId, workDate])
+  @@index([branchId, workDate])
+  @@map("attendance_records")
+}
+
+// ───────────────────────────── Audit ─────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String? @db.Uuid @map("user_id")
+  action    String
+  entity    String
+  entityId  String? @db.Uuid @map("entity_id")
+  branchId  String? @db.Uuid @map("branch_id")
+  metadata  Json?
+  ipAddress String? @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([entity, entityId])
+  @@index([createdAt, id])
+  @@map("audit_logs")
+}
+
+
+// ───────────────────── Sessions, OTP, holidays, notifications ─────────────────────
+
+// One row per login. The refresh token is stored only as a hash. The session id (id)
+// goes into the access token and is checked on every request, so logout and
+// revocation take effect immediately. familyId groups a rotation chain so that
+// reuse of an old refresh token revokes the whole chain.
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String @db.Uuid @map("user_id")
+  familyId         String @db.Uuid @map("family_id")
+  refreshTokenHash String    @unique @map("refresh_token_hash")
+  userAgent        String? @map("user_agent")
+  ipAddress        String? @map("ip_address")
+  expiresAt        DateTime @map("expires_at")
+  revokedAt        DateTime? @map("revoked_at")
+  lastUsedAt       DateTime? @map("last_used_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model OtpCode {
+  id        String     @id @default(uuid()) @db.Uuid
+  // phone number or email
+  target    String
+  purpose   OtpPurpose @default(LOGIN)
+  codeHash  String @map("code_hash")
+  attempts  Int        @default(0)
+  expiresAt DateTime @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@index([target, purpose, createdAt])
+  @@index([expiresAt])
+  @@map("otp_codes")
+}
+
+model Holiday {
+  id       String   @id @default(uuid()) @db.Uuid
+  // null = applies to every branch
+  branchId String? @db.Uuid @map("branch_id")
+  date     DateTime @db.Date
+  name     String
+
+  branch Branch? @relation(fields: [branchId], references: [id])
+
+  @@unique([branchId, date])
+  @@index([date])
+  @@map("holidays")
+}
+
+model LeaveBalance {
+  id         String    @id @default(uuid()) @db.Uuid
+  employeeId String @db.Uuid @map("employee_id")
+  leaveType  LeaveType @map("leave_type")
+  year       Int
+  allowed    Decimal   @db.Decimal(5, 1)
+  used       Decimal   @default(0) @db.Decimal(5, 1)
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, leaveType, year])
+  @@map("leave_balances")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String @db.Uuid @map("user_id")
+  type      String
+  title     String
+  body      String?
+  data      Json?
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String @db.Uuid @map("user_id")
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String? @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
+}

@@ -1,0 +1,1 @@
+BRANCHES: multi-branch from day one. A client belongs to exactly one branch. Users are assigned via UserBranch; the Director can see all branches. Branch scoping is enforced in ONE place (Prisma client extension) and again by PostgreSQL row-level security.

@@ -1,0 +1,18 @@
+{
+  "name": "petals-erp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @petals/api dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @petals/api test:e2e",
+    "lint": "pnpm -r lint",
+    "db:migrate": "pnpm --filter @petals/api db:migrate",
+    "db:seed": "pnpm --filter @petals/api db:seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
+  }
+}

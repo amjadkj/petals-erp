@@ -1,0 +1,8 @@
+IDENTITY AND ROLES
+- Role has a stable key (enum RoleKey: DIRECTOR, MANAGER, THERAPIST, PARENT); name is display only. System roles cannot be deleted or re-keyed. At least one active Director must always exist.
+- The JWT carries only the user id (sub) and a session id. The role and permissions are NEVER trusted from the token: AuthGuard verifies the token, checks the session is not revoked, then loads the current user, isActive, roleKey and permissions (Redis cache, DB fallback, invalidated on any change) into the request context.
+- Guard order: AuthGuard -> RolesGuard -> PermissionGuard. @Roles(...) is only for fixed Director-only actions (role/permission changes, restore/hard-delete, branch creation). Everything else uses @RequirePermission(module, action) because the Director can change it at runtime.
+
+PERMISSION MODEL
+- Per-role module toggle (RoleModule) and per-module actions CREATE, UPDATE, VIEW, VIEW_ALL, DELETE (RolePermission). VIEW = only records in the user's scope (own / assigned / linked), VIEW_ALL = every record in the user's branches. Create/Update/Delete require VIEW. Sub-modules have their own keys (FINANCIAL_PNL, EMPLOYEE_SALARY, PROFILE_* tabs). User overrides (UserOverride) beat role settings. The Director is always fully enabled. The server is the only authority; the UI only hides things.
+- Check order: module enabled -> user override -> role action -> scope. Return 404 for records outside the user's scope where confirming existence would leak data.
