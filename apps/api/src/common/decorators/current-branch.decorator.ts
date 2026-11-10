@@ -6,8 +6,12 @@ import { RequestContext } from '../context/request-context';
  * Usage: @CurrentBranch() branchId: string
  */
 export const CurrentBranch = createParamDecorator(
-  (_data: unknown, _ctx: ExecutionContext) => {
-    const requestCtx = RequestContext.current();
+  (_data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const requestCtx =
+      (RequestContext.current()?.userId ? RequestContext.current() : null) ||
+      request?.user ||
+      request?.__requestContext;
     return requestCtx?.activeBranchId ?? null;
   },
 );

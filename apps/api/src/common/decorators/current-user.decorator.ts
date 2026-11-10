@@ -7,9 +7,13 @@ import { RequestContext, IRequestContext } from '../context/request-context';
  * Usage: @CurrentUser('userId') userId: string
  */
 export const CurrentUser = createParamDecorator(
-  (data: keyof IRequestContext | undefined, _ctx: ExecutionContext) => {
-    const requestCtx = RequestContext.current();
-    if (!requestCtx) {
+  (data: keyof IRequestContext | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const requestCtx =
+      (RequestContext.current()?.userId ? RequestContext.current() : null) ||
+      request?.user ||
+      request?.__requestContext;
+    if (!requestCtx || !requestCtx.userId) {
       return undefined;
     }
     return data ? requestCtx[data] : requestCtx;

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './common/config/env.validation';
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -12,6 +13,7 @@ import { AppService } from './app.service';
       envFilePath: ['.env', '.env.local'],
       validate,
     }),
+    AuthModule,
     CommonModule,
   ],
   controllers: [AppController],

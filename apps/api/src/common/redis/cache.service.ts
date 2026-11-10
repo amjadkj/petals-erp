@@ -4,15 +4,23 @@ import { REDIS_CLIENT } from './redis.constants';
 
 const NAMESPACE = 'petals';
 
+interface MemoryCacheEntry {
+  value: string;
+  expiresAt: number;
+}
+
 /**
  * Cache service wrapping Redis with namespaced keys, TTL, JSON serialisation,
  * and hit/miss metrics. All keys are prefixed with `petals:`.
+ *
+ * Automatically falls back to an in-memory store when Redis is offline.
  */
 @Injectable()
 export class CacheService {
   private readonly logger = new Logger(CacheService.name);
   private hits = 0;
   private misses = 0;
+  private readonly memoryFallback = new Map<string, MemoryCacheEntry>();
 
   constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
@@ -24,37 +32,62 @@ export class CacheService {
    * Is Redis connected and ready?
    */
   isReady(): boolean {
-    return this.redis.status === 'ready';
+    return this.redis?.status === 'ready';
   }
 
   /**
-   * GET a cached value. Returns null on miss or if Redis is down.
+   * GET a cached value. Returns null on miss.
    */
   async get<T = unknown>(rawKey: string): Promise<T | null> {
-    try {
-      const val = await this.redis.get(this.key(rawKey));
-      if (val === null) {
-        this.misses++;
-        return null;
+    const k = this.key(rawKey);
+
+    if (this.isReady()) {
+      try {
+        const val = await this.redis.get(k);
+        if (val === null) {
+          this.misses++;
+          return null;
+        }
+        this.hits++;
+        return JSON.parse(val) as T;
+      } catch (err) {
+        this.logger.warn(`Cache GET error for ${rawKey}: ${(err as Error).message}`);
       }
-      this.hits++;
-      return JSON.parse(val) as T;
-    } catch (err) {
-      this.logger.warn(`Cache GET error for ${rawKey}: ${(err as Error).message}`);
-      this.misses++;
-      return null;
     }
+
+    // Fallback in-memory check
+    const entry = this.memoryFallback.get(k);
+    if (entry) {
+      if (entry.expiresAt > Date.now()) {
+        this.hits++;
+        return JSON.parse(entry.value) as T;
+      }
+      this.memoryFallback.delete(k);
+    }
+
+    this.misses++;
+    return null;
   }
 
   /**
    * SET a cached value with a TTL in seconds.
    */
   async set(rawKey: string, value: unknown, ttlSeconds: number): Promise<void> {
-    try {
-      const serialized = JSON.stringify(value);
-      await this.redis.set(this.key(rawKey), serialized, 'EX', ttlSeconds);
-    } catch (err) {
-      this.logger.warn(`Cache SET error for ${rawKey}: ${(err as Error).message}`);
+    const k = this.key(rawKey);
+    const serialized = JSON.stringify(value);
+
+    // Save in memory fallback
+    this.memoryFallback.set(k, {
+      value: serialized,
+      expiresAt: Date.now() + ttlSeconds * 1000,
+    });
+
+    if (this.isReady()) {
+      try {
+        await this.redis.set(k, serialized, 'EX', ttlSeconds);
+      } catch (err) {
+        this.logger.warn(`Cache SET error for ${rawKey}: ${(err as Error).message}`);
+      }
     }
   }
 
@@ -76,39 +109,56 @@ export class CacheService {
    * Delete a specific key.
    */
   async del(rawKey: string): Promise<void> {
-    try {
-      await this.redis.del(this.key(rawKey));
-    } catch (err) {
-      this.logger.warn(`Cache DEL error for ${rawKey}: ${(err as Error).message}`);
+    const k = this.key(rawKey);
+    this.memoryFallback.delete(k);
+
+    if (this.isReady()) {
+      try {
+        await this.redis.del(k);
+      } catch (err) {
+        this.logger.warn(`Cache DEL error for ${rawKey}: ${(err as Error).message}`);
+      }
     }
   }
 
   /**
-   * Delete all keys matching a prefix (uses SCAN, safe for production).
-   * Example: deleteByPrefix('permissions:') deletes all petals:permissions:* keys.
+   * Delete all keys matching a prefix.
    */
   async deleteByPrefix(rawPrefix: string): Promise<number> {
     const pattern = this.key(`${rawPrefix}*`);
     let deleted = 0;
-    try {
-      let cursor = '0';
-      do {
-        const [nextCursor, keys] = await this.redis.scan(
-          cursor,
-          'MATCH',
-          pattern,
-          'COUNT',
-          100,
-        );
-        cursor = nextCursor;
-        if (keys.length > 0) {
-          await this.redis.del(...keys);
-          deleted += keys.length;
-        }
-      } while (cursor !== '0');
-    } catch (err) {
-      this.logger.warn(`Cache deleteByPrefix error for ${rawPrefix}: ${(err as Error).message}`);
+
+    // Delete in-memory matching keys
+    const memPrefix = this.key(rawPrefix);
+    for (const key of this.memoryFallback.keys()) {
+      if (key.startsWith(memPrefix)) {
+        this.memoryFallback.delete(key);
+        deleted++;
+      }
     }
+
+    if (this.isReady()) {
+      try {
+        let cursor = '0';
+        do {
+          const [nextCursor, keys] = await this.redis.scan(
+            cursor,
+            'MATCH',
+            pattern,
+            'COUNT',
+            100,
+          );
+          cursor = nextCursor;
+          if (keys.length > 0) {
+            await this.redis.del(...keys);
+            deleted += keys.length;
+          }
+        } while (cursor !== '0');
+      } catch (err) {
+        this.logger.warn(`Cache deleteByPrefix error for ${rawPrefix}: ${(err as Error).message}`);
+      }
+    }
+
     return deleted;
   }
 
@@ -124,4 +174,3 @@ export class CacheService {
     return result;
   }
 }
-
