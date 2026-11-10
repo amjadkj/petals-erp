@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validate } from './common/config/env.validation';
 import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
+import { AccessModule } from './access/access.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -14,6 +15,7 @@ import { AppService } from './app.service';
       validate,
     }),
     AuthModule,
+    AccessModule,
     CommonModule,
   ],
   controllers: [AppController],

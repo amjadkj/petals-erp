@@ -15,8 +15,10 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { OtpService } from './otp/otp.service';
 import { Public } from '../common/decorators/public.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { IRequestContext } from '../common/context/request-context';
+import { RoleKey } from '@petals/types';
 import {
   LoginDto,
   Verify2faLoginDto,
@@ -212,6 +214,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout current session' })
@@ -228,6 +231,7 @@ export class AuthController {
   }
 
   @Post('logout-all')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout all sessions on all devices' })
@@ -242,6 +246,7 @@ export class AuthController {
   }
 
   @Post('change-password')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change current user password' })
@@ -254,6 +259,7 @@ export class AuthController {
   }
 
   @Post('2fa/setup')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Generate 2FA secret and QR code' })
@@ -262,6 +268,7 @@ export class AuthController {
   }
 
   @Post('2fa/enable')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Confirm 2FA setup and enable 2FA' })
@@ -273,6 +280,7 @@ export class AuthController {
   }
 
   @Post('2fa/disable')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Disable 2FA' })
@@ -284,6 +292,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER, RoleKey.THERAPIST, RoleKey.PARENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile, role, branches' })
   async getMe(@CurrentUser('userId') userId: string) {

@@ -1,14 +1,16 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import { RoleKey } from '@petals/types';
+import { RoleKey, PermissionScope } from '@petals/types';
 
 export interface IRequestContext {
   userId: string;
+  roleId?: string;
   roleKey: RoleKey;
   isActive: boolean;
   branchIds: string[];
   activeBranchId: string | null;
   sessionId: string;
   ipAddress?: string;
+  permissionScope?: PermissionScope;
 }
 
 class RequestContextStorage {

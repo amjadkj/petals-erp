@@ -15,6 +15,7 @@ import { RoleKey } from '@petals/types';
 
 interface CachedUserData {
   id: string;
+  roleId: string;
   isActive: boolean;
   roleKey: RoleKey;
   branchIds: string[];
@@ -108,6 +109,7 @@ export class AuthGuard implements CanActivate {
     // 7. Populate RequestContext via AsyncLocalStorage
     const reqCtx: IRequestContext = {
       userId: user.id,
+      roleId: user.roleId,
       roleKey: user.roleKey,
       isActive: user.isActive,
       branchIds,
@@ -148,6 +150,7 @@ export class AuthGuard implements CanActivate {
       where: { id: userId },
       select: {
         id: true,
+        roleId: true,
         isActive: true,
         role: { select: { key: true } },
         branches: {
@@ -168,6 +171,7 @@ export class AuthGuard implements CanActivate {
 
     const userData: CachedUserData = {
       id: dbUser.id,
+      roleId: dbUser.roleId,
       isActive: dbUser.isActive,
       roleKey: dbUser.role.key as unknown as RoleKey,
       branchIds,
