@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "apps/api/prisma/seed.ts": {
-    "mtime": 1794319499.7594893,
-    "seen": 1794319956.3326697,
-    "ast_hash": "99cc227327b4dfc390066ba80475467b",
+    "mtime": 1794321591.4779,
+    "seen": 1794331944.2736783,
+    "ast_hash": "dc037c0e4a3886900013f8e400da250a",
     "semantic_hash": ""
   },
   "apps/api/src/app.controller.ts": {
@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794318003.0107188,
-    "seen": 1794319956.34155,
-    "ast_hash": "1acc241f5f7a75843c8720b3e6fd2c49",
+    "mtime": 1794321539.0553248,
+    "seen": 1794331944.2848701,
+    "ast_hash": "5c7cfd659631e9c9d80f2807a449254b",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794318104.8923044,
-    "seen": 1794319956.5661135,
-    "ast_hash": "635c8227ff69b893b545c708dc85c734",
+    "mtime": 1794320885.0667713,
+    "seen": 1794331944.4871094,
+    "ast_hash": "117f3926691be071f009cb969bae70c8",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794317382.6665542,
-    "seen": 1794317411.3306386,
-    "ast_hash": "39df760256242d95ba25a32465f7d065",
+    "mtime": 1794331917.2758534,
+    "seen": 1794331944.5021102,
+    "ast_hash": "381bf9c06b148717131c2ce3fd04d92c",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1050,15 +1050,15 @@
     "semantic_hash": ""
   },
   "apps/api/src/client/client.controller.ts": {
-    "mtime": 1794317973.2246127,
-    "seen": 1794319956.3837187,
-    "ast_hash": "b1c45d6165184990ea7c4c4dde8ee2a7",
+    "mtime": 1794320274.8397832,
+    "seen": 1794320411.889956,
+    "ast_hash": "88aea70329b7c27c7f20a41ba41db2b8",
     "semantic_hash": ""
   },
   "apps/api/src/client/client.module.ts": {
-    "mtime": 1794317980.5028074,
-    "seen": 1794319956.3837187,
-    "ast_hash": "1ec243f5aa922d1a1a98e912abf3ff68",
+    "mtime": 1794320274.9648666,
+    "seen": 1794320411.889956,
+    "ast_hash": "d8939ec70af990bcba0e90bd2cc2aace",
     "semantic_hash": ""
   },
   "apps/api/src/client/client.service.spec.ts": {
@@ -1074,45 +1074,153 @@
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/client-query.dto.ts": {
-    "mtime": 1794317883.9161751,
-    "seen": 1794319956.3837187,
-    "ast_hash": "f549db23a4bd21632825c6b65e1483ec",
+    "mtime": 1794320275.9768178,
+    "seen": 1794320411.8919783,
+    "ast_hash": "f8e8d2f9c5ea67209eb2b31dab833736",
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/create-client.dto.ts": {
-    "mtime": 1794317864.2260623,
-    "seen": 1794319956.3837187,
-    "ast_hash": "b8f602b461906075764a71bfd8254490",
+    "mtime": 1794320275.9768178,
+    "seen": 1794320411.8919783,
+    "ast_hash": "27762aa6f51fe26864cc4f7c4115340b",
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/create-guardian.dto.ts": {
-    "mtime": 1794317831.4348829,
-    "seen": 1794319956.3837187,
-    "ast_hash": "4ca433b0c44ead1d56dbedfa47ae1f48",
+    "mtime": 1794320275.9777927,
+    "seen": 1794320411.8919783,
+    "ast_hash": "37faf042d8ddf2e37f03b1be8d13ab92",
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/index.ts": {
-    "mtime": 1794317894.834042,
-    "seen": 1794319956.3837187,
-    "ast_hash": "65b36cb938680b57bd41a6d6f9882bbb",
+    "mtime": 1794320276.1596735,
+    "seen": 1794320411.8919783,
+    "ast_hash": "f62bbe89265e7ab60aeccb2aef237478",
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/update-client.dto.ts": {
-    "mtime": 1794317874.7643173,
-    "seen": 1794319956.3837187,
-    "ast_hash": "91ee869da0017c942598dd225828699a",
+    "mtime": 1794320276.2705016,
+    "seen": 1794320411.8919783,
+    "ast_hash": "e311f970163d8691ac3714200d541a4c",
     "semantic_hash": ""
   },
   "apps/api/src/client/no-store.interceptor.ts": {
-    "mtime": 1794317817.2803888,
-    "seen": 1794319956.3837187,
-    "ast_hash": "4fc8dbcf7f5f962b46b493dc9373e649",
+    "mtime": 1794320276.358886,
+    "seen": 1794320411.8919783,
+    "ast_hash": "7ba3e710a6102696f25a757297e4f70f",
     "semantic_hash": ""
   },
   "apps/api/test/client-guardian.e2e-spec.ts": {
     "mtime": 1794319544.6107602,
     "seen": 1794319956.5414686,
     "ast_hash": "d5f385d4758c103a7019d912b0e056a3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/clinical.controller.ts": {
+    "mtime": 1794321490.7163026,
+    "seen": 1794331944.3534036,
+    "ast_hash": "62d593dda9d9fbac7324759e5652f4be",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/clinical.module.ts": {
+    "mtime": 1794321502.489052,
+    "seen": 1794331944.3534036,
+    "ast_hash": "15807b247617446db5f5e9fbe82e5493",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/clinical.service.spec.ts": {
+    "mtime": 1794321788.167073,
+    "seen": 1794331944.3534036,
+    "ast_hash": "872a26c210c09f30259a3419115b7e42",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/clinical.service.ts": {
+    "mtime": 1794321930.2149792,
+    "seen": 1794331944.3534036,
+    "ast_hash": "52a5560244dd66bceaacd64c94f14678",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/assessment-query.dto.ts": {
+    "mtime": 1794321024.0870638,
+    "seen": 1794331944.3534036,
+    "ast_hash": "ebbc733d2cd2a6fe888bbff0880117b5",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/create-assessment.dto.ts": {
+    "mtime": 1794321001.0643182,
+    "seen": 1794331944.3534036,
+    "ast_hash": "b76c3805eae08f1971d1e4788a931fd7",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/create-goal.dto.ts": {
+    "mtime": 1794321088.3211772,
+    "seen": 1794331944.3534036,
+    "ast_hash": "d79a72968fe68a9de52f5c0ff7688ab1",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/create-progress-entry.dto.ts": {
+    "mtime": 1794321179.423592,
+    "seen": 1794331944.3534036,
+    "ast_hash": "5572336cab6aa639c96f3ac927b06a26",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/create-subgoal.dto.ts": {
+    "mtime": 1794321134.4417472,
+    "seen": 1794331944.3534036,
+    "ast_hash": "fda45c1e159ea493e5a63f4f8b6c99ac",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/create-treatment-plan.dto.ts": {
+    "mtime": 1794321039.449129,
+    "seen": 1794331944.3534036,
+    "ast_hash": "634e2287192fc733d4e318c2d2ab5a55",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/index.ts": {
+    "mtime": 1794321317.3952527,
+    "seen": 1794331944.3534036,
+    "ast_hash": "e628a21fe158f2ac33971497acb4430c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/progress-entry-query.dto.ts": {
+    "mtime": 1794321302.1907613,
+    "seen": 1794331944.3534036,
+    "ast_hash": "a43363156da2ca935263038dc0b7c562",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/update-assessment.dto.ts": {
+    "mtime": 1794321016.547443,
+    "seen": 1794331944.3534036,
+    "ast_hash": "46db1925767679bbaceff1a1ed8cdab1",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/update-goal.dto.ts": {
+    "mtime": 1794321105.16886,
+    "seen": 1794331944.3534036,
+    "ast_hash": "e9d7b5a9924f357c80076b7167a5e469",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/update-progress-entry.dto.ts": {
+    "mtime": 1794321227.653233,
+    "seen": 1794331944.3544047,
+    "ast_hash": "200807a3b9b2b9b5fd808810ea70e401",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/update-subgoal.dto.ts": {
+    "mtime": 1794321159.7921197,
+    "seen": 1794331944.3544047,
+    "ast_hash": "cda93037f4d85ff9530c24e9f1a6a438",
+    "semantic_hash": ""
+  },
+  "apps/api/src/clinical/dto/update-treatment-plan.dto.ts": {
+    "mtime": 1794321056.502659,
+    "seen": 1794331944.3544047,
+    "ast_hash": "24c7306986a390359dd2d07c4f1aaafc",
+    "semantic_hash": ""
+  },
+  "apps/api/test/clinical.e2e-spec.ts": {
+    "mtime": 1794331767.6345205,
+    "seen": 1794331944.466809,
+    "ast_hash": "78b37d9ebff29b57fcf3d4384b100557",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

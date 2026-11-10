@@ -37,3 +37,4 @@ export class ClientQueryDto extends OffsetPaginationDto {
   @IsOptional()
   sort?: string;
 }
+

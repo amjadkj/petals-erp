@@ -8,3 +8,4 @@ export class UpdateClientDto extends PartialType(CreateClientDto) {
   @ApiPropertyOptional({ description: 'Date of birth (ISO 8601 YYYY-MM-DD)' })
   dob?: string;
 }
+

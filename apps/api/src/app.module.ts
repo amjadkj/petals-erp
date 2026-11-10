@@ -11,6 +11,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { AuditModule } from './audit/audit.module';
 import { ClinicalHistoryModule } from './clinical-history/clinical-history.module';
 import { ClientModule } from './client/client.module';
+import { ClinicalModule } from './clinical/clinical.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -30,6 +31,7 @@ import { AppService } from './app.service';
     AuditModule,
     ClinicalHistoryModule,
     ClientModule,
+    ClinicalModule,
     CommonModule,
   ],
   controllers: [AppController],

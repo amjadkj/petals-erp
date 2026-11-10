@@ -18,6 +18,39 @@ export enum AppointmentStatus {
   NO_SHOW = 'NO_SHOW',
 }
 
+export enum PlanStatus {
+  ACTIVE = 'ACTIVE',
+  PAUSED = 'PAUSED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum GoalTerm {
+  LONG = 'LONG',
+  SHORT = 'SHORT',
+}
+
+export enum GoalStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  ACHIEVED = 'ACHIEVED',
+  DISCONTINUED = 'DISCONTINUED',
+}
+
+export enum SubgoalFrequency {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+}
+
+export enum ProgressLevel {
+  REGRESSED = 'REGRESSED',
+  NO_CHANGE = 'NO_CHANGE',
+  EMERGING = 'EMERGING',
+  PROGRESSING = 'PROGRESSING',
+  ACHIEVED = 'ACHIEVED',
+}
+
 export enum AppModule {
   DASHBOARD = 'DASHBOARD',
   APPOINTMENTS = 'APPOINTMENTS',
