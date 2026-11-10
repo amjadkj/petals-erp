@@ -12,7 +12,9 @@
     "db:seed": "pnpm --filter @petals/api db:seed"
   },
   "devDependencies": {
+    "eslint": "^9.39.5",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.72.1"
   }
 }
