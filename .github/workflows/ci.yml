@@ -72,6 +72,15 @@ jobs:
         env:
           DATABASE_URL: postgresql://petals_admin:petals_password@localhost:5432/petals_erp?schema=public
 
+      - name: Dependency audit
+        run: pnpm audit --audit-level=high || true
+
+      - name: Secret scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+        continue-on-error: true
+
       - name: Run e2e tests
         run: pnpm test:e2e
         env:

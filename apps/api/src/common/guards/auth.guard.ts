@@ -94,11 +94,16 @@ export class AuthGuard implements CanActivate {
     // For Director: Director has cross-branch access across all branches
     let branchIds = user.branchIds;
     if (user.roleKey === RoleKey.DIRECTOR) {
-      const allBranches = await this.prisma.unscopedClient.branch.findMany({
-        where: { isActive: true },
-        select: { id: true },
-      });
-      branchIds = allBranches.map((b) => b.id);
+      let allBranchIds = await this.cache.get<string[]>('active_branch_ids');
+      if (!allBranchIds) {
+        const allBranches = await this.prisma.unscopedClient.branch.findMany({
+          where: { isActive: true },
+          select: { id: true },
+        });
+        allBranchIds = allBranches.map((b) => b.id);
+        await this.cache.set('active_branch_ids', allBranchIds, 300);
+      }
+      branchIds = allBranchIds;
       if (!activeBranchId && branchIds.length > 0) {
         activeBranchId = branchIds[0];
       }

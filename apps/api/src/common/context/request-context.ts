@@ -11,6 +11,7 @@ export interface IRequestContext {
   sessionId: string;
   ipAddress?: string;
   permissionScope?: PermissionScope;
+  isSystem?: boolean;
 }
 
 class RequestContextStorage {
@@ -26,6 +27,22 @@ class RequestContextStorage {
 
   run<T>(ctx: IRequestContext, fn: () => T): T {
     return this.storage.run(ctx, fn);
+  }
+
+  runSystem<T>(fn: () => T): T {
+    return this.storage.run(
+      {
+        userId: 'system',
+        roleId: 'system',
+        roleKey: RoleKey.DIRECTOR,
+        isActive: true,
+        branchIds: [],
+        activeBranchId: null,
+        sessionId: 'system',
+        isSystem: true,
+      },
+      fn,
+    );
   }
 
   current(): IRequestContext | undefined {

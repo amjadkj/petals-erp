@@ -13,6 +13,8 @@ describe('PrismaService - Branch Scoping', () => {
       $connect: jest.fn().mockResolvedValue(undefined),
       $disconnect: jest.fn().mockResolvedValue(undefined),
       $extends: jest.fn((extension) => extension),
+      $transaction: jest.fn((cb) => cb(mockRawClient)),
+      $executeRaw: jest.fn().mockResolvedValue(undefined),
     };
     (service as any)._client = mockRawClient;
   });

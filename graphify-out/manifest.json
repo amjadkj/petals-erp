@@ -1,8 +1,8 @@
 {
   ".github/workflows/ci.yml": {
-    "mtime": 1794290746.153729,
-    "seen": 1794306615.4734232,
-    "ast_hash": "a4b82e99d2f5eb6c81d978345cb548b7",
+    "mtime": 1794392979.2628512,
+    "seen": 1794393699.0519395,
+    "ast_hash": "4852bd9d89bc956899ddb44314b3b79f",
     "semantic_hash": ""
   },
   "apps/api/jest.config.js": {
@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "apps/api/package.json": {
-    "mtime": 1794303463.8024812,
-    "seen": 1794306615.4734232,
-    "ast_hash": "b2f5b5fc32de6491738aa4cce7cec9f7",
+    "mtime": 1794392560.9100583,
+    "seen": 1794393699.0551412,
+    "ast_hash": "99070eed26bf6cc673d271b48a2c69d4",
     "semantic_hash": ""
   },
   "apps/api/prisma/seed.ts": {
@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/context/request-context.ts": {
-    "mtime": 1794307068.2621217,
-    "seen": 1794308776.557891,
-    "ast_hash": "ab7803588e7a7920f7564bd3eb9edb9e",
+    "mtime": 1794391667.5717144,
+    "seen": 1794393699.1549997,
+    "ast_hash": "751caace5c3fb864f59e9bec0e1bfb81",
     "semantic_hash": ""
   },
   "apps/api/src/common/crypto/crypto.util.ts": {
@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/guards/auth.guard.ts": {
-    "mtime": 1794319465.292853,
-    "seen": 1794319956.4239576,
-    "ast_hash": "c1b90471a0db969a0be64ac77989c402",
+    "mtime": 1794392877.3910997,
+    "seen": 1794393699.166001,
+    "ast_hash": "c2eb639d37b4f9eadc6b4a8120d24f41",
     "semantic_hash": ""
   },
   "apps/api/src/common/guards/index.ts": {
@@ -300,15 +300,15 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.spec.ts": {
-    "mtime": 1794295689.2349527,
-    "seen": 1794306615.4734232,
-    "ast_hash": "93c4f986a3a0c8d00cad562267b93791",
+    "mtime": 1794393141.6170793,
+    "seen": 1794393699.175999,
+    "ast_hash": "ce1507b31f5cae5a3e3e80b3cb7116ae",
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.ts": {
-    "mtime": 1794390776.45571,
-    "seen": 1794391142.0685005,
-    "ast_hash": "02c517874ac2e84640ac0a11085c185b",
+    "mtime": 1794393443.369784,
+    "seen": 1794393699.175999,
+    "ast_hash": "dc8bc87c2d050ccb075a94cc689867ae",
     "semantic_hash": ""
   },
   "apps/api/src/common/rate-limit/index.ts": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794387084.129849,
-    "seen": 1794391142.202584,
-    "ast_hash": "0d0f6c37f179fa9b639e26837044ee18",
+    "mtime": 1794393636.239697,
+    "seen": 1794393699.318076,
+    "ast_hash": "29e17c1b170183b731192a80334f4d61",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1817,10 +1817,28 @@
     "ast_hash": "4373db51e7ae677cf807f4da9ea58a2b",
     "semantic_hash": ""
   },
+  "apps/api/test/load-test.ts": {
+    "mtime": 1794392893.8257682,
+    "seen": 1794393699.2820714,
+    "ast_hash": "cb251fde548fa55d425268b8efef5ac4",
+    "semantic_hash": ""
+  },
+  "apps/api/test/rls-hardening.e2e-spec.ts": {
+    "mtime": 1794392420.6962523,
+    "seen": 1794393699.2830782,
+    "ast_hash": "f1834701dc073a81041f127a6cb5eee2",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1794393003.620355,
+    "seen": 1794393699.3170793,
+    "ast_hash": "cf76a5b569b6c44224f865737379dad1",
+    "semantic_hash": ""
+  },
   "pnpm-lock.yaml": {
-    "mtime": 1794303463.5150218,
-    "seen": 1794306615.473966,
-    "ast_hash": "b80fe549eed0db7a25619481cd4553c9",
+    "mtime": 1794391547.0266268,
+    "seen": 1794393699.3359382,
+    "ast_hash": "85c4f2cc5e46c5ee8ff96cdea2b6ebf5",
     "semantic_hash": ""
   }
 }
