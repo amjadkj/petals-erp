@@ -1,0 +1,6824 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "AppController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "summary": "Health check endpoint",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful or 2FA required"
+          }
+        },
+        "summary": "Email + password login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/2fa/verify-login": {
+      "post": {
+        "operationId": "AuthController_verify2faLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verify2faLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Verify 2FA TOTP code to complete login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/otp/request": {
+      "post": {
+        "operationId": "AuthController_requestOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Request OTP code for login or password reset",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/otp/verify": {
+      "post": {
+        "operationId": "AuthController_verifyOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Verify OTP and log in",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Rotate refresh token and get a new access token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Logout current session",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout-all": {
+      "post": {
+        "operationId": "AuthController_logoutAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Logout all sessions on all devices",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change current user password",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/2fa/setup": {
+      "post": {
+        "operationId": "AuthController_setup2fa",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate 2FA secret and QR code",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/2fa/enable": {
+      "post": {
+        "operationId": "AuthController_enable2fa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enable2faDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm 2FA setup and enable 2FA",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/2fa/disable": {
+      "post": {
+        "operationId": "AuthController_disable2fa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Disable2faDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Disable 2FA",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile, role, branches",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/access/me/permissions": {
+      "get": {
+        "operationId": "AccessController_getMyPermissions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User permissions map"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user resolved permissions map",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/roles": {
+      "get": {
+        "operationId": "AccessController_listRoles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all roles with modules and permissions (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/roles/{roleKey}": {
+      "get": {
+        "operationId": "AccessController_getRole",
+        "parameters": [
+          {
+            "name": "roleKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get single role permissions (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/roles/{roleKey}/modules": {
+      "put": {
+        "operationId": "AccessController_updateRoleModules",
+        "parameters": [
+          {
+            "name": "roleKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleModulesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update module toggles for a role (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/roles/{roleKey}/permissions": {
+      "put": {
+        "operationId": "AccessController_updateRolePermissions",
+        "parameters": [
+          {
+            "name": "roleKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRolePermissionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update action permissions for a role (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/overrides/{userId}": {
+      "get": {
+        "operationId": "AccessController_getUserOverrides",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user permission overrides (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      },
+      "put": {
+        "operationId": "AccessController_updateUserOverrides",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserOverridesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update user permission overrides (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      },
+      "delete": {
+        "operationId": "AccessController_deleteUserOverride",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a user permission override (Director only)",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/test/assessments": {
+      "get": {
+        "operationId": "AccessController_testAssessments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test endpoint for clinical assessment access",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/test/clients": {
+      "get": {
+        "operationId": "AccessController_testClients",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test endpoint for clients access",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/access/test/financial-pnl": {
+      "get": {
+        "operationId": "AccessController_testFinancialPnl",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test endpoint for financial P&L access",
+        "tags": [
+          "Access Control"
+        ]
+      }
+    },
+    "/api/v1/audit-logs": {
+      "get": {
+        "operationId": "AuditController_getAuditLogs",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by user UUID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entity",
+            "required": false,
+            "in": "query",
+            "description": "Filter by entity name (e.g. User, Branch, Assessment)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by branch UUID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter by start date (ISO 8601)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter by end date (ISO 8601)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List audit logs with cursor pagination and filters (Director only)",
+        "tags": [
+          "Audit Logs"
+        ]
+      }
+    },
+    "/api/v1/branches": {
+      "post": {
+        "operationId": "BranchController_createBranch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new branch (Director only)",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "get": {
+        "operationId": "BranchController_listBranches",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List branches (Director sees all, others see assigned branches)",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/api/v1/branches/{id}": {
+      "get": {
+        "operationId": "BranchController_getBranch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get branch by ID (Director or assigned user)",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "patch": {
+        "operationId": "BranchController_updateBranch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a branch (Director only)",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "delete": {
+        "operationId": "BranchController_deleteBranch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deactivate a branch (Director only)",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/api/v1/departments": {
+      "get": {
+        "operationId": "DepartmentController_listDepartments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all departments (Staff only)",
+        "tags": [
+          "Departments"
+        ]
+      }
+    },
+    "/api/v1/departments/{id}": {
+      "get": {
+        "operationId": "DepartmentController_getDepartment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get department by ID",
+        "tags": [
+          "Departments"
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "post": {
+        "operationId": "UserController_createUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new staff user (Requires EMPLOYEES:CREATE)",
+        "tags": [
+          "Users"
+        ]
+      },
+      "get": {
+        "operationId": "UserController_listUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List staff users (Requires EMPLOYEES:VIEW)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get staff user by ID (Requires EMPLOYEES:VIEW)",
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "operationId": "UserController_updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update staff user (Requires EMPLOYEES:UPDATE)",
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deactivate user (Requires EMPLOYEES:DELETE)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/deactivate": {
+      "patch": {
+        "operationId": "UserController_deactivateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deactivate user (Requires EMPLOYEES:DELETE)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/employees": {
+      "post": {
+        "operationId": "EmployeeController_createEmployee",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create employee profile (Requires EMPLOYEES:CREATE)",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "get": {
+        "operationId": "EmployeeController_listEmployees",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List employees (Requires EMPLOYEES:VIEW; Salary requires EMPLOYEE_SALARY:VIEW)",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/employees/{id}": {
+      "get": {
+        "operationId": "EmployeeController_getEmployee",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get employee profile by ID (Requires EMPLOYEES:VIEW)",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "patch": {
+        "operationId": "EmployeeController_updateEmployee",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update employee profile (Requires EMPLOYEES:UPDATE)",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/clinical/history/{entityType}/{entityId}": {
+      "get": {
+        "operationId": "ClinicalHistoryController_getHistory",
+        "parameters": [
+          {
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get version history for a clinical entity with cursor pagination",
+        "tags": [
+          "Clinical History"
+        ]
+      }
+    },
+    "/api/v1/clinical/history/{entityType}/{entityId}/restore": {
+      "post": {
+        "operationId": "ClinicalHistoryController_restore",
+        "parameters": [
+          {
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreEntityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restore a clinical entity to a previous version (Director only via @Roles)",
+        "tags": [
+          "Clinical History"
+        ]
+      }
+    },
+    "/api/v1/clients": {
+      "get": {
+        "operationId": "ClientController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by branch UUID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "departmentId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by department UUID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "therapistId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by assigned therapist (Employee UUID)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "ON_HOLD",
+                "DISCHARGED"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by client name or code (case-insensitive substring)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field with optional - prefix for descending (allowed: name, createdAt, clientCode, status, dob)",
+            "schema": {
+              "default": "-createdAt",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List clients with offset pagination, filters, role scoping, and session counts (No N+1)",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "post": {
+        "operationId": "ClientController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new client with auto-generated client code and optional initial guardians",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}": {
+      "get": {
+        "operationId": "ClientController_getHeader",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get small client header with dynamically resolved allowedTabs",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "put": {
+        "operationId": "ClientController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update client details",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "delete": {
+        "operationId": "ClientController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft delete a client",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/overview": {
+      "get": {
+        "operationId": "ClientController_getOverview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get client overview tab data (demographics, active plans, primary guardian)",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/guardians": {
+      "get": {
+        "operationId": "ClientController_getGuardians",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get guardians linked to this client with visibility permissions",
+        "tags": [
+          "Clients"
+        ]
+      },
+      "post": {
+        "operationId": "ClientController_addGuardian",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGuardianDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add or link a guardian / parent user to this client",
+        "tags": [
+          "Clients"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/assessments": {
+      "get": {
+        "operationId": "ClinicalController_findAssessments",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field: assessedOn, -assessedOn, createdAt, -createdAt",
+            "schema": {
+              "example": "-assessedOn",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List client assessments with offset pagination",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "post": {
+        "operationId": "ClinicalController_createAssessment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssessmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new assessment for client",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/assessments/{id}": {
+      "put": {
+        "operationId": "ClinicalController_updateAssessment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssessmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update assessment (author-only for therapists, Director override)",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "delete": {
+        "operationId": "ClinicalController_deleteAssessment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft delete assessment (author-only for therapists, Director override)",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/treatment-plans": {
+      "get": {
+        "operationId": "ClinicalController_findTreatmentPlans",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List client treatment plans",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "post": {
+        "operationId": "ClinicalController_createTreatmentPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTreatmentPlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a treatment plan for client",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/treatment-plans/{id}": {
+      "put": {
+        "operationId": "ClinicalController_updateTreatmentPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTreatmentPlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update treatment plan",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "delete": {
+        "operationId": "ClinicalController_deleteTreatmentPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel/Delete treatment plan",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/goals": {
+      "get": {
+        "operationId": "ClinicalController_findGoals",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List client goals with nested sub-goals in fixed query count",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/treatment-plans/{planId}/goals": {
+      "post": {
+        "operationId": "ClinicalController_createGoal",
+        "parameters": [
+          {
+            "name": "planId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a goal under a treatment plan",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/goals/{id}": {
+      "put": {
+        "operationId": "ClinicalController_updateGoal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update goal",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "delete": {
+        "operationId": "ClinicalController_deleteGoal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft delete goal",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/goals/{goalId}/subgoals": {
+      "post": {
+        "operationId": "ClinicalController_createSubgoal",
+        "parameters": [
+          {
+            "name": "goalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubgoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a subgoal under a goal",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/subgoals/{id}": {
+      "put": {
+        "operationId": "ClinicalController_updateSubgoal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubgoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update subgoal",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "delete": {
+        "operationId": "ClinicalController_deleteSubgoal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft delete subgoal",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/subgoals/{id}/progress-entries": {
+      "get": {
+        "operationId": "ClinicalController_findProgressEntries",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cursor-paginated progress entries by entry date",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "post": {
+        "operationId": "ClinicalController_createProgressEntry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgressEntryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a progress entry under a subgoal",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/progress-entries/{id}": {
+      "put": {
+        "operationId": "ClinicalController_updateProgressEntry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProgressEntryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update progress entry (author-only for therapists, Director override)",
+        "tags": [
+          "Clinical"
+        ]
+      },
+      "delete": {
+        "operationId": "ClinicalController_deleteProgressEntry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft delete progress entry (author-only for therapists, Director override)",
+        "tags": [
+          "Clinical"
+        ]
+      }
+    },
+    "/api/v1/appointments": {
+      "get": {
+        "operationId": "AppointmentController_findCalendar",
+        "parameters": [
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Start of calendar range (ISO date/datetime)",
+            "schema": {
+              "example": "2026-03-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "description": "End of calendar range (ISO date/datetime, max 31 days from start)",
+            "schema": {
+              "example": "2026-03-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "therapistId",
+            "required": false,
+            "in": "query",
+            "description": "Therapist employee ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "departmentId",
+            "required": false,
+            "in": "query",
+            "description": "Department ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SCHEDULED",
+                "ATTENDED",
+                "CANCELLED",
+                "NO_SHOW"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Weekly calendar view limited to 31 days with minimal selected display fields",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      },
+      "post": {
+        "operationId": "AppointmentController_createAppointment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create single appointment with conflict detection",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/appointments/daily": {
+      "get": {
+        "operationId": "AppointmentController_findDailySchedule",
+        "parameters": [
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "example": "2026-03-15",
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Daily schedule cache with Redis, TTL, and post-cache caller scoping",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/schedules": {
+      "post": {
+        "operationId": "AppointmentController_createSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create recurring schedule and generate appointments for rolling window",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/appointments/{id}/reschedule": {
+      "put": {
+        "operationId": "AppointmentController_reschedule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RescheduleAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reschedule appointment with conflict detection",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/appointments/{id}/cancel": {
+      "put": {
+        "operationId": "AppointmentController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel appointment with required reason and parent notification",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/appointments/{id}/status": {
+      "put": {
+        "operationId": "AppointmentController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppointmentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark appointment status (attended, no-show)",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/clients/{id}/appointments": {
+      "get": {
+        "operationId": "AppointmentController_findClientAppointments",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Client session history with cursor pagination",
+        "tags": [
+          "Appointments & Scheduling"
+        ]
+      }
+    },
+    "/api/v1/finance/invoices": {
+      "post": {
+        "operationId": "FinanceController_createInvoice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvoiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new invoice",
+        "tags": [
+          "Finance"
+        ]
+      },
+      "get": {
+        "operationId": "FinanceController_findInvoices",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PAID",
+                "ADVANCE"
+              ]
+            }
+          },
+          {
+            "name": "revenueCategory",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CLINICAL_THERAPY",
+                "ASSESSMENT_FEE"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Issued from date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Issued to date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. issuedOn, -issuedOn, amount, -amount)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List invoices with offset pagination and whitelisted sorting",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/invoices/{id}": {
+      "get": {
+        "operationId": "FinanceController_findInvoiceById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get invoice details with payment history and balance",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/invoices/{id}/payments": {
+      "post": {
+        "operationId": "FinanceController_recordPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record payment against invoice with transactional status update",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/payments": {
+      "get": {
+        "operationId": "FinanceController_findPayments",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "method",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CASH",
+                "UPI",
+                "CARD",
+                "BANK_TRANSFER"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Paid from date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Paid to date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. paidAt, -paidAt, amount, -amount)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payments with offset pagination and summary total",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/payments/due": {
+      "get": {
+        "operationId": "FinanceController_findPaymentsDue[0]",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List pending/due payments with guardian contact for follow-up",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/payments-due": {
+      "get": {
+        "operationId": "FinanceController_findPaymentsDue[1]",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List pending/due payments with guardian contact for follow-up",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/payments/monthly-tracking": {
+      "get": {
+        "operationId": "FinanceController_findMonthlyTracking[0]",
+        "parameters": [
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Monthly payment tracking (billed, collected, pending balance)",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/monthly-tracking": {
+      "get": {
+        "operationId": "FinanceController_findMonthlyTracking[1]",
+        "parameters": [
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Monthly payment tracking (billed, collected, pending balance)",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/expenses": {
+      "post": {
+        "operationId": "FinanceController_createExpense",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExpenseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record expense",
+        "tags": [
+          "Finance"
+        ]
+      },
+      "get": {
+        "operationId": "FinanceController_findExpenses",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Spent from date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Spent to date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. spentOn, -spentOn, amount, -amount)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List expenses with offset pagination",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/pnl": {
+      "get": {
+        "operationId": "FinanceController_getPnl",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID (omit for consolidated all-branches P&L)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Start date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "End date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "required": false,
+            "in": "query",
+            "description": "Month in YYYY-MM format",
+            "schema": {
+              "example": "2026-03",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Profit and Loss report by month and branch (consolidated or single branch)",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/revenue": {
+      "get": {
+        "operationId": "FinanceController_getRevenue",
+        "parameters": [
+          {
+            "name": "interval",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revenue grouped by day, week, or month",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/revenue/by-category": {
+      "get": {
+        "operationId": "FinanceController_getRevenueByCategory[0]",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revenue grouped by category",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/revenue-by-category": {
+      "get": {
+        "operationId": "FinanceController_getRevenueByCategory[1]",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revenue grouped by category",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/revenue/by-department": {
+      "get": {
+        "operationId": "FinanceController_getRevenueByDepartment[0]",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revenue grouped by department",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/revenue-by-department": {
+      "get": {
+        "operationId": "FinanceController_getRevenueByDepartment[1]",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revenue grouped by department",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/finance/export": {
+      "post": {
+        "operationId": "FinanceController_exportReport",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportFinanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Export financial reports as background job (limit 10/hr/user)",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/reports": {
+      "get": {
+        "operationId": "ReportController_findClientReports",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASSESSMENT",
+                "PROGRESS",
+                "DISCHARGE",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "SUBMITTED",
+                "REVIEWED",
+                "SHARED"
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. -dueOn, dueOn, -createdAt, title)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List client reports with offset pagination",
+        "tags": [
+          "Reports & Documents"
+        ]
+      },
+      "post": {
+        "operationId": "ReportController_createReport",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new clinical report in DRAFT status",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/reports/summary": {
+      "get": {
+        "operationId": "ReportController_getReportsSummary",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get summary counts of reports per status in single groupBy",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/reports/due": {
+      "get": {
+        "operationId": "ReportController_getDueReports",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "therapistId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by Therapist (Employee) ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASSESSMENT",
+                "PROGRESS",
+                "DISCHARGE",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "overdueOnly",
+            "required": false,
+            "in": "query",
+            "description": "Only return reports that are past due date",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. dueOn, -dueOn, -createdAt)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Global due reports dashboard for Director and Manager",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/reports/{id}": {
+      "get": {
+        "operationId": "ReportController_findReportById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get report details by ID",
+        "tags": [
+          "Reports & Documents"
+        ]
+      },
+      "patch": {
+        "operationId": "ReportController_updateReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update report (title, content, fileUrl, status)",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/reports/{id}/share": {
+      "post": {
+        "operationId": "ReportController_shareReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Share report with parents in single transaction (shared=true, audit, notification)",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/reports/activity": {
+      "get": {
+        "operationId": "ReportController_getClientReportActivity",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get report activity timeline for client using cursor pagination",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/reports/check-overdue": {
+      "post": {
+        "operationId": "ReportController_triggerOverdueReminders",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Trigger daily check for overdue reports and send notifications",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/documents/upload-url": {
+      "post": {
+        "operationId": "ReportController_generateDocumentUploadUrl",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUploadUrlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate S3 signed upload URL (rate limited 30/hr/user, size/type validated)",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/documents": {
+      "post": {
+        "operationId": "ReportController_createDocument",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDocumentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record uploaded document metadata for client",
+        "tags": [
+          "Reports & Documents"
+        ]
+      },
+      "get": {
+        "operationId": "ReportController_findClientDocuments",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (e.g. -createdAt, createdAt, title)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List client documents with offset pagination",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/documents/{id}/download-url": {
+      "get": {
+        "operationId": "ReportController_getDocumentDownloadUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate signed download URL for document",
+        "tags": [
+          "Reports & Documents"
+        ]
+      }
+    },
+    "/api/v1/leads": {
+      "post": {
+        "operationId": "LeadController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLeadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      },
+      "get": {
+        "operationId": "LeadController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/leads/board": {
+      "get": {
+        "operationId": "LeadController_getBoard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/leads/check-follow-ups": {
+      "post": {
+        "operationId": "LeadController_checkFollowUps",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/leads/{id}/convert-preview": {
+      "get": {
+        "operationId": "LeadController_getConvertPreview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/leads/{id}/convert": {
+      "post": {
+        "operationId": "LeadController_convert",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertLeadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/leads/{id}": {
+      "get": {
+        "operationId": "LeadController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      },
+      "patch": {
+        "operationId": "LeadController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLeadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lead"
+        ]
+      }
+    },
+    "/api/v1/communication/templates": {
+      "post": {
+        "operationId": "CommunicationController_createTemplate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      },
+      "get": {
+        "operationId": "CommunicationController_findAllTemplates",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/templates/{id}": {
+      "get": {
+        "operationId": "CommunicationController_findTemplateById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      },
+      "patch": {
+        "operationId": "CommunicationController_updateTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/templates/{id}/approve": {
+      "post": {
+        "operationId": "CommunicationController_approveTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/templates/{id}/reject": {
+      "post": {
+        "operationId": "CommunicationController_rejectTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/send": {
+      "post": {
+        "operationId": "CommunicationController_sendMessage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/send-bulk": {
+      "post": {
+        "operationId": "CommunicationController_sendBulk",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendBulkMessagesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/call-logs": {
+      "post": {
+        "operationId": "CommunicationController_recordCallLog",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordCallLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/clients/{clientId}/communication-logs": {
+      "get": {
+        "operationId": "CommunicationController_getClientLogs",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/communication/webhook": {
+      "post": {
+        "operationId": "CommunicationController_handleWebhook",
+        "parameters": [
+          {
+            "name": "x-hub-signature-256",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-signature",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookPayloadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Communication"
+        ]
+      }
+    },
+    "/api/v1/hr/attendance/check-in": {
+      "post": {
+        "operationId": "HrController_checkIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record staff check-in",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/attendance/check-out": {
+      "post": {
+        "operationId": "HrController_checkOut",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record staff check-out",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/attendance/daily": {
+      "get": {
+        "operationId": "HrController_getDailyAttendance",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "description": "Work date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get daily attendance view per branch",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/attendance/monthly": {
+      "get": {
+        "operationId": "HrController_getMonthlyAttendance",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": true,
+            "in": "query",
+            "description": "Branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "description": "Year (e.g. 2026)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "description": "Month (1-12)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "employeeId",
+            "required": false,
+            "in": "query",
+            "description": "Optional employee ID filter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get monthly attendance grid from a single aggregate query",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/holidays": {
+      "post": {
+        "operationId": "HrController_createHoliday",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHolidayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create holiday (Director or branch Manager)",
+        "tags": [
+          "HR"
+        ]
+      },
+      "get": {
+        "operationId": "HrController_getHolidays",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "required": false,
+            "in": "query",
+            "description": "Year filter (e.g. 2026)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get holidays calendar",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/holidays/{id}": {
+      "delete": {
+        "operationId": "HrController_deleteHoliday",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete holiday",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/leaves": {
+      "post": {
+        "operationId": "HrController_applyLeave",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLeaveRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Apply for leave",
+        "tags": [
+          "HR"
+        ]
+      },
+      "get": {
+        "operationId": "HrController_getLeaves",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by leave status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "REJECTED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "leaveType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by leave type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CASUAL",
+                "SICK",
+                "PAID",
+                "UNPAID",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "employeeId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by employee ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by branch ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "From date filter (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "To date filter (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field, e.g. -createdAt, fromDate",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List leave requests (offset pagination)",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/leaves/{id}/approve": {
+      "post": {
+        "operationId": "HrController_approveLeave",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeaveDecisionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve leave (Director, or backup Manager when Director is away). Flags conflicting appointments and invalidates daily schedule cache.",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/leaves/{id}/reject": {
+      "post": {
+        "operationId": "HrController_rejectLeave",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeaveDecisionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject leave (Director, or backup Manager when Director is away)",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/director/availability": {
+      "post": {
+        "operationId": "HrController_setDirectorAvailability",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectorAvailabilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Director sets their away/available status",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/employees/{id}/summary": {
+      "get": {
+        "operationId": "HrController_getEmployeeSummary",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Director employee summary: assigned cases, total sessions, reports submitted, on-time report rate",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/employees/{id}/goals": {
+      "get": {
+        "operationId": "HrController_getEmployeeGoals",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field, e.g. -entryDate, entryDate",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Director employee goals/sub-goals view: progress entries with description, response, remarks (paginated)",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/hr/employees/{id}/activity-log": {
+      "get": {
+        "operationId": "HrController_getEmployeeActivityLog",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor for the next page (opaque string)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Director employee activity log: everything the employee entered (cursor pagination)",
+        "tags": [
+          "HR"
+        ]
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "operationId": "DashboardController_getDashboard",
+        "parameters": [
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "description": "Branch ID filter (UUID or \"ALL\" for Director; defaults to caller branch for staff)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get role-specific dashboard (Director: operational + financial P&L; Manager: operational view without P&L; Therapist: assigned clients & schedule; Parent: children sessions)",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Petals Child Development Centre ERP API",
+    "description": "Comprehensive REST API for Petals Child Development Centre — Multi-Branch Pediatric Therapy ERP. Includes Authentication, RBAC, Clinical Management, Appointments & Schedule, Financial Operations, HRMS, and Reports.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "System and connectivity health check"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication, token rotation, TOTP 2FA, OTP login"
+    },
+    {
+      "name": "Access",
+      "description": "Role & Permission management, Director overrides"
+    },
+    {
+      "name": "Branch",
+      "description": "Multi-branch operations and clinic locations"
+    },
+    {
+      "name": "Department",
+      "description": "Therapy departments (ST, OT, PT, ABA, CP)"
+    },
+    {
+      "name": "Employee",
+      "description": "Staff, therapist profiles, salary masking"
+    },
+    {
+      "name": "User",
+      "description": "User accounts, branch assignments, deactivation"
+    },
+    {
+      "name": "Clients",
+      "description": "Pediatric client profiles, guardians, case history"
+    },
+    {
+      "name": "Clinical",
+      "description": "Assessments, treatment plans, goals, progress tracking"
+    },
+    {
+      "name": "Appointments",
+      "description": "Daily schedule, calendar, room/therapist booking"
+    },
+    {
+      "name": "Finance",
+      "description": "Invoices, payments, expenses, P&L, revenue analytics"
+    },
+    {
+      "name": "Reports",
+      "description": "Clinical reports, file uploads with signed URLs"
+    },
+    {
+      "name": "Leads",
+      "description": "Lead CRM, Kanban board, client conversion"
+    },
+    {
+      "name": "Communication",
+      "description": "WhatsApp/Email messaging, call logs, delivery webhooks"
+    },
+    {
+      "name": "HR",
+      "description": "Staff attendance, leave requests, holiday calendar"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Role-specific operational and executive dashboards"
+    },
+    {
+      "name": "Audit",
+      "description": "Audit trail inspection, clinical entity version history"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Enter your Bearer Access Token"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "director@petals.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePassword123!"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "Verify2faLoginDto": {
+        "type": "object",
+        "properties": {
+          "tempToken": {
+            "type": "string",
+            "description": "Temporary token returned from initial login step"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit TOTP code",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "tempToken",
+          "code"
+        ]
+      },
+      "RequestOtpDto": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Phone number or email address",
+            "example": "+919876543210"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "LOGIN",
+              "PASSWORD_RESET"
+            ],
+            "default": "LOGIN"
+          }
+        },
+        "required": [
+          "target",
+          "purpose"
+        ]
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Phone number or email address"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit OTP code",
+            "example": "123456"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "LOGIN",
+              "PASSWORD_RESET"
+            ],
+            "default": "LOGIN"
+          }
+        },
+        "required": [
+          "target",
+          "code",
+          "purpose"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "Current password"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New password",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "Enable2faDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "6-digit TOTP code to confirm setup",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "Disable2faDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "Current password for verification"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit TOTP code"
+          }
+        },
+        "required": [
+          "password",
+          "code"
+        ]
+      },
+      "RoleModuleItemDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "enum": [
+              "DASHBOARD",
+              "APPOINTMENTS",
+              "CLIENTS",
+              "PROFILE_OVERVIEW",
+              "PROFILE_ASSESSMENT",
+              "PROFILE_PAYMENT_PLAN",
+              "PROFILE_PROGRESS",
+              "PROFILE_REPORTS",
+              "PROFILE_DOCUMENTS",
+              "PROFILE_SESSIONS",
+              "FINANCIAL",
+              "FINANCIAL_PNL",
+              "COMMUNICATION",
+              "SCHEDULE_PLANNING",
+              "HRMS",
+              "EMPLOYEES",
+              "EMPLOYEE_SALARY",
+              "LEADS",
+              "REPORTS",
+              "ROLE_ACCESS"
+            ],
+            "example": "CLIENTS"
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "module",
+          "enabled"
+        ]
+      },
+      "UpdateRoleModulesDto": {
+        "type": "object",
+        "properties": {
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleModuleItemDto"
+            }
+          }
+        },
+        "required": [
+          "modules"
+        ]
+      },
+      "RolePermissionItemDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "enum": [
+              "DASHBOARD",
+              "APPOINTMENTS",
+              "CLIENTS",
+              "PROFILE_OVERVIEW",
+              "PROFILE_ASSESSMENT",
+              "PROFILE_PAYMENT_PLAN",
+              "PROFILE_PROGRESS",
+              "PROFILE_REPORTS",
+              "PROFILE_DOCUMENTS",
+              "PROFILE_SESSIONS",
+              "FINANCIAL",
+              "FINANCIAL_PNL",
+              "COMMUNICATION",
+              "SCHEDULE_PLANNING",
+              "HRMS",
+              "EMPLOYEES",
+              "EMPLOYEE_SALARY",
+              "LEADS",
+              "REPORTS",
+              "ROLE_ACCESS"
+            ],
+            "example": "CLIENTS"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "UPDATE",
+              "VIEW",
+              "VIEW_ALL",
+              "DELETE"
+            ],
+            "example": "VIEW"
+          },
+          "allowed": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "module",
+          "action",
+          "allowed"
+        ]
+      },
+      "UpdateRolePermissionsDto": {
+        "type": "object",
+        "properties": {
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RolePermissionItemDto"
+            }
+          }
+        },
+        "required": [
+          "permissions"
+        ]
+      },
+      "UserOverrideItemDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "enum": [
+              "DASHBOARD",
+              "APPOINTMENTS",
+              "CLIENTS",
+              "PROFILE_OVERVIEW",
+              "PROFILE_ASSESSMENT",
+              "PROFILE_PAYMENT_PLAN",
+              "PROFILE_PROGRESS",
+              "PROFILE_REPORTS",
+              "PROFILE_DOCUMENTS",
+              "PROFILE_SESSIONS",
+              "FINANCIAL",
+              "FINANCIAL_PNL",
+              "COMMUNICATION",
+              "SCHEDULE_PLANNING",
+              "HRMS",
+              "EMPLOYEES",
+              "EMPLOYEE_SALARY",
+              "LEADS",
+              "REPORTS",
+              "ROLE_ACCESS"
+            ],
+            "example": "CLIENTS"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "UPDATE",
+              "VIEW",
+              "VIEW_ALL",
+              "DELETE"
+            ],
+            "example": "VIEW"
+          },
+          "allowed": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "module",
+          "action",
+          "allowed"
+        ]
+      },
+      "UpdateUserOverridesDto": {
+        "type": "object",
+        "properties": {
+          "overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserOverrideItemDto"
+            }
+          }
+        },
+        "required": [
+          "overrides"
+        ]
+      },
+      "CreateBranchDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateBranchDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateEmployeeDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateEmployeeDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "RestoreEntityDto": {
+        "type": "object",
+        "properties": {
+          "versionNo": {
+            "type": "number",
+            "description": "Specific version number to restore. If omitted, restores latest prior state."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for restoring this clinical entry"
+          }
+        }
+      },
+      "CreateGuardianDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the guardian"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address (used for parent portal login)"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number"
+          },
+          "whatsappNo": {
+            "type": "string",
+            "description": "WhatsApp contact number"
+          },
+          "relation": {
+            "type": "string",
+            "description": "Relationship to client (e.g. Mother, Father, Legal Guardian)"
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this is the primary guardian"
+          },
+          "canViewOverview": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether parent can view Overview tab"
+          },
+          "canViewAssessment": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether parent can view Assessment tab"
+          },
+          "canViewPaymentPlan": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether parent can view Payment Plan tab"
+          },
+          "canViewReports": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether parent can view Reports tab"
+          },
+          "whatsappConsent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Consent to receive WhatsApp messages"
+          },
+          "emailConsent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Consent to receive email updates"
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional initial password for parent user account (defaults to ChangeMe123! if new)"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "relation"
+        ]
+      },
+      "CreateClientDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch UUID to which the client belongs"
+          },
+          "clientCode": {
+            "type": "string",
+            "description": "Unique client code. Auto-generated per branch (e.g. BLR-2026-0001) if omitted."
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the child/client"
+          },
+          "dob": {
+            "type": "string",
+            "description": "Date of birth (ISO 8601 YYYY-MM-DD)"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender of the client (e.g. MALE, FEMALE, OTHER)"
+          },
+          "caseHistory": {
+            "type": "string",
+            "description": "Clinical case history and initial notes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ON_HOLD",
+              "DISCHARGED"
+            ],
+            "default": "ACTIVE",
+            "description": "Current status of the client"
+          },
+          "guardians": {
+            "description": "Initial guardians to link or create for this client",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateGuardianDto"
+            }
+          }
+        },
+        "required": [
+          "branchId",
+          "name",
+          "dob"
+        ]
+      },
+      "UpdateClientDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch UUID to which the client belongs"
+          },
+          "clientCode": {
+            "type": "string",
+            "description": "Unique client code. Auto-generated per branch (e.g. BLR-2026-0001) if omitted."
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the child/client"
+          },
+          "dob": {
+            "type": "string",
+            "description": "Date of birth (ISO 8601 YYYY-MM-DD)"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender of the client (e.g. MALE, FEMALE, OTHER)"
+          },
+          "caseHistory": {
+            "type": "string",
+            "description": "Clinical case history and initial notes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ON_HOLD",
+              "DISCHARGED"
+            ],
+            "default": "ACTIVE",
+            "description": "Current status of the client"
+          },
+          "guardians": {
+            "description": "Initial guardians to link or create for this client",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateGuardianDto"
+            }
+          }
+        }
+      },
+      "CreateAssessmentDto": {
+        "type": "object",
+        "properties": {
+          "assessedOn": {
+            "type": "string",
+            "example": "2026-03-15"
+          },
+          "tool": {
+            "type": "string",
+            "example": "Sensory Profile 2"
+          },
+          "observation": {
+            "type": "string",
+            "example": "Child demonstrated sensory seeking behaviors."
+          },
+          "scores": {
+            "type": "object",
+            "example": {
+              "tactile": 24,
+              "auditory": 18,
+              "visual": 30
+            }
+          },
+          "summary": {
+            "type": "string",
+            "example": "Recommend 2 sessions/week of sensory integration."
+          },
+          "assessorId": {
+            "type": "string",
+            "description": "Assessor employee ID (defaults to current user employee)"
+          }
+        },
+        "required": [
+          "assessedOn"
+        ]
+      },
+      "UpdateAssessmentDto": {
+        "type": "object",
+        "properties": {
+          "assessedOn": {
+            "type": "string",
+            "example": "2026-03-15"
+          },
+          "tool": {
+            "type": "string",
+            "example": "Sensory Profile 2"
+          },
+          "observation": {
+            "type": "string",
+            "example": "Child demonstrated sensory seeking behaviors."
+          },
+          "scores": {
+            "type": "object",
+            "example": {
+              "tactile": 24,
+              "auditory": 18,
+              "visual": 30
+            }
+          },
+          "summary": {
+            "type": "string",
+            "example": "Recommend 2 sessions/week of sensory integration."
+          },
+          "assessorId": {
+            "type": "string",
+            "description": "Assessor employee ID"
+          }
+        }
+      },
+      "CreateTreatmentPlanDto": {
+        "type": "object",
+        "properties": {
+          "departmentId": {
+            "type": "string",
+            "description": "Department ID"
+          },
+          "therapistId": {
+            "type": "string",
+            "description": "Assigned therapist employee ID"
+          },
+          "sessionsPerWeek": {
+            "type": "number",
+            "example": 2
+          },
+          "sessionMinutes": {
+            "type": "number",
+            "example": 45,
+            "default": 45
+          },
+          "feePerSession": {
+            "type": "number",
+            "example": 800
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "2026-08-31"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "departmentId",
+          "therapistId",
+          "sessionsPerWeek",
+          "feePerSession",
+          "startDate"
+        ]
+      },
+      "UpdateTreatmentPlanDto": {
+        "type": "object",
+        "properties": {
+          "departmentId": {
+            "type": "string",
+            "description": "Department ID"
+          },
+          "therapistId": {
+            "type": "string",
+            "description": "Assigned therapist employee ID"
+          },
+          "sessionsPerWeek": {
+            "type": "number",
+            "example": 3
+          },
+          "sessionMinutes": {
+            "type": "number",
+            "example": 45
+          },
+          "feePerSession": {
+            "type": "number",
+            "example": 900
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "2026-08-31"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          }
+        }
+      },
+      "CreateGoalDto": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "enum": [
+              "LONG",
+              "SHORT"
+            ],
+            "example": "LONG"
+          },
+          "title": {
+            "type": "string",
+            "example": "Improve bilateral motor coordination"
+          },
+          "baseline": {
+            "type": "string",
+            "example": "Child is unable to use both hands cooperatively"
+          },
+          "description": {
+            "type": "string",
+            "example": "Demonstrates hand dominance and bilateral integration"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "ACHIEVED",
+              "DISCONTINUED"
+            ],
+            "default": "NOT_STARTED"
+          },
+          "targetDate": {
+            "type": "string",
+            "example": "2026-06-30"
+          }
+        },
+        "required": [
+          "term",
+          "title"
+        ]
+      },
+      "UpdateGoalDto": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "enum": [
+              "LONG",
+              "SHORT"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Improve bilateral motor coordination"
+          },
+          "baseline": {
+            "type": "string",
+            "example": "Child is unable to use both hands cooperatively"
+          },
+          "description": {
+            "type": "string",
+            "example": "Demonstrates hand dominance and bilateral integration"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "ACHIEVED",
+              "DISCONTINUED"
+            ]
+          },
+          "targetDate": {
+            "type": "string",
+            "example": "2026-06-30"
+          }
+        }
+      },
+      "CreateSubgoalDto": {
+        "type": "object",
+        "properties": {
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY"
+            ],
+            "example": "WEEKLY"
+          },
+          "description": {
+            "type": "string",
+            "example": "Cut paper along a straight line using child-safe scissors"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "ACHIEVED",
+              "DISCONTINUED"
+            ],
+            "default": "NOT_STARTED"
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "2026-03-31"
+          }
+        },
+        "required": [
+          "frequency",
+          "description"
+        ]
+      },
+      "UpdateSubgoalDto": {
+        "type": "object",
+        "properties": {
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "example": "Cut paper along a straight line using child-safe scissors"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "ACHIEVED",
+              "DISCONTINUED"
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "2026-03-31"
+          }
+        }
+      },
+      "CreateProgressEntryDto": {
+        "type": "object",
+        "properties": {
+          "entryDate": {
+            "type": "string",
+            "example": "2026-03-10"
+          },
+          "description": {
+            "type": "string",
+            "example": "Completed cutting task with moderate verbal prompts."
+          },
+          "response": {
+            "type": "string",
+            "example": "Child engaged well for 15 minutes."
+          },
+          "remarks": {
+            "type": "string",
+            "example": "Recommend continuing bilateral activities."
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "REGRESSED",
+              "NO_CHANGE",
+              "EMERGING",
+              "PROGRESSING",
+              "ACHIEVED"
+            ],
+            "default": "NO_CHANGE"
+          },
+          "appointmentId": {
+            "type": "string",
+            "description": "Associated appointment ID"
+          }
+        },
+        "required": [
+          "entryDate"
+        ]
+      },
+      "UpdateProgressEntryDto": {
+        "type": "object",
+        "properties": {
+          "entryDate": {
+            "type": "string",
+            "example": "2026-03-10"
+          },
+          "description": {
+            "type": "string",
+            "example": "Completed cutting task with moderate verbal prompts."
+          },
+          "response": {
+            "type": "string",
+            "example": "Child engaged well for 15 minutes."
+          },
+          "remarks": {
+            "type": "string",
+            "example": "Recommend continuing bilateral activities."
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "REGRESSED",
+              "NO_CHANGE",
+              "EMERGING",
+              "PROGRESSING",
+              "ACHIEVED"
+            ]
+          },
+          "appointmentId": {
+            "type": "string",
+            "description": "Associated appointment ID"
+          }
+        }
+      },
+      "CreateAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch ID"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "therapistId": {
+            "type": "string",
+            "description": "Therapist employee ID"
+          },
+          "startsAt": {
+            "type": "string",
+            "example": "2026-03-15T10:00:00.000Z"
+          },
+          "endsAt": {
+            "type": "string",
+            "example": "2026-03-15T10:45:00.000Z"
+          },
+          "scheduleId": {
+            "type": "string",
+            "description": "Associated schedule ID"
+          }
+        },
+        "required": [
+          "branchId",
+          "clientId",
+          "therapistId",
+          "startsAt",
+          "endsAt"
+        ]
+      },
+      "CreateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "description": "Treatment Plan ID"
+          },
+          "recurrenceRule": {
+            "type": "string",
+            "example": "FREQ=WEEKLY;BYDAY=MO,WE"
+          },
+          "startTime": {
+            "type": "string",
+            "example": "10:00",
+            "description": "Start time in HH:mm format"
+          },
+          "durationMinutes": {
+            "type": "number",
+            "example": 45,
+            "default": 45
+          },
+          "startsOn": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "endsOn": {
+            "type": "string",
+            "example": "2026-06-30"
+          }
+        },
+        "required": [
+          "planId",
+          "recurrenceRule",
+          "startTime",
+          "startsOn"
+        ]
+      },
+      "RescheduleAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "startsAt": {
+            "type": "string",
+            "example": "2026-03-16T11:00:00.000Z"
+          },
+          "endsAt": {
+            "type": "string",
+            "example": "2026-03-16T11:45:00.000Z"
+          }
+        },
+        "required": [
+          "startsAt",
+          "endsAt"
+        ]
+      },
+      "CancelAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Client requested reschedule due to illness"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "UpdateAppointmentStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "ATTENDED",
+              "CANCELLED",
+              "NO_SHOW"
+            ],
+            "example": "ATTENDED"
+          },
+          "cancelReason": {
+            "type": "string",
+            "example": "No show without notice"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CreateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch ID"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "planId": {
+            "type": "string",
+            "description": "Treatment Plan ID"
+          },
+          "invoiceNo": {
+            "type": "string",
+            "example": "INV-KOC-2026-0001"
+          },
+          "revenueCategory": {
+            "type": "string",
+            "enum": [
+              "CLINICAL_THERAPY",
+              "ASSESSMENT_FEE"
+            ],
+            "example": "CLINICAL_THERAPY"
+          },
+          "amount": {
+            "type": "number",
+            "example": 4500
+          },
+          "issuedOn": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "dueOn": {
+            "type": "string",
+            "example": "2026-03-15"
+          }
+        },
+        "required": [
+          "branchId",
+          "clientId",
+          "revenueCategory",
+          "amount",
+          "issuedOn",
+          "dueOn"
+        ]
+      },
+      "RecordPaymentDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 4500
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "UPI",
+              "CARD",
+              "BANK_TRANSFER"
+            ],
+            "example": "UPI"
+          },
+          "receiptNo": {
+            "type": "string",
+            "example": "RCP-KOC-2026-0001"
+          },
+          "paidAt": {
+            "type": "string",
+            "example": "2026-03-05T14:30:00.000Z"
+          }
+        },
+        "required": [
+          "amount",
+          "method"
+        ]
+      },
+      "CreateExpenseDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch ID"
+          },
+          "category": {
+            "type": "string",
+            "example": "Therapy Toys and Materials"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250
+          },
+          "spentOn": {
+            "type": "string",
+            "example": "2026-03-05"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Purchased sensory swings and sand kit"
+          }
+        },
+        "required": [
+          "branchId",
+          "category",
+          "amount",
+          "spentOn"
+        ]
+      },
+      "ExportFinanceDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INVOICES",
+              "PAYMENTS",
+              "EXPENSES",
+              "PNL"
+            ],
+            "example": "INVOICES"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "EXCEL",
+              "PDF"
+            ],
+            "example": "EXCEL"
+          },
+          "branchId": {
+            "type": "string",
+            "description": "Branch ID"
+          },
+          "from": {
+            "type": "string",
+            "example": "2026-03-01"
+          },
+          "to": {
+            "type": "string",
+            "example": "2026-03-31"
+          }
+        },
+        "required": [
+          "type",
+          "format"
+        ]
+      },
+      "CreateReportDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ASSESSMENT",
+              "PROGRESS",
+              "DISCHARGE",
+              "OTHER"
+            ],
+            "example": "ASSESSMENT"
+          },
+          "title": {
+            "type": "string",
+            "example": "Initial Occupational Therapy Evaluation"
+          },
+          "content": {
+            "type": "string",
+            "example": "Client demonstrates difficulties in fine motor coordination..."
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://storage.petals.com/reports/ot-eval-123.pdf"
+          },
+          "dueOn": {
+            "type": "string",
+            "example": "2026-03-31"
+          }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
+      },
+      "UpdateReportDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ASSESSMENT",
+              "PROGRESS",
+              "DISCHARGE",
+              "OTHER"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Updated OT Evaluation"
+          },
+          "content": {
+            "type": "string",
+            "example": "Updated observations..."
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://storage.petals.com/reports/ot-eval-revised.pdf"
+          },
+          "dueOn": {
+            "type": "string",
+            "example": "2026-04-15"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMITTED",
+              "REVIEWED",
+              "SHARED"
+            ],
+            "example": "SUBMITTED"
+          }
+        }
+      },
+      "DocumentUploadUrlDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "example": "evaluation_results.pdf"
+          },
+          "fileType": {
+            "type": "string",
+            "example": "application/pdf"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048000,
+            "description": "File size in bytes (max 15MB)"
+          }
+        },
+        "required": [
+          "fileName",
+          "fileType",
+          "fileSizeBytes"
+        ]
+      },
+      "CreateDocumentDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Birth Certificate / Medical Discharge Summary"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://storage.petals.com/documents/doc-123.pdf"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "application/pdf"
+          },
+          "sharedWithParent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether guardians can view this document"
+          }
+        },
+        "required": [
+          "title",
+          "fileUrl"
+        ]
+      },
+      "CreateLeadDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ConvertLeadDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateLeadDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateTemplateDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateTemplateDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "SendMessageDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "SendBulkMessagesDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "RecordCallLogDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "WebhookPayloadDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CheckInDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "description": "Branch ID for check-in"
+          },
+          "workDate": {
+            "type": "string",
+            "description": "Work date in YYYY-MM-DD format (defaults to today)"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Check-in timestamp in ISO format (defaults to now)"
+          },
+          "employeeId": {
+            "type": "string",
+            "description": "Employee ID (defaults to current user employee profile)"
+          }
+        }
+      },
+      "CheckOutDto": {
+        "type": "object",
+        "properties": {
+          "workDate": {
+            "type": "string",
+            "description": "Work date in YYYY-MM-DD format (defaults to today)"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Check-out timestamp in ISO format (defaults to now)"
+          },
+          "employeeId": {
+            "type": "string",
+            "description": "Employee ID (defaults to current user employee profile)"
+          }
+        }
+      },
+      "CreateHolidayDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "object",
+            "description": "Branch ID (omit or null for all branches)"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format"
+          },
+          "name": {
+            "type": "string",
+            "description": "Holiday name"
+          }
+        },
+        "required": [
+          "date",
+          "name"
+        ]
+      },
+      "CreateLeaveRequestDto": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "description": "Employee ID (defaults to current user employee profile)"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "CASUAL",
+              "SICK",
+              "PAID",
+              "UNPAID",
+              "OTHER"
+            ],
+            "description": "Type of leave"
+          },
+          "fromDate": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format"
+          },
+          "toDate": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for leave"
+          }
+        },
+        "required": [
+          "leaveType",
+          "fromDate",
+          "toDate"
+        ]
+      },
+      "LeaveDecisionDto": {
+        "type": "object",
+        "properties": {
+          "decisionNote": {
+            "type": "string",
+            "description": "Optional decision note or comments"
+          }
+        }
+      },
+      "DirectorAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "awayUntil": {
+            "type": "object",
+            "description": "ISO datetime until when director is unavailable (null to mark available)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "awayUntil"
+        ]
+      }
+    }
+  }
+}

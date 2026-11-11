@@ -67,7 +67,7 @@ jobs:
       - name: Run unit tests
         run: pnpm test
 
-      - name: Run database migrations
+      - name: Run database migrations (as migrator)
         run: pnpm --filter @petals/api db:migrate:deploy
         env:
           DATABASE_URL: postgresql://petals_admin:petals_password@localhost:5432/petals_erp?schema=public

@@ -1,0 +1,101 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: petals-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-petals_migrator}
+      POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:?Required}
+      POSTGRES_DB: ${POSTGRES_DB:-petals_erp}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - petals-internal
+
+  redis:
+    image: redis:7-alpine
+    container_name: petals-redis-prod
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:?Required}
+      --appendonly yes
+      --appendfsync everysec
+      --save 60 1
+      --maxmemory 512mb
+      --maxmemory-policy volatile-lru
+    volumes:
+      - redis_prod_data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -a "$$REDIS_PASSWORD" ping | grep PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Required}
+    networks:
+      - petals-internal
+
+  # One-off database migration container running as migrator user (owns DDL)
+  migrator:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: builder
+    container_name: petals-migrator-prod
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_MIGRATOR_USER:-petals_migrator}:${POSTGRES_MIGRATOR_PASSWORD}@postgres:5432/${POSTGRES_DB:-petals_erp}?schema=public
+    command: ["pnpm", "--filter", "@petals/api", "db:migrate:deploy"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - petals-internal
+
+  # Application API running as non-root appuser connecting as app_user (NOBYPASSRLS)
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: petals-api-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${APP_DB_USER:-app_user}:${APP_DB_PASSWORD:?Required}@postgres:5432/${POSTGRES_DB:-petals_erp}?schema=public
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Required}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Required}
+      COOKIE_SECRET: ${COOKIE_SECRET:?Required}
+      TWO_FACTOR_ENCRYPTION_KEY: ${TWO_FACTOR_ENCRYPTION_KEY:?Required}
+      DOCUMENT_HMAC_SECRET: ${DOCUMENT_HMAC_SECRET:?Required}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:?Required}
+      APP_CORS_ORIGIN: ${APP_CORS_ORIGIN:-https://erp.petalsclinic.com}
+    ports:
+      - '3000:3000'
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - petals-internal
+
+volumes:
+  postgres_prod_data:
+  redis_prod_data:
+
+networks:
+  petals-internal:
+    driver: bridge

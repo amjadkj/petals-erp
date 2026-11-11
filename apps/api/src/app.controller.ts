@@ -10,9 +10,9 @@ export class AppController {
 
   @Public()
   @Get('health')
-  @ApiOperation({ summary: 'Health check endpoint' })
+  @ApiOperation({ summary: 'System and dependencies health check' })
   @ApiResponse({ status: 200, description: 'Service is healthy' })
-  getHealth() {
+  async getHealth() {
     return this.appService.getHealth();
   }
 }

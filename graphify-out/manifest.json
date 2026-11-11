@@ -1,8 +1,8 @@
 {
   ".github/workflows/ci.yml": {
-    "mtime": 1794392979.2628512,
-    "seen": 1794393699.0519395,
-    "ast_hash": "4852bd9d89bc956899ddb44314b3b79f",
+    "mtime": 1794396610.3977787,
+    "seen": 1794396997.6662462,
+    "ast_hash": "f0a01992be3346b7c19be70ed3ace6dd",
     "semantic_hash": ""
   },
   "apps/api/jest.config.js": {
@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "apps/api/package.json": {
-    "mtime": 1794392560.9100583,
-    "seen": 1794393699.0551412,
-    "ast_hash": "99070eed26bf6cc673d271b48a2c69d4",
+    "mtime": 1794394267.3178394,
+    "seen": 1794396997.6672525,
+    "ast_hash": "3609f5b37659bd396321b71b09ace556",
     "semantic_hash": ""
   },
   "apps/api/prisma/seed.ts": {
@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.controller.ts": {
-    "mtime": 1794300070.610813,
-    "seen": 1794306615.4734232,
-    "ast_hash": "b5776d3d81fb97c98e53995a20eb854f",
+    "mtime": 1794394158.5902739,
+    "seen": 1794396997.6752481,
+    "ast_hash": "beb79d999d5a4b8f2fc95d3b69ecb629",
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
@@ -42,15 +42,15 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
-    "mtime": 1794290751.7265074,
-    "seen": 1794306615.4734232,
-    "ast_hash": "80188c311e5e8eb0b8ad5e2cb1d3d914",
+    "mtime": 1794394164.0984697,
+    "seen": 1794396997.6762443,
+    "ast_hash": "d74521f7241f38fc7285caf927bc2d65",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.ts": {
-    "mtime": 1794290751.8172,
-    "seen": 1794306615.4734232,
-    "ast_hash": "6dc90ed859885a28ef172a3e4c65a377",
+    "mtime": 1794394152.76206,
+    "seen": 1794396997.6762443,
+    "ast_hash": "884c7a1ba18fb2f21ddbd9a547ba041d",
     "semantic_hash": ""
   },
   "apps/api/src/auth/auth.controller.ts": {
@@ -306,9 +306,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.ts": {
-    "mtime": 1794393443.369784,
-    "seen": 1794393699.175999,
-    "ast_hash": "dc8bc87c2d050ccb075a94cc689867ae",
+    "mtime": 1794394015.1864707,
+    "seen": 1794396997.7709777,
+    "ast_hash": "675c3eaf32f27829a833e2252f456cf9",
     "semantic_hash": ""
   },
   "apps/api/src/common/rate-limit/index.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794385688.7500029,
-    "seen": 1794387078.7643676,
-    "ast_hash": "809ff5bc8de2ef464d38366863d16783",
+    "mtime": 1794394114.040144,
+    "seen": 1794396997.9063513,
+    "ast_hash": "5d8c1081b0cdcaed6bd3b26bc6d39456",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794393636.239697,
-    "seen": 1794393699.318076,
-    "ast_hash": "29e17c1b170183b731192a80334f4d61",
+    "mtime": 1794396942.7074673,
+    "seen": 1794396997.91811,
+    "ast_hash": "e17f1c91864d97c8ed5efe275785c7a4",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -684,9 +684,9 @@
     "semantic_hash": ""
   },
   "docs/phases/final-checklist.md": {
-    "mtime": 1794046841.9020426,
-    "seen": 1794306615.473966,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1794394141.10931,
+    "seen": 1794396997.934944,
+    "ast_hash": "44ca535edcb0e13bf914980598b2066c",
     "semantic_hash": ""
   },
   ".agents/rules/ponytail.md": {
@@ -1830,9 +1830,39 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794393003.620355,
-    "seen": 1794393699.3170793,
-    "ast_hash": "cf76a5b569b6c44224f865737379dad1",
+    "mtime": 1794396598.1246092,
+    "seen": 1794396997.9170957,
+    "ast_hash": "d640a3b31b02b886669a4c15b1265727",
+    "semantic_hash": ""
+  },
+  "apps/api/prisma/demo-seed.ts": {
+    "mtime": 1794396429.5637922,
+    "seen": 1794396997.6672525,
+    "ast_hash": "a7010e632daf5d29ae36ad10b7ab36cd",
+    "semantic_hash": ""
+  },
+  "apps/api/scripts/export-openapi.ts": {
+    "mtime": 1794393937.5170088,
+    "seen": 1794396997.6682558,
+    "ast_hash": "fd61a733fc8b87a362bc623da6b0c696",
+    "semantic_hash": ""
+  },
+  "docker-compose.prod.yml": {
+    "mtime": 1794396537.2617755,
+    "seen": 1794396997.8963552,
+    "ast_hash": "62bfed7e0d35a21a38f694742a2748a0",
+    "semantic_hash": ""
+  },
+  "docs/openapi.json": {
+    "mtime": 1794394077.9266386,
+    "seen": 1794396997.8983543,
+    "ast_hash": "c6279e64fcbd9e8c24630e6a364f0a26",
+    "semantic_hash": ""
+  },
+  "docs/backup-restore.md": {
+    "mtime": 1794396559.387411,
+    "seen": 1794396997.91811,
+    "ast_hash": "bf0651ec1e6873de8955c9d38364685b",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

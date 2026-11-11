@@ -180,3 +180,150 @@ export interface ApiResponse<T, M = PaginationMetaOffset | PaginationMetaCursor>
   data: T;
   meta?: M;
 }
+
+// ─────────────────────────────────────────────────────────────
+// Client-Facing DTOs & Entity Types for Web App
+// ─────────────────────────────────────────────────────────────
+
+export interface UserSummary {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  roleKey: RoleKey;
+  isActive: boolean;
+  branchIds: string[];
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  user: UserSummary;
+}
+
+export interface BranchDto {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+  address: string;
+  phone: string;
+  timezone: string;
+  isActive: boolean;
+}
+
+export interface DepartmentDto {
+  id: string;
+  name: string;
+  code: string;
+  description?: string | null;
+}
+
+export interface ClientDto {
+  id: string;
+  branchId: string;
+  clientCode: string;
+  name: string;
+  dob: string;
+  gender?: string | null;
+  status: ClientStatus;
+  bloodGroup?: string | null;
+  allergies?: string | null;
+  caseHistory?: string | null;
+  sessionCount?: number;
+  primaryGuardian?: {
+    name: string;
+    phone: string;
+    email?: string | null;
+    relation: string;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AppointmentDto {
+  id: string;
+  branchId: string;
+  clientId: string;
+  clientName?: string;
+  therapistId: string;
+  therapistName?: string;
+  roomId?: string | null;
+  startTime: string;
+  endTime: string;
+  status: AppointmentStatus;
+  notes?: string | null;
+  cancellationReason?: string | null;
+}
+
+export interface InvoiceDto {
+  id: string;
+  invoiceNumber: string;
+  branchId: string;
+  clientId: string;
+  clientName?: string;
+  amount: number;
+  paidAmount: number;
+  status: InvoiceStatus;
+  revenueCategory: RevenueCategory;
+  dueDate: string;
+  createdAt: string;
+}
+
+export interface PaymentDto {
+  id: string;
+  receiptNumber: string;
+  invoiceId: string;
+  amount: number;
+  method: PaymentMethod;
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface LeadDto {
+  id: string;
+  branchId: string;
+  parentName: string;
+  childName: string;
+  childDob?: string | null;
+  phone: string;
+  email?: string | null;
+  stage: LeadStage;
+  source?: string | null;
+  concerns?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClinicalReportDto {
+  id: string;
+  clientId: string;
+  title: string;
+  type: ReportType;
+  status: ReportStatus;
+  dueOn: string;
+  content?: string | null;
+  fileUrl?: string | null;
+  sharedWithParent: boolean;
+  authorId: string;
+  authorName?: string;
+  createdAt: string;
+}
+
+export interface AttendanceRecordDto {
+  id: string;
+  employeeId: string;
+  employeeName?: string;
+  branchId: string;
+  date: string;
+  checkIn?: string | null;
+  checkOut?: string | null;
+  status: string;
+}
+
+export interface DashboardMetricsDto {
+  role: RoleKey;
+  branchId?: string | null;
+  metrics: Record<string, any>;
+}
+

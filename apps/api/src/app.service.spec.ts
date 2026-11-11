@@ -16,8 +16,8 @@ describe('AppService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return health status', () => {
-    const health = service.getHealth();
+  it('should return health status', async () => {
+    const health = await service.getHealth();
     expect(health.status).toBe('ok');
     expect(health.timestamp).toBeDefined();
   });
