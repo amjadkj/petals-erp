@@ -36,20 +36,10 @@ export class EnvironmentVariables {
   @IsOptional()
   JWT_REFRESH_EXPIRY?: string = '7d';
 
-  // Redis
+  // Redis (single configuration URL)
   @IsString()
   @IsOptional()
-  REDIS_HOST?: string = 'localhost';
-
-  @IsNumber()
-  @IsOptional()
-  @Min(1)
-  @Max(65535)
-  REDIS_PORT?: number = 6379;
-
-  @IsString()
-  @IsOptional()
-  REDIS_PASSWORD?: string;
+  REDIS_URL?: string = 'redis://localhost:6379';
 
   // Rate limiting
   @IsNumber()

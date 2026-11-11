@@ -13,14 +13,9 @@ export { REDIS_CLIENT };
       provide: REDIS_CLIENT,
       useFactory: (config: ConfigService) => {
         const logger = new Logger('RedisModule');
-        const host = config.get<string>('REDIS_HOST', 'localhost');
-        const port = config.get<number>('REDIS_PORT', 6379);
-        const password = config.get<string>('REDIS_PASSWORD', '');
+        const redisUrl = config.get<string>('REDIS_URL', 'redis://localhost:6379');
 
-        const client = new Redis({
-          host,
-          port,
-          password: password || undefined,
+        const client = new Redis(redisUrl, {
           maxRetriesPerRequest: 1,
           retryStrategy(times: number) {
             if (times > 2) {
@@ -32,7 +27,7 @@ export { REDIS_CLIENT };
           enableOfflineQueue: false,
         });
 
-        client.on('connect', () => logger.log(`Redis connected at ${host}:${port}`));
+        client.on('connect', () => logger.log(`Redis connected via REDIS_URL`));
         client.on('error', (err) => logger.debug(`Redis offline: ${err.message}`));
         client.on('close', () => logger.debug('Redis connection closed'));
 

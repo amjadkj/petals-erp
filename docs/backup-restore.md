@@ -176,3 +176,4 @@ Run the following verification queries to guarantee data consistency and securit
   # Response must be: {"status":"ok","database":"ok","redis":"ok",...}
   ```
 - [ ] Remove maintenance window and notify clinic directors.
+

@@ -49,16 +49,18 @@ async function bootstrap() {
   // Global exception filter
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // Swagger
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Petals Child Development Centre ERP API')
-    .setDescription('Backend REST API for Petals ERP')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  // Swagger documentation (disabled in production unless explicitly enabled)
+  if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_SWAGGER === 'true') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Petals Child Development Centre ERP API')
+      .setDescription('Backend REST API for Petals ERP')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

@@ -20,6 +20,8 @@
 | 16 | RLS Hardening | ✅ Done | 2026-11-11 | PostgreSQL Row Level Security (RLS) hardening: `migrator` and `app_user` (`NOSUPERUSER, NOBYPASSRLS`); migration enabling & forcing RLS on direct tables (`clients`, `leads`, `appointments`, `invoices`, `expenses`, `attendance_records`) and child parent-relational policies (`treatment_plans`, `assessments`, `reports`, `payments`, `documents`, `progress_entries`) with fail-closed helper functions `app_branch_ids()` and `app_all_branches()`; extended Prisma client extension wrapping queries in transaction with local `set_config('app.branch_ids', ...)`; dedicated e2e RLS tests (0 rows with no context, branch A isolation, cross-branch insert blocked, application where-clause bypass blocked); security pass (100% routes protected with `@RequirePermission`, `@Roles`, or `@Public`, 0 unsafe raw SQL concatenation, Helmet security headers, account lockout on 5 failed logins with `Retry-After`, 5-attempt OTP limits); Autocannon benchmark results recorded in README (Client list p95: 278ms, Daily schedule p95: 141ms, Dashboard p95: 121ms). 192 unit tests and 196 e2e tests passing. |
 | 17 | Documentation & Deployment | ✅ Done | 2026-11-11 | Completed OpenAPI specification export (`docs/openapi.json`), TypeScript DTOs & entity types generated in `packages/types`, comprehensive README with setup steps, full environment variable table, and module overview with pagination envelopes, cache keys, and invalidation rules. Multi-stage Dockerfile (`apps/api/Dockerfile`) with non-root user `appuser` (UID 10001); production `docker-compose.prod.yml` with migrator one-off service and Redis AOF/RDB persistence with `volatile-lru`; deep health check probing PostgreSQL and Redis (`/health`); tested backup and disaster recovery guide (`docs/backup-restore.md`); demo seed (`prisma/demo-seed.ts`) with production safeguard (`NODE_ENV=production` exit). 192 unit tests passing, lint clean, full monorepo build succeeded. |
 
+| 18 | Final Checklist & Report | ✅ Done | 2026-11-11 | Executed complete 107-item evaluation from `docs/phases/final-checklist.md`. All items verified across 12 domains (Sections A through L) with 100% PASS rate. Recorded full results, evidence, open decisions, known limitations, and operational runbook in `docs/FINAL_REPORT.md`. |
+
 ## Decisions Made
 - Used local PostgreSQL 17 (Windows service) instead of Docker for development since Docker Desktop daemon was stopped.
 - Redis client uses lazyConnect and fail-open/in-memory fallback when offline so tests and app run seamlessly while Redis daemon is offline.
@@ -30,5 +32,4 @@
 - Used `tsrange()` instead of `tstzrange()` for the therapist overlap exclusion constraint since Prisma DateTime maps to `timestamp(3) without time zone`.
 
 ## Open Items
-- Docker Desktop daemon is not yet running; live Redis tests will be run once started.
-- `final-checklist.md` is still empty (0 bytes).
+- None. Full backend implementation and final verification completed.
