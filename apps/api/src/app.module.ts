@@ -18,6 +18,7 @@ import { ReportModule } from './report/report.module';
 import { LeadModule } from './lead/lead.module';
 import { CommunicationModule } from './communication/communication.module';
 import { HrModule } from './hr/hr.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -44,6 +45,7 @@ import { AppService } from './app.service';
     LeadModule,
     CommunicationModule,
     HrModule,
+    DashboardModule,
     CommonModule,
   ],
   controllers: [AppController],

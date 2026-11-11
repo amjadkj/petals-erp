@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794385928.0875244,
-    "seen": 1794387078.368125,
-    "ast_hash": "9788c72b23a223d8320d03756cea2821",
+    "mtime": 1794387493.8415828,
+    "seen": 1794391141.950818,
+    "ast_hash": "70d4f156908a8f717476cdb2c14d6891",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -306,8 +306,8 @@
     "semantic_hash": ""
   },
   "apps/api/src/common/prisma/prisma.service.ts": {
-    "mtime": 1794334223.9364336,
-    "seen": 1794335683.4720967,
+    "mtime": 1794390776.45571,
+    "seen": 1794391142.0685005,
     "ast_hash": "02c517874ac2e84640ac0a11085c185b",
     "semantic_hash": ""
   },
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794385032.6666126,
-    "seen": 1794385047.8414893,
-    "ast_hash": "916cd48a5e46e761437f3a6550f0b684",
+    "mtime": 1794387084.129849,
+    "seen": 1794391142.202584,
+    "ast_hash": "0d0f6c37f179fa9b639e26837044ee18",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1773,6 +1773,48 @@
     "mtime": 1794386620.014048,
     "seen": 1794387078.7363813,
     "ast_hash": "096f1707c2f7d49cdad7dfe55ce01189",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dashboard.controller.ts": {
+    "mtime": 1794387516.3152454,
+    "seen": 1794391142.107555,
+    "ast_hash": "c4fc490434bf4fb4d18e508750facc1f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dashboard.module.ts": {
+    "mtime": 1794387516.7269828,
+    "seen": 1794391142.107555,
+    "ast_hash": "5a4a6b572004dca49e13df90708f22cc",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dashboard.service.spec.ts": {
+    "mtime": 1794390072.4058876,
+    "seen": 1794391142.107555,
+    "ast_hash": "68f773d3af463e05f7b749c48578b02e",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dashboard.service.ts": {
+    "mtime": 1794390982.530659,
+    "seen": 1794391142.107555,
+    "ast_hash": "8dd8acae710b845616627fe04fd64229",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dto/dashboard-query.dto.ts": {
+    "mtime": 1794387517.0853531,
+    "seen": 1794391142.107555,
+    "ast_hash": "8e50d9aae6d6178d14adeb7588144813",
+    "semantic_hash": ""
+  },
+  "apps/api/src/dashboard/dto/index.ts": {
+    "mtime": 1794387517.265481,
+    "seen": 1794391142.107555,
+    "ast_hash": "ea0dcbee6576ce59cc5a9cdc0afb7e32",
+    "semantic_hash": ""
+  },
+  "apps/api/test/dashboard.e2e-spec.ts": {
+    "mtime": 1794390811.4415562,
+    "seen": 1794391142.1775625,
+    "ast_hash": "4373db51e7ae677cf807f4da9ea58a2b",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {
