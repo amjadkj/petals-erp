@@ -51,6 +51,14 @@ export enum ProgressLevel {
   ACHIEVED = 'ACHIEVED',
 }
 
+export enum LeaveType {
+  CASUAL = 'CASUAL',
+  SICK = 'SICK',
+  PAID = 'PAID',
+  UNPAID = 'UNPAID',
+  OTHER = 'OTHER',
+}
+
 export enum LeaveStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',

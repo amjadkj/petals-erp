@@ -1,33 +1,33 @@
 # Graph Report - petals-erp  (2026-11-11)
 
 ## Corpus Check
-- 280 files · ~94,063 words
+- 298 files · ~101,076 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: .example 1, (none) 1, .toml 1)
 
 ## Summary
-- 2022 nodes · 4976 edges · 169 communities (67 shown, 102 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 177 edges (avg confidence: 0.85)
+- 2156 nodes · 5420 edges · 181 communities (69 shown, 112 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 192 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7e7a28b0`
+- Built from commit: `6358556a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - RequirePermission
-- auth.service.ts
+- AuthService
 - 4.1 Director
 - api/package.json
 - CommunicationChannel
 - env
-- ReportType
+- pagination/index.ts
 - web/package.json
 - redis
 - .findDailySchedule
 - compilerOptions
-- ClientService
+- ReportController
 - AppModule
 - dependencies
 - package.json
@@ -51,13 +51,13 @@
 - department.controller.ts
 - CurrentUser
 - CreateTreatmentPlanDto
-- @nestjs/core
+- auth.guard.ts
 - Ponytail, lazy senior dev mode
 - audit.interceptor.ts
-- PermissionScope
+- IRequestContext
 - app.module.ts
 - CommunicationService
-- ReportService
+- Public
 - Roles
 - CreateSubgoalDto
 - @nestjs/common
@@ -72,101 +72,117 @@
 - IRequestContext
 - RoleKey
 - FinanceService
-- MessageStatus
-- CreateProgressEntryDto
+- WebhookPayloadDto
+- src/index.ts
 - otp.service.ts
-- Get
+- CurrentUser
 - CreateGoalDto
-- CreateTreatmentPlanDto
-- @nestjs/swagger
+- LeaveQueryDto
+- class-validator
 - audit.service.ts
 - CreateScheduleDto
 - clinical.service.ts
-- AssignBranchDto
+- auth.service.ts
 - common/index.ts
 - CreateAssessmentDto
 - CreateInvoiceDto
 - auth.controller.ts
 - CommunicationQueueService
-- UserController
+- user.service.ts
 - AccessService
 - export-finance.dto.ts
 - employee.service.ts
-- UpdateAssessmentDto
-- CreateUserDto
-- CreateExpenseDto
-- AppointmentService
+- VersionService
+- class-transformer
+- EnvironmentVariables
+- .invalidateDailyCache
 - CreateScheduleDto
 - UpdateRoleModulesDto
 - DueReportQueryDto
-- RequestContextStorage
+- .createSchedule
 - TemplateStatus
 - RecordPaymentDto
-- pagination/index.ts
+- AssessmentQueryDto
 - InvoiceQueryDto
 - CreateLeadDto
 - ClientQueryDto
 - email-provider.interface.ts
 - BoardQueryDto
-- UpdateLeadDto
+- AuditLogQueryDto
 - RecordPaymentDto
 - StorageService
 - AppointmentQueryDto
 - UpdateRolePermissionsDto
 - two-factor.dto.ts
 - CacheService
-- UpdateUserDto
-- ConvertLeadDto
-- UserService
+- CreateLeaveRequestDto
+- CreateGuardianDto
+- HolidayQueryDto
 - CreateAppointmentDto
-- SendMessageDto
+- MonthlyAttendanceQueryDto
 - CreateDocumentDto
 - UpdateAppointmentStatusDto
 - .findClientDocuments
-- UserQueryDto
+- OffsetPaginationDto
 - CancelAppointmentDto
-- CreateTemplateDto
-- AuditInterceptor
-- LeaveStatus
+- CreateBranchDto
+- CreateProgressEntryDto
+- TokenBucketGuard
 - DailyScheduleQueryDto
-- UpdateTemplateDto
-- RescheduleAppointmentDto
-- ExportFormat
-- @types/cookie-parser@^1.4.8
+- CreateHolidayDto
+- CreateReportDto
+- UpdateProgressEntryDto
+- pagination-response.dto.ts
 - @types/qrcode@^1.5.5
+- SendBulkMessagesDto
+- DueReportQueryDto
+- LoginDto
+- RedisModule
+- DailyAttendanceQueryDto
+- LeaveDecisionDto
+- UpdateReportDto
+- CheckInDto
+- CheckOutDto
+- DirectorAvailabilityDto
+- EmployeeGoalsQueryDto
+- ConvertLeadDto
+- ReportStatus
+- crypto.util.ts
+- InvoiceStatus
+- ts-node@^10.9.2
 
 ## God Nodes (most connected - your core abstractions)
-1. `RoleKey` - 216 edges
-2. `@nestjs/common` - 112 edges
-3. `CurrentUser` - 101 edges
+1. `RoleKey` - 220 edges
+2. `@nestjs/common` - 117 edges
+3. `CurrentUser` - 116 edges
 4. `RequirePermission()` - 97 edges
-5. `class-validator` - 71 edges
-6. `@nestjs/swagger` - 66 edges
-7. `AppModule` - 56 edges
-8. `Roles()` - 48 edges
-9. `PrismaService` - 43 edges
-10. `PermissionAction` - 40 edges
+5. `class-validator` - 82 edges
+6. `@nestjs/swagger` - 78 edges
+7. `IRequestContext` - 63 edges
+8. `Roles()` - 63 edges
+9. `AppModule` - 56 edges
+10. `PrismaService` - 43 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Decisions Made` --references--> `CacheService`  [INFERRED]
   docs/PROGRESS.md → apps/api/src/common/redis/cache.service.ts
 - `Decisions Made` --references--> `LockoutService`  [INFERRED]
   docs/PROGRESS.md → apps/api/src/common/rate-limit/lockout.service.ts
-- `Petals ERP – Build Progress` --references--> `generateScheduleSlots()`  [INFERRED]
-  docs/PROGRESS.md → apps/api/src/appointment/schedule-generator.helper.ts
 - `Petals ERP – Build Progress` --references--> `VersionService`  [INFERRED]
   docs/PROGRESS.md → apps/api/src/clinical-history/version.service.ts
+- `Petals ERP – Build Progress` --references--> `generateScheduleSlots()`  [INFERRED]
+  docs/PROGRESS.md → apps/api/src/appointment/schedule-generator.helper.ts
 - `AuthTokens` --references--> `RoleKey`  [EXTRACTED]
   apps/api/src/auth/auth.service.ts → packages/types/src/index.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (169 total, 102 thin omitted)
+## Communities (181 total, 112 thin omitted)
 
-### Community 1 - "auth.service.ts"
-Cohesion: 0.18
-Nodes (8): AuthTokens, TokenPayload, ChangePasswordDto, decryptSecret(), encryptSecret(), getEncryptionKey(), hashPassword(), verifyPassword()
+### Community 1 - "AuthService"
+Cohesion: 0.16
+Nodes (4): AuthService, ChangePasswordDto, generateRandomToken(), verifyPassword()
 
 ### Community 2 - "4.1 Director"
 Cohesion: 0.04
@@ -174,19 +190,19 @@ Nodes (44): 10. Release Phasing, 11. Assumptions, 12. Decisions and Remaining Op
 
 ### Community 3 - "api/package.json"
 Cohesion: 0.11
-Nodes (17): @nestjs/platform-express@^11.0.9, qrcode@^1.5.4, rxjs@^7.8.1, swagger-ui-express@^5.0.1, @types/express@^5.0.0, @types/jest@^29.5.14, @types/node@^22.13.4, @types/node (+9 more)
+Nodes (17): bullmq@^5.41.3, jsonwebtoken@^9.0.3, rxjs@^7.8.1, swagger-ui-express@^5.0.1, jest@^29.7.0, ts-jest@^29.2.5, @types/jsonwebtoken@^9.0.10, name (+9 more)
 
 ### Community 4 - "CommunicationChannel"
-Cohesion: 0.10
-Nodes (8): CommunicationJobData, CommunicationLogQueryDto, RecordCallLogDto, SendBulkMessagesDto, CommunicationChannel, CALL, EMAIL, WHATSAPP
+Cohesion: 0.13
+Nodes (7): CommunicationJobData, CommunicationLogQueryDto, SendMessageDto, CommunicationChannel, CALL, EMAIL, WHATSAPP
 
 ### Community 5 - "env"
 Cohesion: 0.05
 Nodes (36): COOKIE_SECRET, DATABASE_URL, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_URL (+28 more)
 
-### Community 6 - "ReportType"
-Cohesion: 0.08
-Nodes (13): CreateReportDto, ReportQueryDto, UpdateReportDto, ReportStatus, DRAFT, REVIEWED, SHARED, SUBMITTED (+5 more)
+### Community 6 - "pagination/index.ts"
+Cohesion: 0.11
+Nodes (6): ReportQueryDto, ReportType, ASSESSMENT, DISCHARGE, OTHER, PROGRESS
 
 ### Community 7 - "web/package.json"
 Cohesion: 0.08
@@ -200,13 +216,17 @@ Nodes (30): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_PASSWORD, inter
 Cohesion: 0.08
 Nodes (24): compilerOptions, alwaysStrict, declaration, declarationMap, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames (+16 more)
 
+### Community 11 - "ReportController"
+Cohesion: 0.11
+Nodes (5): AppointmentController, ClientController, ClientService, UpdateClientDto, ReportController
+
 ### Community 12 - "AppModule"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (21): AppModule, APPOINTMENTS, CLIENTS, COMMUNICATION, DASHBOARD, EMPLOYEE_SALARY, EMPLOYEES, FINANCIAL (+13 more)
 
 ### Community 13 - "dependencies"
 Cohesion: 0.07
-Nodes (28): dependencies, bullmq@^5.41.3, class-transformer@^0.5.1, class-validator@^0.14.1, cookie-parser@^1.4.7, dotenv@^16.4.7, helmet@^8.0.0, ioredis@^5.5.0 (+20 more)
+Nodes (27): dependencies, class-transformer@^0.5.1, class-validator@^0.14.1, cookie-parser@^1.4.7, dotenv@^16.4.7, helmet@^8.0.0, ioredis@^5.5.0, @nestjs/common@^11.0.9 (+19 more)
 
 ### Community 14 - "package.json"
 Cohesion: 0.11
@@ -218,11 +238,11 @@ Nodes (20): devDependencies, eslint@^9.20.1, eslint-config-prettier@^10.0.1, esl
 
 ### Community 16 - "employee.service.ts"
 Cohesion: 0.07
-Nodes (6): CreateEmployeeDto, EmployeeQueryDto, UpdateEmployeeDto, EmployeeController, EMPLOYEE_SORT_FIELDS, EmployeeService
+Nodes (4): CreateEmployeeDto, UpdateEmployeeDto, EmployeeController, EmployeeService
 
 ### Community 17 - "devDependencies"
 Cohesion: 0.07
-Nodes (27): devDependencies, jest@^29.7.0, @nestjs/cli@^11.0.2, @nestjs/schematics@^11.0.0, @nestjs/testing@^11.0.9, @petals/config@workspace:*, prisma@^6.3.1, supertest@^7.0.0 (+19 more)
+Nodes (27): devDependencies, @nestjs/cli@^11.0.2, @nestjs/schematics@^11.0.0, @nestjs/testing@^11.0.9, @petals/config@workspace:*, prisma@^6.3.1, supertest@^7.0.0, ts-loader@^9.5.2 (+19 more)
 
 ### Community 18 - "compilerOptions"
 Cohesion: 0.11
@@ -241,8 +261,8 @@ Cohesion: 0.13
 Nodes (14): Access control and identity, Branches, people and leads, Clinical records, Communication and system, Diagrams by area, Entity Relationship Diagram, Finance, Full diagram (+6 more)
 
 ### Community 23 - "PrismaService"
-Cohesion: 0.09
-Nodes (4): BranchController, BranchService, CreateBranchDto, UpdateBranchDto
+Cohesion: 0.12
+Nodes (3): BranchController, BranchService, UpdateBranchDto
 
 ### Community 24 - "allowBuilds"
 Cohesion: 0.22
@@ -265,8 +285,8 @@ Cohesion: 0.22
 Nodes (9): argon2@^0.41.1, ALL_ACTIONS, ALL_MODULES, hashPassword(), main(), prisma, ROLE_PERMISSIONS_CONFIG, RoleSeedConfig (+1 more)
 
 ### Community 29 - "communication.service.ts"
-Cohesion: 0.21
-Nodes (8): CommunicationModule, SENSITIVE_CLINICAL_KEYWORDS, EMAIL_PROVIDER, SendWhatsAppParams, SendWhatsAppResult, WHATSAPP_PROVIDER, WhatsAppProvider, FakeWhatsAppProvider
+Cohesion: 0.15
+Nodes (14): CommunicationModule, SENSITIVE_CLINICAL_KEYWORDS, EMAIL_PROVIDER, SendWhatsAppParams, SendWhatsAppResult, WHATSAPP_PROVIDER, WhatsAppProvider, FakeWhatsAppProvider (+6 more)
 
 ### Community 30 - "tsconfig.build.json"
 Cohesion: 0.50
@@ -274,123 +294,127 @@ Nodes (3): exclude, extends, ./tsconfig.json
 
 ### Community 31 - "IRequestContext"
 Cohesion: 0.15
-Nodes (9): IRequestContext, RequestContextMiddleware, RequestContext, CurrentBranch, IS_PUBLIC_KEY, PERMISSION_KEY, PermissionRequirement, ROLES_KEY (+1 more)
+Nodes (3): RequestContextMiddleware, RequestContext, RequestContextStorage
+
+### Community 32 - "department.controller.ts"
+Cohesion: 0.15
+Nodes (3): DepartmentController, DepartmentModule, DepartmentService
 
 ### Community 33 - "CurrentUser"
 Cohesion: 0.15
-Nodes (3): CurrentUser, RequirePermission(), CommunicationController
+Nodes (4): RequirePermission(), Roles(), CommunicationController, LeadController
 
 ### Community 34 - "CreateTreatmentPlanDto"
-Cohesion: 0.10
-Nodes (8): ASSESSMENT_SORT_FIELDS, ProgressEntryQueryDto, UpdateTreatmentPlanDto, PlanStatus, ACTIVE, CANCELLED, COMPLETED, PAUSED
+Cohesion: 0.08
+Nodes (7): CreateTreatmentPlanDto, UpdateTreatmentPlanDto, PlanStatus, ACTIVE, CANCELLED, COMPLETED, PAUSED
 
-### Community 35 - "@nestjs/core"
-Cohesion: 0.18
-Nodes (4): AccessModule, AuditModule, RolesGuard, @nestjs/core
+### Community 35 - "auth.guard.ts"
+Cohesion: 0.10
+Nodes (9): AccessModule, AuditModule, IS_PUBLIC_KEY, ROLES_KEY, CachedUserData, PermissionGuard, RolesGuard, EmployeeModule (+1 more)
 
 ### Community 36 - "Ponytail, lazy senior dev mode"
 Cohesion: 0.50
 Nodes (3): Before you write, Ponytail, lazy senior dev mode, The smallest complete change
 
 ### Community 37 - "audit.interceptor.ts"
-Cohesion: 0.33
-Nodes (4): AUDIT_ACTION_KEY, AUDIT_ENTITY_KEY, AUDIT_IGNORE_KEY, AUDIT_SENSITIVE_READ_KEY
-
-### Community 38 - "PermissionScope"
-Cohesion: 0.32
-Nodes (6): ResolvedModulePermissions, ResolvedPermissionsMap, PermissionScope, ALL, ASSIGNED, OWN
+Cohesion: 0.20
+Nodes (5): AUDIT_ACTION_KEY, AUDIT_ENTITY_KEY, AUDIT_IGNORE_KEY, AUDIT_SENSITIVE_READ_KEY, AuditInterceptor
 
 ### Community 39 - "app.module.ts"
 Cohesion: 0.08
-Nodes (13): AppController, AppService, AppointmentModule, BranchModule, ClientModule, ClinicalModule, CommonModule, DepartmentModule (+5 more)
+Nodes (13): AppController, AppService, AppointmentModule, BranchModule, ClientModule, ClinicalModule, ClinicalHistoryModule, CommonModule (+5 more)
 
-### Community 71 - "Roles"
+### Community 69 - "CommunicationService"
 Cohesion: 0.15
-Nodes (3): AuthController, Public(), ApiResponse
+Nodes (3): CommunicationService, CreateTemplateDto, UpdateTemplateDto
 
 ### Community 72 - "CreateSubgoalDto"
 Cohesion: 0.10
 Nodes (11): CreateSubgoalDto, UpdateSubgoalDto, GoalStatus, ACHIEVED, DISCONTINUED, IN_PROGRESS, NOT_STARTED, SubgoalFrequency (+3 more)
 
 ### Community 73 - "@nestjs/common"
-Cohesion: 0.11
-Nodes (8): RecordVersionParams, BRANCH_SCOPED_MODELS, FILTERABLE_READ_OPS, PrismaService, SCOPED_WRITE_OPS, LEAD_SORT_FIELDS, @nestjs/common, @prisma/client
-
-### Community 76 - "LockoutService"
-Cohesion: 0.19
-Nodes (3): AuthService, generateRandomToken(), LockoutService
+Cohesion: 0.10
+Nodes (6): BRANCH_SCOPED_MODELS, FILTERABLE_READ_OPS, PrismaService, SCOPED_WRITE_OPS, LEAD_SORT_FIELDS, @nestjs/common
 
 ### Community 78 - "@nestjs/common"
-Cohesion: 0.18
-Nodes (8): NoStoreInterceptor, ClinicalHistoryModule, PermissionAction, CREATE, DELETE, UPDATE, VIEW, VIEW_ALL
+Cohesion: 0.19
+Nodes (9): NoStoreInterceptor, PERMISSION_KEY, PermissionRequirement, PermissionAction, CREATE, DELETE, UPDATE, VIEW (+1 more)
 
 ### Community 80 - "access.e2e-spec.ts"
-Cohesion: 0.25
-Nodes (7): AppModule, GlobalExceptionFilter, QueryCounter, bootstrap(), cookie-parser, @nestjs/testing, supertest
+Cohesion: 0.22
+Nodes (11): AppModule, GlobalExceptionFilter, QueryCounter, bootstrap(), ClientStatus, ACTIVE, DISCHARGED, ON_HOLD (+3 more)
 
 ### Community 81 - "clinical.service.ts"
 Cohesion: 0.11
-Nodes (17): DAY_MAP, GeneratedSlot, generateScheduleSlots(), ALL_PROFILE_TABS, CLIENT_SORT_FIELDS, TAB_MODULE_MAP, EXPENSE_SORT_FIELDS, INVOICE_SORT_FIELDS (+9 more)
+Nodes (22): ALL_PROFILE_TABS, CLIENT_SORT_FIELDS, TAB_MODULE_MAP, ASSESSMENT_SORT_FIELDS, RecordVersionParams, EXPENSE_SORT_FIELDS, INVOICE_SORT_FIELDS, PAYMENT_SORT_FIELDS (+14 more)
 
 ### Community 82 - "src/index.ts"
-Cohesion: 0.10
-Nodes (12): LeadQueryDto, LeadStage, ASSESSMENT_SCHEDULED, CONTACTED, CONVERTED, LOST, NEW, PaginationMetaCursor (+4 more)
+Cohesion: 0.15
+Nodes (7): LeadQueryDto, LeadStage, ASSESSMENT_SCHEDULED, CONTACTED, CONVERTED, LOST, NEW
 
 ### Community 84 - "RoleKey"
-Cohesion: 0.09
-Nodes (8): UpdateClientDto, ClinicalService, LeadService, RoleKey, DIRECTOR, MANAGER, PARENT, THERAPIST
+Cohesion: 0.08
+Nodes (9): ClinicalService, LeadService, ReportActivityQueryDto, ReportService, RoleKey, DIRECTOR, MANAGER, PARENT (+1 more)
 
-### Community 86 - "MessageStatus"
-Cohesion: 0.17
-Nodes (7): WebhookPayloadDto, MessageStatus, DELIVERED, FAILED, QUEUED, READ, SENT
-
-### Community 87 - "CreateProgressEntryDto"
-Cohesion: 0.09
-Nodes (8): CreateProgressEntryDto, UpdateProgressEntryDto, ProgressLevel, ACHIEVED, EMERGING, NO_CHANGE, PROGRESSING, REGRESSED
+### Community 87 - "src/index.ts"
+Cohesion: 0.11
+Nodes (8): PaginationMetaCursor, PaginationMetaOffset, ProgressLevel, ACHIEVED, EMERGING, NO_CHANGE, PROGRESSING, REGRESSED
 
 ### Community 88 - "otp.service.ts"
 Cohesion: 0.16
-Nodes (7): AuthModule, ConsoleOtpSender, IOtpSender, OTP_SENDER, OtpService, generateNumericOtp(), sha256()
+Nodes (6): AuthModule, ConsoleOtpSender, IOtpSender, OTP_SENDER, OtpService, generateNumericOtp()
 
-### Community 89 - "Get"
-Cohesion: 0.16
-Nodes (5): AppointmentController, ClientController, FinanceController, LeadController, ReportController
+### Community 89 - "CurrentUser"
+Cohesion: 0.18
+Nodes (3): CurrentUser, FinanceController, HrController
 
 ### Community 90 - "CreateGoalDto"
 Cohesion: 0.12
 Nodes (5): CreateGoalDto, UpdateGoalDto, GoalTerm, LONG, SHORT
 
-### Community 92 - "@nestjs/swagger"
-Cohesion: 0.14
-Nodes (3): class-transformer, class-validator, @nestjs/swagger
+### Community 91 - "LeaveQueryDto"
+Cohesion: 0.15
+Nodes (7): LeaveQueryDto, LeaveType, CASUAL, OTHER, PAID, SICK, UNPAID
 
 ### Community 93 - "audit.service.ts"
-Cohesion: 0.10
-Nodes (4): AuditController, sanitizeAuditMetadata(), AuditService, AuditLogQueryDto
+Cohesion: 0.12
+Nodes (9): ResolvedModulePermissions, ResolvedPermissionsMap, AuditController, sanitizeAuditMetadata(), AuditService, PermissionScope, ALL, ASSIGNED (+1 more)
 
 ### Community 95 - "clinical.service.ts"
-Cohesion: 0.10
-Nodes (7): AuditSensitiveRead(), ClinicalHistoryController, VersionHistoryQueryDto, VersionService, Decisions Made, Open Items, Petals ERP – Build Progress
+Cohesion: 0.18
+Nodes (3): AuditSensitiveRead(), ClinicalHistoryController, VersionHistoryQueryDto
+
+### Community 96 - "auth.service.ts"
+Cohesion: 0.24
+Nodes (7): AuthTokens, TokenPayload, hashPassword(), sha256(), ALLOWED_MIME_TYPES, @nestjs/config, otplib
 
 ### Community 97 - "common/index.ts"
-Cohesion: 0.07
-Nodes (18): EnvironmentVariables, validate(), CursorPaginatedResponse, CursorPaginationMeta, OffsetPaginatedResponse, OffsetPaginationMeta, PrismaModule, LockoutResult (+10 more)
+Cohesion: 0.20
+Nodes (10): CurrentBranch, LockoutResult, MemoryLockEntry, RateLimitModule, Throttle(), THROTTLE_KEY, ThrottleOptions, MemoryCacheEntry (+2 more)
 
 ### Community 101 - "CreateInvoiceDto"
-Cohesion: 0.08
-Nodes (3): CreateInvoiceDto, ExpenseQueryDto, PnlQueryDto
+Cohesion: 0.04
+Nodes (5): UpdateAssessmentDto, CreateExpenseDto, CreateInvoiceDto, ExpenseQueryDto, PnlQueryDto
+
+### Community 104 - "user.service.ts"
+Cohesion: 0.06
+Nodes (7): AssignBranchDto, CreateUserDto, UpdateUserDto, UserController, UserModule, USER_SORT_FIELDS, UserService
 
 ### Community 106 - "export-finance.dto.ts"
-Cohesion: 0.40
-Nodes (5): ExportType, EXPENSES, INVOICES, PAYMENTS, PNL
+Cohesion: 0.22
+Nodes (8): ExportFormat, EXCEL, PDF, ExportType, EXPENSES, INVOICES, PAYMENTS, PNL
 
 ### Community 107 - "employee.service.ts"
-Cohesion: 0.21
-Nodes (8): BRANCH_SORT_FIELDS, BranchQueryDto, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy(), USER_SORT_FIELDS
+Cohesion: 0.33
+Nodes (7): BRANCH_SORT_FIELDS, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy(), EMPLOYEE_SORT_FIELDS
 
 ### Community 112 - "CreateScheduleDto"
 Cohesion: 0.15
-Nodes (4): RestoreEntityDto, CursorPaginationDto, OffsetPaginationDto, DocumentUploadUrlDto
+Nodes (3): RestoreEntityDto, RecordCallLogDto, DocumentUploadUrlDto
+
+### Community 115 - ".createSchedule"
+Cohesion: 0.22
+Nodes (6): DAY_MAP, GeneratedSlot, generateScheduleSlots(), Decisions Made, Open Items, Petals ERP – Build Progress
 
 ### Community 116 - "TemplateStatus"
 Cohesion: 0.20
@@ -398,59 +422,59 @@ Nodes (6): TemplateQueryDto, TemplateStatus, APPROVED, DRAFT, PENDING_APPROVAL, 
 
 ### Community 119 - "InvoiceQueryDto"
 Cohesion: 0.18
-Nodes (5): InvoiceQueryDto, InvoiceStatus, ADVANCE, PAID, PENDING
-
-### Community 121 - "ClientQueryDto"
-Cohesion: 0.20
-Nodes (5): ClientQueryDto, ClientStatus, ACTIVE, DISCHARGED, ON_HOLD
+Nodes (4): InvoiceQueryDto, RevenueCategory, ASSESSMENT_FEE, CLINICAL_THERAPY
 
 ### Community 122 - "email-provider.interface.ts"
 Cohesion: 0.39
 Nodes (4): EmailProvider, SendEmailParams, SendEmailResult, FakeEmailProvider
 
 ### Community 125 - "RecordPaymentDto"
-Cohesion: 0.17
+Cohesion: 0.12
 Nodes (6): PaymentQueryDto, PaymentMethod, BANK_TRANSFER, CARD, CASH, UPI
-
-### Community 126 - "StorageService"
-Cohesion: 0.22
-Nodes (3): ALLOWED_MIME_TYPES, StorageService, @nestjs/config
 
 ### Community 129 - "two-factor.dto.ts"
 Cohesion: 0.50
 Nodes (3): Disable2faDto, Enable2faDto, Verify2faLoginDto
 
-### Community 132 - "ConvertLeadDto"
-Cohesion: 0.12
-Nodes (3): LoginDto, CreateGuardianDto, ConvertLeadDto
+### Community 151 - "OffsetPaginationDto"
+Cohesion: 0.11
+Nodes (5): BranchQueryDto, CursorPaginationDto, OffsetPaginationDto, EmployeeQueryDto, UserQueryDto
 
-### Community 157 - "LeaveStatus"
+### Community 163 - "pagination-response.dto.ts"
+Cohesion: 0.38
+Nodes (4): CursorPaginatedResponse, CursorPaginationMeta, OffsetPaginatedResponse, OffsetPaginationMeta
+
+### Community 177 - "ReportStatus"
 Cohesion: 0.40
-Nodes (5): LeaveStatus, APPROVED, CANCELLED, PENDING, REJECTED
+Nodes (5): ReportStatus, DRAFT, REVIEWED, SHARED, SUBMITTED
 
-### Community 162 - "ExportFormat"
-Cohesion: 0.67
-Nodes (3): ExportFormat, EXCEL, PDF
+### Community 178 - "crypto.util.ts"
+Cohesion: 0.83
+Nodes (3): decryptSecret(), encryptSecret(), getEncryptionKey()
+
+### Community 179 - "InvoiceStatus"
+Cohesion: 0.50
+Nodes (4): InvoiceStatus, ADVANCE, PAID, PENDING
 
 ## Knowledge Gaps
-- **104 isolated node(s):** `DIRECTOR`, `MANAGER`, `THERAPIST`, `PARENT`, `ACTIVE` (+99 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 916 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **102 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **109 isolated node(s):** `DIRECTOR`, `MANAGER`, `THERAPIST`, `PARENT`, `ACTIVE` (+104 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 981 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **112 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RoleKey` connect `RoleKey` to `RequirePermission`, `auth.service.ts`, `.findDailySchedule`, `ClientService`, `AppModule`, `employee.service.ts`, `PrismaService`, `communication.service.ts`, `IRequestContext`, `CurrentUser`, `CreateTreatmentPlanDto`, `@nestjs/core`, `PermissionScope`, `CommunicationService`, `ReportService`, `@nestjs/common`, `AuthGuard`, `@nestjs/common`, `access.e2e-spec.ts`, `clinical.service.ts`, `src/index.ts`, `IRequestContext`, `FinanceService`, `Get`, `audit.service.ts`, `auth.controller.ts`, `AccessService`, `employee.service.ts`, `AppointmentService`?**
-  _High betweenness centrality (0.162) - this node is a cross-community bridge._
+- **Why does `RoleKey` connect `RoleKey` to `RequirePermission`, `.findDailySchedule`, `ReportController`, `CancelAppointmentDto`, `communication.service.ts`, `IRequestContext`, `department.controller.ts`, `CurrentUser`, `auth.guard.ts`, `IRequestContext`, `CommunicationService`, `@nestjs/common`, `@nestjs/common`, `access.e2e-spec.ts`, `clinical.service.ts`, `IRequestContext`, `FinanceService`, `src/index.ts`, `CurrentUser`, `audit.service.ts`, `auth.service.ts`, `auth.controller.ts`, `user.service.ts`, `AccessService`, `employee.service.ts`, `.invalidateDailyCache`, `.createSchedule`, `StorageService`?**
+  _High betweenness centrality (0.130) - this node is a cross-community bridge._
 - **What connects `DIRECTOR`, `MANAGER`, `THERAPIST` to the rest of the system?**
-  _104 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _109 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `4.1 Director` be split into smaller, more focused modules?**
   _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
-- **Why does `@nestjs/common` connect `@nestjs/common` to `auth.service.ts`, `api/package.json`, `AppModule`, `dependencies`, `employee.service.ts`, `PrismaService`, `communication.service.ts`, `IRequestContext`, `CreateTreatmentPlanDto`, `@nestjs/core`, `audit.interceptor.ts`, `PermissionScope`, `app.module.ts`, `AuthGuard`, `@nestjs/common`, `access.e2e-spec.ts`, `clinical.service.ts`, `otp.service.ts`, `audit.service.ts`, `common/index.ts`, `auth.controller.ts`, `employee.service.ts`, `email-provider.interface.ts`, `StorageService`?**
-  _High betweenness centrality (0.098) - this node is a cross-community bridge._
+- **Why does `@nestjs/common` connect `@nestjs/common` to `api/package.json`, `dependencies`, `communication.service.ts`, `IRequestContext`, `department.controller.ts`, `auth.guard.ts`, `audit.interceptor.ts`, `app.module.ts`, `@nestjs/common`, `access.e2e-spec.ts`, `clinical.service.ts`, `otp.service.ts`, `audit.service.ts`, `auth.service.ts`, `common/index.ts`, `auth.controller.ts`, `user.service.ts`, `employee.service.ts`, `VersionService`, `email-provider.interface.ts`?**
+  _High betweenness centrality (0.122) - this node is a cross-community bridge._
 - **Should `api/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
-- **Why does `@nestjs/swagger` connect `@nestjs/swagger` to `two-factor.dto.ts`, `api/package.json`, `ReportType`, `dependencies`, `employee.service.ts`, `PrismaService`, `IRequestContext`, `CreateTreatmentPlanDto`, `app.module.ts`, `CreateSubgoalDto`, `@nestjs/common`, `@nestjs/common`, `access.e2e-spec.ts`, `src/index.ts`, `CreateProgressEntryDto`, `CreateGoalDto`, `audit.service.ts`, `common/index.ts`, `auth.controller.ts`, `CreateScheduleDto`, `pagination/index.ts`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **Why does `@nestjs/swagger` connect `class-validator` to `two-factor.dto.ts`, `api/package.json`, `pagination/index.ts`, `dependencies`, `OffsetPaginationDto`, `CreateBranchDto`, `IRequestContext`, `department.controller.ts`, `pagination-response.dto.ts`, `app.module.ts`, `CreateSubgoalDto`, `@nestjs/common`, `access.e2e-spec.ts`, `src/index.ts`, `CreateGoalDto`, `audit.service.ts`, `auth.controller.ts`, `export-finance.dto.ts`, `class-transformer`, `InvoiceQueryDto`, `RecordPaymentDto`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **Should `CommunicationChannel` be split into smaller, more focused modules?**
-  _Cohesion score 0.09782608695652174 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._

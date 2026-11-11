@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794380065.2167099,
-    "seen": 1794385047.5634747,
-    "ast_hash": "17a5d6fbaabf7db85a8c7da369618e15",
+    "mtime": 1794385928.0875244,
+    "seen": 1794387078.368125,
+    "ast_hash": "9788c72b23a223d8320d03756cea2821",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794379790.2696273,
-    "seen": 1794385047.8294873,
-    "ast_hash": "42a86f60c3d4be67f2fa62409d1a7efc",
+    "mtime": 1794385688.7500029,
+    "seen": 1794387078.7643676,
+    "ast_hash": "809ff5bc8de2ef464d38366863d16783",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -1665,6 +1665,114 @@
     "mtime": 1794384678.5297208,
     "seen": 1794385047.81049,
     "ast_hash": "6f1c34541baa90a8585b6657b449f9ff",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/check-in.dto.ts": {
+    "mtime": 1794385950.4029715,
+    "seen": 1794387078.6794944,
+    "ast_hash": "3a4d46e591e7bfb76621c21f08bd6863",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/check-out.dto.ts": {
+    "mtime": 1794385950.574693,
+    "seen": 1794387078.6794944,
+    "ast_hash": "c4de8b1426841cef42cafd8fe76c34aa",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/create-holiday.dto.ts": {
+    "mtime": 1794385950.788777,
+    "seen": 1794387078.6794944,
+    "ast_hash": "09d882c50b048ea9719b766e32ff29d6",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/create-leave-request.dto.ts": {
+    "mtime": 1794385951.0437188,
+    "seen": 1794387078.6794944,
+    "ast_hash": "7650a55e0b81ddb8271b82dde5f68289",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/daily-attendance-query.dto.ts": {
+    "mtime": 1794385951.1326272,
+    "seen": 1794387078.6794944,
+    "ast_hash": "4c53358464f935eaaad365d8d0626cb3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/director-availability.dto.ts": {
+    "mtime": 1794385951.3614364,
+    "seen": 1794387078.6794944,
+    "ast_hash": "2ea8d8ce5e8e5f468723f9bdd50c928e",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/employee-activity-query.dto.ts": {
+    "mtime": 1794385951.5406976,
+    "seen": 1794387078.6794944,
+    "ast_hash": "57c9a5c4d87b388587cc6806b43ff341",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/employee-goals-query.dto.ts": {
+    "mtime": 1794385951.7634716,
+    "seen": 1794387078.6794944,
+    "ast_hash": "4549727cd195a00ae5154d7c70b28192",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/holiday-query.dto.ts": {
+    "mtime": 1794385951.9256387,
+    "seen": 1794387078.6794944,
+    "ast_hash": "bad2fb8b0491831dddd5d5b094811f79",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/index.ts": {
+    "mtime": 1794385951.9609044,
+    "seen": 1794387078.680494,
+    "ast_hash": "f86678b6e49ee538e4f98f25cf929aae",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/leave-decision.dto.ts": {
+    "mtime": 1794385952.2726965,
+    "seen": 1794387078.680494,
+    "ast_hash": "008f4f16a645901d925cb637df117863",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/leave-query.dto.ts": {
+    "mtime": 1794385952.34135,
+    "seen": 1794387078.680494,
+    "ast_hash": "0b2728007e3ed43d80bc2b129059dae6",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/dto/monthly-attendance-query.dto.ts": {
+    "mtime": 1794385952.96195,
+    "seen": 1794387078.680494,
+    "ast_hash": "72dbbcfdc6386cffa7a2897f7abcd77f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/hr.controller.ts": {
+    "mtime": 1794385952.9712372,
+    "seen": 1794387078.680494,
+    "ast_hash": "849b8be04250b2654004382435eb56cc",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/hr.module.ts": {
+    "mtime": 1794385953.3772209,
+    "seen": 1794387078.680494,
+    "ast_hash": "05e54d08de8047719eeea6d1e187aa75",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/hr.service.spec.ts": {
+    "mtime": 1794386083.8686535,
+    "seen": 1794387078.680494,
+    "ast_hash": "66319a73704e740056f84ae6785014cc",
+    "semantic_hash": ""
+  },
+  "apps/api/src/hr/hr.service.ts": {
+    "mtime": 1794385975.6609313,
+    "seen": 1794387078.680494,
+    "ast_hash": "411c648b4cd45ff715e5d7b63eec0a0b",
+    "semantic_hash": ""
+  },
+  "apps/api/test/hr.e2e-spec.ts": {
+    "mtime": 1794386620.014048,
+    "seen": 1794387078.7363813,
+    "ast_hash": "096f1707c2f7d49cdad7dfe55ce01189",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {
