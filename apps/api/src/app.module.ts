@@ -16,6 +16,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { FinanceModule } from './finance/finance.module';
 import { ReportModule } from './report/report.module';
 import { LeadModule } from './lead/lead.module';
+import { CommunicationModule } from './communication/communication.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -40,6 +41,7 @@ import { AppService } from './app.service';
     FinanceModule,
     ReportModule,
     LeadModule,
+    CommunicationModule,
     CommonModule,
   ],
   controllers: [AppController],

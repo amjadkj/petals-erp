@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/app.module.ts": {
-    "mtime": 1794338526.4484248,
-    "seen": 1794340339.0545712,
-    "ast_hash": "26d745b3bcb95e0658a24f3a7526b600",
+    "mtime": 1794380065.2167099,
+    "seen": 1794385047.5634747,
+    "ast_hash": "17a5d6fbaabf7db85a8c7da369618e15",
     "semantic_hash": ""
   },
   "apps/api/src/app.service.spec.ts": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "packages/types/src/index.ts": {
-    "mtime": 1794338362.3447218,
-    "seen": 1794340339.2651746,
-    "ast_hash": "40662014084b7f2795e19dea71ec362a",
+    "mtime": 1794379790.2696273,
+    "seen": 1794385047.8294873,
+    "ast_hash": "42a86f60c3d4be67f2fa62409d1a7efc",
     "semantic_hash": ""
   },
   "packages/types/tsconfig.json": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1794340372.6267946,
-    "seen": 1794340442.5374014,
-    "ast_hash": "a460ed12c7765ac9507b18fed4b6cf2a",
+    "mtime": 1794385032.6666126,
+    "seen": 1794385047.8414893,
+    "ast_hash": "916cd48a5e46e761437f3a6550f0b684",
     "semantic_hash": ""
   },
   "docs/er-diagram.md": {
@@ -1551,6 +1551,120 @@
     "mtime": 1794339695.165879,
     "seen": 1794340339.2501965,
     "ast_hash": "3fb340893bdac53575a2a7eb0f96f508",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/communication-queue.service.ts": {
+    "mtime": 1794384613.3195646,
+    "seen": 1794385047.725896,
+    "ast_hash": "07903570b329d80819ec1c6e820f646b",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/communication.controller.ts": {
+    "mtime": 1794384666.651191,
+    "seen": 1794385047.725896,
+    "ast_hash": "f5ee793198f4d78b57176a5215ffd04c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/communication.module.ts": {
+    "mtime": 1794384666.8598654,
+    "seen": 1794385047.725896,
+    "ast_hash": "26e4500e851a055179dcd7a3d25d58a3",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/communication.service.spec.ts": {
+    "mtime": 1794380134.5525956,
+    "seen": 1794385047.725896,
+    "ast_hash": "5aaf8aef86ab2fd097be849390b0e185",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/communication.service.ts": {
+    "mtime": 1794383537.001378,
+    "seen": 1794385047.725896,
+    "ast_hash": "4cc809c3ed223eb09641d1af646c8b27",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/communication-log-query.dto.ts": {
+    "mtime": 1794384670.2591112,
+    "seen": 1794385047.725896,
+    "ast_hash": "87092dc651bb97f30729e418e7e94bc2",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/create-template.dto.ts": {
+    "mtime": 1794384670.278667,
+    "seen": 1794385047.725896,
+    "ast_hash": "609da9cad24b75df9e11c0f1670cf00a",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/index.ts": {
+    "mtime": 1794384672.2927287,
+    "seen": 1794385047.725896,
+    "ast_hash": "6d16527ba8736a0c66837acfe406f2fe",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/record-call-log.dto.ts": {
+    "mtime": 1794384672.421936,
+    "seen": 1794385047.725896,
+    "ast_hash": "b4664ed020b681490d0bca2750b7728c",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/send-bulk.dto.ts": {
+    "mtime": 1794384672.6580188,
+    "seen": 1794385047.725896,
+    "ast_hash": "5c45438d3ed3670bfec5dfe356b8a08e",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/send-message.dto.ts": {
+    "mtime": 1794384670.1937912,
+    "seen": 1794385047.725896,
+    "ast_hash": "e5a28ddb875d5ed1dbcf686d0c337c41",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/template-query.dto.ts": {
+    "mtime": 1794384673.5744004,
+    "seen": 1794385047.725896,
+    "ast_hash": "aacc0603e7c40fe461dce86b53987e7f",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/update-template.dto.ts": {
+    "mtime": 1794384674.8766348,
+    "seen": 1794385047.725896,
+    "ast_hash": "dd4f66655d205c0e8fa6c1b4ac1eec08",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/dto/webhook-payload.dto.ts": {
+    "mtime": 1794384675.9675515,
+    "seen": 1794385047.7269003,
+    "ast_hash": "4195564f6f594335840eaa2f782c05d5",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/interfaces/email-provider.interface.ts": {
+    "mtime": 1794384677.6757367,
+    "seen": 1794385047.7269003,
+    "ast_hash": "1c146f50e6de7b05cd4b2a69e31384d7",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/interfaces/whatsapp-provider.interface.ts": {
+    "mtime": 1794384677.7823164,
+    "seen": 1794385047.7269003,
+    "ast_hash": "2024de9e4e0e0ab092c614e8989ab343",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/providers/fake-email.provider.ts": {
+    "mtime": 1794384678.3330872,
+    "seen": 1794385047.7269003,
+    "ast_hash": "b633a1d4827d2572c3bcea70e0fc50c2",
+    "semantic_hash": ""
+  },
+  "apps/api/src/communication/providers/fake-whatsapp.provider.ts": {
+    "mtime": 1794384678.3340826,
+    "seen": 1794385047.7269003,
+    "ast_hash": "1a1dbddff5c536f8a984a6d5cf020caf",
+    "semantic_hash": ""
+  },
+  "apps/api/test/communication.e2e-spec.ts": {
+    "mtime": 1794384678.5297208,
+    "seen": 1794385047.81049,
+    "ast_hash": "6f1c34541baa90a8585b6657b449f9ff",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

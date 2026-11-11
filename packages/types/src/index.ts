@@ -80,6 +80,27 @@ export enum LeadStage {
   LOST = 'LOST',
 }
 
+export enum CommunicationChannel {
+  WHATSAPP = 'WHATSAPP',
+  EMAIL = 'EMAIL',
+  CALL = 'CALL',
+}
+
+export enum MessageStatus {
+  QUEUED = 'QUEUED',
+  SENT = 'SENT',
+  DELIVERED = 'DELIVERED',
+  READ = 'READ',
+  FAILED = 'FAILED',
+}
+
+export enum TemplateStatus {
+  DRAFT = 'DRAFT',
+  PENDING_APPROVAL = 'PENDING_APPROVAL',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
 export enum RevenueCategory {
   CLINICAL_THERAPY = 'CLINICAL_THERAPY',
   ASSESSMENT_FEE = 'ASSESSMENT_FEE',
