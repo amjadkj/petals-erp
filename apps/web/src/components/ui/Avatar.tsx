@@ -2,20 +2,21 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface AvatarProps {
-  name: string;
+  name?: string | null;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'purple' | 'teal';
   className?: string;
 }
 
 export function Avatar({
-  name,
+  name = '',
   size = 'md',
   variant,
   className,
 }: AvatarProps) {
   // Generate 1-2 letter initials
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const safeName = (name ?? '').trim();
+  const parts = safeName.split(/\s+/).filter(Boolean);
   const initials =
     parts.length >= 2
       ? `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
@@ -24,7 +25,7 @@ export function Avatar({
   // If variant not specified, hash name to choose purple or teal
   const resolvedVariant =
     variant ??
-    (name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 2 === 0
+    (safeName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 2 === 0
       ? 'purple'
       : 'teal');
 
@@ -41,7 +42,7 @@ export function Avatar({
 
   return (
     <div
-      aria-label={name}
+      aria-label={safeName || 'Avatar'}
       className={cn(
         'rounded-full flex items-center justify-center font-medium select-none shrink-0',
         sizeStyles[size],

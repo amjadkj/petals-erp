@@ -135,13 +135,23 @@ export function EmployeesView() {
 
   const allEmployees: EmployeeItem[] = useMemo(() => {
     if (employeesResponse?.data && employeesResponse.data.length > 0) {
-      return employeesResponse.data.map((emp, idx) => ({
-        ...emp,
-        employeeCode: `PTL-E00${idx + 1}`,
-        designation: emp.designation || 'Specialist',
-        department: emp.departmentId || 'Speech Therapy',
-        branchName: 'Indiranagar',
-      }));
+      return employeesResponse.data.map((emp, idx) => {
+        const raw = emp as any;
+        return {
+          ...emp,
+          id: raw.id || `emp-${idx}`,
+          name: raw.name || raw.user?.name || 'Staff Member',
+          email: raw.email || raw.user?.email || '',
+          phone: raw.phone || raw.user?.phone || '',
+          roleKey: raw.roleKey || raw.user?.role?.key || 'THERAPIST',
+          isActive: raw.isActive ?? raw.user?.isActive ?? true,
+          branchIds: raw.branchIds || raw.user?.branches?.map((b: any) => b.branchId) || [],
+          employeeCode: raw.employeeCode || `PTL-E00${idx + 1}`,
+          designation: raw.designation || 'Specialist',
+          department: raw.department?.name || raw.departmentId || 'Speech Therapy',
+          branchName: raw.user?.branches?.[0]?.branch?.name || 'Indiranagar',
+        };
+      });
     }
     return localEmployees;
   }, [employeesResponse, localEmployees]);
@@ -156,9 +166,9 @@ export function EmployeesView() {
       }
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesName = emp.name.toLowerCase().includes(q);
-        const matchesCode = emp.employeeCode?.toLowerCase().includes(q);
-        const matchesDept = emp.department?.toLowerCase().includes(q);
+        const matchesName = (emp.name || '').toLowerCase().includes(q);
+        const matchesCode = (emp.employeeCode || '').toLowerCase().includes(q);
+        const matchesDept = (emp.department || '').toLowerCase().includes(q);
         if (!matchesName && !matchesCode && !matchesDept) return false;
       }
       return true;
