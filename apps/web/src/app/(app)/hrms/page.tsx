@@ -1,18 +1,10 @@
 'use client';
 
 import { usePageTitle } from '@/lib/context/PageTitleContext';
+import { HrmsView } from '@/features/hrms';
 
 export default function HrmsPage() {
   usePageTitle('HRMS');
 
-  return (
-    <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-6">
-      <h2 className="font-quicksand font-bold text-2xl text-purple-600 mb-2">
-        HRMS &amp; Attendance
-      </h2>
-      <p className="text-sm text-gray-500">
-        Staff check-in/out, daily &amp; monthly attendance, leaves, and holidays coming in Phase B.
-      </p>
-    </div>
-  );
+  return <HrmsView />;
 }
