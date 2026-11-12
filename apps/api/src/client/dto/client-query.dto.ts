@@ -1,10 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ClientStatus } from '@petals/types';
 import { OffsetPaginationDto } from '../../common/pagination';
 
 export class ClientQueryDto extends OffsetPaginationDto {
   @ApiPropertyOptional({ description: 'Filter by branch UUID' })
+  @Transform(({ value }) => (Array.isArray(value) ? value[0] : value))
   @IsUUID()
   @IsOptional()
   branchId?: string;

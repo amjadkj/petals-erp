@@ -59,8 +59,12 @@ export async function fetcher<T>(
   // Build URL
   let url = `${BASE_URL}/api/v1${path}`;
   if (!options.skipBranchId && selectedBranchId && selectedBranchId !== 'ALL') {
-    const separator = url.includes('?') ? '&' : '?';
-    url = `${url}${separator}branchId=${selectedBranchId}`;
+    // Avoid duplicate branchId query parameter if path already contains one
+    const hasBranchId = /[?&]branchId=/.test(url);
+    if (!hasBranchId) {
+      const separator = url.includes('?') ? '&' : '?';
+      url = `${url}${separator}branchId=${encodeURIComponent(selectedBranchId)}`;
+    }
   }
 
   const headers: Record<string, string> = {

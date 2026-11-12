@@ -1,4 +1,5 @@
 import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AppointmentStatus } from '@petals/types';
 
@@ -13,6 +14,7 @@ export class AppointmentQueryDto {
 
   @ApiPropertyOptional({ description: 'Branch ID' })
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value[0] : value))
   @IsUUID('4')
   branchId?: string;
 
