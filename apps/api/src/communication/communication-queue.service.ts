@@ -53,18 +53,35 @@ export class CommunicationQueueService implements OnModuleInit, OnModuleDestroy 
       return;
     }
 
-    const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
+    let redisHost = process.env.REDIS_HOST || 'localhost';
+    let redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
+    let redisPassword = process.env.REDIS_PASSWORD || undefined;
+
+    if (process.env.REDIS_URL) {
+      try {
+        const parsed = new URL(process.env.REDIS_URL);
+        redisHost = parsed.hostname || redisHost;
+        redisPort = parsed.port ? parseInt(parsed.port, 10) : redisPort;
+        if (parsed.password) {
+          redisPassword = decodeURIComponent(parsed.password);
+        }
+      } catch {
+        // Fall back to individual vars
+      }
+    }
+
+    const connectionOptions = {
+      host: redisHost,
+      port: redisPort,
+      password: redisPassword,
+      maxRetriesPerRequest: null,
+      enableOfflineQueue: false,
+      retryStrategy: () => null, // Do not hang if offline
+    };
 
     try {
       this.queue = new Queue<CommunicationJobData>('communication-messages', {
-        connection: {
-          host: redisHost,
-          port: redisPort,
-          maxRetriesPerRequest: null,
-          enableOfflineQueue: false,
-          retryStrategy: () => null, // Do not hang if offline
-        },
+        connection: connectionOptions,
         defaultJobOptions: {
           attempts: 3,
           backoff: {
@@ -86,13 +103,7 @@ export class CommunicationQueueService implements OnModuleInit, OnModuleDestroy 
           await this.processJob(job.data);
         },
         {
-          connection: {
-            host: redisHost,
-            port: redisPort,
-            maxRetriesPerRequest: null,
-            enableOfflineQueue: false,
-            retryStrategy: () => null,
-          },
+          connection: connectionOptions,
           concurrency: 5,
         },
       );
