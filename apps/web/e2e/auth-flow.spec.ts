@@ -29,3 +29,4 @@ test.describe('Auth Flow', () => {
     await expect(page.getByRole('button', { name: /Verify Code/i })).toBeVisible();
   });
 });
+

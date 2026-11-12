@@ -71,3 +71,4 @@
 3. **PWA Scope & Security:** Serwist service worker precaches static assets, fonts, and the app shell. A read-only cache is enabled strictly for today's therapist schedule. **Clinical and financial data are explicitly bypassed with `NetworkOnly` and never stored in offline caches.**
 4. **Indian Localization:** Monetary figures format using Indian digit grouping (`₹4.2L`, `₹48,000`). Dates follow standard `04 Nov 2026` IST formatting.
 5. **No Shadows:** Clean typography-first design using 1px `#E6D8F1`/`#D9D4DE` borders and 12px card border radius.
+

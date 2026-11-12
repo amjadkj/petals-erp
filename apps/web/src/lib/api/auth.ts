@@ -1,5 +1,5 @@
 import { fetcher } from './fetcher';
-import type { ApiResponse, UserSummary } from '@petals/types';
+import type { UserSummary } from '@petals/types';
 
 export interface LoginResult {
   accessToken?: string;
@@ -10,61 +10,61 @@ export interface LoginResult {
 
 export const authApi = {
   login: (email: string, password: string) =>
-    fetcher<ApiResponse<LoginResult>>('/auth/login', {
+    fetcher<LoginResult>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
 
   verify2fa: (tempToken: string, code: string) =>
-    fetcher<ApiResponse<LoginResult>>('/auth/2fa/verify-login', {
+    fetcher<LoginResult>('/auth/2fa/verify-login', {
       method: 'POST',
       body: JSON.stringify({ tempToken, code }),
     }),
 
-  requestOtp: (contact: string) =>
-    fetcher<ApiResponse<{ message: string }>>('/auth/otp/request', {
+  requestOtp: (target: string, purpose: string = 'LOGIN') =>
+    fetcher<{ message: string }>('/auth/otp/request', {
       method: 'POST',
-      body: JSON.stringify({ contact }),
+      body: JSON.stringify({ target, purpose }),
     }),
 
-  verifyOtp: (contact: string, code: string) =>
-    fetcher<ApiResponse<LoginResult>>('/auth/otp/verify', {
+  verifyOtp: (target: string, code: string, purpose: string = 'LOGIN') =>
+    fetcher<LoginResult>('/auth/otp/verify', {
       method: 'POST',
-      body: JSON.stringify({ contact, code }),
+      body: JSON.stringify({ target, code, purpose }),
     }),
 
   refresh: () =>
-    fetcher<ApiResponse<{ accessToken: string }>>('/auth/refresh', {
+    fetcher<{ accessToken: string }>('/auth/refresh', {
       method: 'POST',
     }),
 
   logout: () =>
-    fetcher<ApiResponse<{ message: string }>>('/auth/logout', {
+    fetcher<{ message: string }>('/auth/logout', {
       method: 'POST',
     }),
 
   getMe: () =>
-    fetcher<ApiResponse<UserSummary>>('/auth/me'),
+    fetcher<UserSummary>('/auth/me'),
 
   setup2fa: () =>
-    fetcher<ApiResponse<{ qrCode: string; manualKey: string }>>('/auth/2fa/setup', {
+    fetcher<{ qrCode: string; manualKey: string }>('/auth/2fa/setup', {
       method: 'POST',
     }),
 
   enable2fa: (code: string) =>
-    fetcher<ApiResponse<{ message: string }>>('/auth/2fa/enable', {
+    fetcher<{ message: string }>('/auth/2fa/enable', {
       method: 'POST',
       body: JSON.stringify({ code }),
     }),
 
   disable2fa: (code: string) =>
-    fetcher<ApiResponse<{ message: string }>>('/auth/2fa/disable', {
+    fetcher<{ message: string }>('/auth/2fa/disable', {
       method: 'POST',
       body: JSON.stringify({ code }),
     }),
 
   changePassword: (oldPassword: string, newPassword: string) =>
-    fetcher<ApiResponse<{ message: string }>>('/auth/change-password', {
+    fetcher<{ message: string }>('/auth/change-password', {
       method: 'POST',
       body: JSON.stringify({ oldPassword, newPassword }),
     }),

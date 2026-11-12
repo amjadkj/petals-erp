@@ -38,3 +38,4 @@ test.describe('App Shell & Navigation', () => {
     await expect(drawer.getByText('Clients')).toBeVisible();
   });
 });
+

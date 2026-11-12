@@ -100,10 +100,10 @@ export default function OtpLoginPage() {
     setLoading(true);
 
     try {
-      const res = await authApi.verifyOtp(contact, code);
-      const data = res.data;
+      const res = await authApi.verifyOtp(contact, code, 'LOGIN');
+      const data = ((res as any)?.data ?? res) as typeof res;
 
-      if (data.accessToken && data.user) {
+      if (data?.accessToken && data?.user) {
         session.setAccessToken(data.accessToken);
         session.setUserId(data.user.id);
         session.setRoleKey(data.user.roleKey);

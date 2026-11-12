@@ -43,9 +43,10 @@ export default function LoginPage() {
 
     try {
       const res = await authApi.login(email, password);
-      const data = res.data;
+      // Handles both direct object and wrapped responses safely
+      const data = ((res as any)?.data ?? res) as typeof res;
 
-      if (data.requires2FA && data.tempToken) {
+      if (data?.requires2FA && data?.tempToken) {
         if (typeof window !== 'undefined') {
           sessionStorage.setItem('petals.tempToken', data.tempToken);
         }
@@ -53,7 +54,7 @@ export default function LoginPage() {
         return;
       }
 
-      if (data.accessToken && data.user) {
+      if (data?.accessToken && data?.user) {
         session.setAccessToken(data.accessToken);
         session.setUserId(data.user.id);
         session.setRoleKey(data.user.roleKey);

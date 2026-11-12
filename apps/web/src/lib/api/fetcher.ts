@@ -98,9 +98,16 @@ export async function fetcher<T>(
   if (res.status === 403) throw new PermissionError();
 
   if (!res.ok) {
-    let body: unknown;
-    try { body = await res.json(); } catch { /* ignore */ }
-    throw new ApiError(res.status, `API error ${res.status}`, body);
+    let body: any;
+    try {
+      body = await res.json();
+    } catch {
+      /* ignore */
+    }
+    const message =
+      (Array.isArray(body?.message) ? body.message.join(', ') : body?.message) ||
+      `API error ${res.status}`;
+    throw new ApiError(res.status, message, body);
   }
 
   // 204 No Content

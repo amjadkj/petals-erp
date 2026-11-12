@@ -31,3 +31,4 @@ test.describe('Clients and Appointments', () => {
     await expect(newApptBtn).toBeVisible();
   });
 });
+

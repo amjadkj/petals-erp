@@ -34,3 +34,4 @@ test.describe('Operations and Admin Pages', () => {
     await expect(page.getByText('Therapist')).toBeVisible();
   });
 });
+

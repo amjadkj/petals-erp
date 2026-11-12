@@ -86,3 +86,4 @@ Route (app)                                 Size  First Load JS
 1. **Web Push Backend Integration:** Web Push subscription capture is ready on the client. The NestJS backend push dispatcher will connect to this endpoint once the server-side push worker is provisioned.
 2. **Biometric Attendance Integration:** The HRMS attendance module currently supports manual entry and web check-in/out; biometric hardware webhooks will feed directly into the existing attendance API.
 3. **Figma Polish:** All page layouts, color tokens, and components follow the design specifications verbatim. When additional visual assets or iconography are created in Figma, they can be placed into `apps/web/public/` without structural changes.
+

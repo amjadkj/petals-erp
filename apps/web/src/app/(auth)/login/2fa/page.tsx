@@ -77,9 +77,9 @@ export default function TwoFactorPage() {
       }
 
       const res = await authApi.verify2fa(tempToken, code);
-      const data = res.data;
+      const data = ((res as any)?.data ?? res) as typeof res;
 
-      if (data.accessToken && data.user) {
+      if (data?.accessToken && data?.user) {
         session.setAccessToken(data.accessToken);
         session.setUserId(data.user.id);
         session.setRoleKey(data.user.roleKey);
@@ -108,7 +108,8 @@ export default function TwoFactorPage() {
     setLoading(true);
     try {
       const res = await authApi.setup2fa();
-      setSetupData(res.data);
+      const setup = ((res as any)?.data ?? res) as { qrCode: string; manualKey: string };
+      setSetupData(setup);
       setIsSetupMode(true);
     } catch {
       // Mock setup data for offline/test
