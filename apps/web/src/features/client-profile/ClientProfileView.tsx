@@ -43,7 +43,7 @@ export function ClientProfileView() {
     queryKey: ['client', clientId],
     queryFn: async () => {
       const res = await clientsApi.getClientProfile(clientId);
-      return res.data;
+      return res?.data ?? null;
     },
     enabled: !!clientId,
   });
@@ -53,7 +53,7 @@ export function ClientProfileView() {
     queryKey: ['client-overview', clientId],
     queryFn: async () => {
       const res = await clientsApi.getClientOverview(clientId);
-      return res.data;
+      return res?.data ?? null;
     },
     enabled: !!clientId,
   });
@@ -63,7 +63,7 @@ export function ClientProfileView() {
     queryKey: ['branches'],
     queryFn: async () => {
       const res = await branchesApi.getBranches();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -73,7 +73,7 @@ export function ClientProfileView() {
     queryKey: ['departments'],
     queryFn: async () => {
       const res = await departmentsApi.getDepartments();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -83,7 +83,7 @@ export function ClientProfileView() {
     queryKey: ['therapists'],
     queryFn: async () => {
       const res = await employeesApi.getEmployees();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -93,7 +93,7 @@ export function ClientProfileView() {
     queryKey: ['client-assessments', clientId],
     queryFn: async () => {
       const res = await clientsApi.getAssessments(clientId);
-      return res.data;
+      return res?.data ?? [];
     },
     enabled: !!clientId && activeTab === 'assessments',
   });
@@ -103,7 +103,7 @@ export function ClientProfileView() {
     queryKey: ['client-treatment-plans', clientId],
     queryFn: async () => {
       const res = await clientsApi.getTreatmentPlans(clientId);
-      return res.data;
+      return res?.data ?? [];
     },
     enabled: !!clientId && activeTab === 'treatment-plans',
   });
@@ -113,7 +113,7 @@ export function ClientProfileView() {
     queryKey: ['client-goals', clientId],
     queryFn: async () => {
       const res = await clientsApi.getGoals(clientId);
-      return res.data;
+      return res?.data ?? [];
     },
     enabled: !!clientId && activeTab === 'progress',
   });

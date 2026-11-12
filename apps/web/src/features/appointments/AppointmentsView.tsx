@@ -54,7 +54,7 @@ export function AppointmentsView() {
     queryKey: ['therapists'],
     queryFn: async () => {
       const res = await employeesApi.getEmployees();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -64,7 +64,7 @@ export function AppointmentsView() {
     queryKey: ['departments'],
     queryFn: async () => {
       const res = await departmentsApi.getDepartments();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -74,7 +74,7 @@ export function AppointmentsView() {
     queryKey: ['all-clients-list'],
     queryFn: async () => {
       const res = await clientsApi.getClients({ page: 1, pageSize: 100 });
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -114,7 +114,7 @@ export function AppointmentsView() {
       }
 
       const res = await appointmentsApi.getAppointments(params);
-      return res.data;
+      return (res as any)?.data ?? res ?? [];
     },
   });
 

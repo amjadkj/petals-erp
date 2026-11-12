@@ -33,7 +33,7 @@ export function SchedulePlanningView() {
     queryFn: async () => {
       try {
         const res = await schedulesApi.getSchedules();
-        return res.data;
+        return (res as any)?.data ?? res ?? [];
       } catch {
         return [];
       }
@@ -45,7 +45,7 @@ export function SchedulePlanningView() {
     queryKey: ['schedule-clients'],
     queryFn: async () => {
       const res = await clientsApi.getClients({ page: 1, pageSize: 100 });
-      return res.data;
+      return (res as any)?.data ?? res ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });

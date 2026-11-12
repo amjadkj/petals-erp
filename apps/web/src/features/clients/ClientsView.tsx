@@ -34,7 +34,7 @@ export function ClientsView() {
     queryKey: ['branches'],
     queryFn: async () => {
       const res = await branchesApi.getBranches();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -44,7 +44,7 @@ export function ClientsView() {
     queryKey: ['departments'],
     queryFn: async () => {
       const res = await departmentsApi.getDepartments();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -54,7 +54,7 @@ export function ClientsView() {
     queryKey: ['therapists'],
     queryFn: async () => {
       const res = await employeesApi.getEmployees();
-      return res.data;
+      return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });

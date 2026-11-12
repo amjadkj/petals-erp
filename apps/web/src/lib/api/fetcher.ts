@@ -111,7 +111,15 @@ export async function fetcher<T>(
   }
 
   // 204 No Content
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204) return { data: null } as unknown as T;
 
-  return res.json() as Promise<T>;
+  const json = await res.json();
+
+  // If the server returned an unwrapped payload (array, or object without a 'data' key),
+  // wrap it in { data: json } so all queries and components expecting `res.data` receive it consistently.
+  if (json !== null && typeof json === 'object' && !('data' in json)) {
+    return { data: json } as unknown as T;
+  }
+
+  return json as T;
 }

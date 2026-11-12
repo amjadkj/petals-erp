@@ -51,7 +51,7 @@ export function DashboardView() {
     queryKey: ['dashboard', role, selectedBranchId],
     queryFn: async () => {
       const res = await dashboardApi.getDashboard(selectedBranchId);
-      return res.data;
+      return (res as any)?.data ?? res ?? null;
     },
     staleTime: 60 * 1000,
   });
