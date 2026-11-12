@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Purple scale */
+    --purple-50: #F5EFFA;
+    --purple-100: #E6D8F1;
+    --purple-200: #CDB1E3;
+    --purple-600: #6C3995;
+    --purple-800: #4A2568;
+
+    /* Teal scale */
+    --teal-50: #E0F7F6;
+    --teal-200: #B3EBE9;
+    --teal-500: #00B9B4;
+    --teal-700: #007D7A;
+
+    /* Semantic */
+    --ink: #232323;
+    --danger: #B4414F;
+    --danger-bg: #FCE4E6;
+    --warning: #8A5A00;
+    --warning-bg: #FFF1CC;
+    --success: #1E6B3A;
+    --success-bg: #E3F4E8;
+
+    /* Safe-area insets */
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+  }
+
+  html {
+    color: var(--ink);
+    background-color: #ffffff;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply font-inter text-ink antialiased;
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-purple-200 ring-offset-1;
+  }
+}
+
+@layer components {
+  .font-quicksand {
+    font-family: var(--font-quicksand), sans-serif;
+  }
+
+  .font-inter {
+    font-family: var(--font-inter), sans-serif;
+  }
+}

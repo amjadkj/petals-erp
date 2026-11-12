@@ -12,3 +12,8 @@ coverage/
 .DS_Store
 Thumbs.db
 
+
+# TypeScript & PWA generated
+*.tsbuildinfo
+apps/web/public/sw.js
+apps/web/public/sw.js.map
