@@ -89,8 +89,9 @@ export default function LoginPage() {
     <div className="w-full max-w-[420px] bg-white rounded-card border border-[#E6D8F1]/60 shadow-sm p-6 sm:p-8 animate-fade-in">
       {/* Brand logo & caption */}
       <div className="flex flex-col items-center text-center mb-6">
-        <div className="w-12 h-12 rounded-btn bg-purple-600 flex items-center justify-center text-white mb-2 shadow-sm">
-          <span className="font-quicksand font-bold text-2xl leading-none">P</span>
+        <div className="w-12 h-12 rounded-btn bg-white-600 flex items-center justify-center text-white mb-2 shadow-sm">
+          {/* <span className="font-quicksand font-bold text-2xl leading-none">P</span> */}
+          <img src="/icons/logo.png" alt="" />
         </div>
         <h1 className="font-quicksand font-bold text-2xl text-purple-600">
           Welcome back

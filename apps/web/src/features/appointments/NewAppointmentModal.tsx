@@ -86,7 +86,7 @@ export function NewAppointmentModal({
         therapistId,
         startsAt: startsAtDate.toISOString(),
         endsAt: endsAtDate.toISOString(),
-        roomId: roomId || undefined,
+        // roomId: roomId || undefined,
       });
 
       showToast('Appointment booked successfully!', 'success');
@@ -229,12 +229,12 @@ export function NewAppointmentModal({
         </div>
 
         {/* Room Allocation */}
-        <Select
+        {/* <Select
           label="Clinical Room"
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
           options={roomOptions}
-        />
+        /> */}
       </form>
     </Modal>
   );

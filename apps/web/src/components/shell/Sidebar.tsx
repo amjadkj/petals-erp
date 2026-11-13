@@ -62,8 +62,9 @@ export function Sidebar() {
       <div className="h-[88px] flex items-center px-4 border-b border-[#E6D8F1]/40 shrink-0">
         <div className="flex items-center gap-3 overflow-hidden">
           {/* Logo mark */}
-          <div className="w-9 h-9 rounded-btn bg-purple-600 flex items-center justify-center shrink-0">
-            <span className="font-quicksand font-bold text-white text-lg leading-none">P</span>
+          <div className="w-9 h-9 rounded-btn bg-white-600 flex items-center justify-center shrink-0">
+            {/* <span className="font-quicksand font-bold text-white text-lg leading-none">P</span> */}
+            <img src="/icons/logo.png" alt="" />
           </div>
 
           {sidebarExpanded && (

@@ -1,33 +1,33 @@
 # Graph Report - petals-erp  (2026-11-12)
 
 ## Corpus Check
-- 593 files · ~229,672 words
+- 593 files · ~230,041 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 8 file(s) not represented in the graph (top: .example 2, (none) 2, .toml 1)
+- Unclassified: 9 file(s) not represented in the graph (top: .example 2, (none) 2, .toml 1)
 
 ## Summary
-- 3419 nodes · 9870 edges · 177 communities (111 shown, 66 thin omitted)
+- 3437 nodes · 9849 edges · 166 communities (109 shown, 57 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 243 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5f8df19b`
+- Built from commit: `84135926`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- RequirePermission
-- AuthService
+- CurrentUser
+- ExpensesTab.tsx
 - 4.1 Director
 - RequirePermission
-- CommunicationChannel
+- finance.service.ts
 - env
-- report.service.spec.ts
+- ui/index.ts
 - devDependencies
 - redis
-- ui/index.ts
+- HrController
 - compilerOptions
-- ClientService
+- LeaveType
 - AppModule
 - Button
 - package.json
@@ -38,116 +38,102 @@
 - scripts
 - types/package.json
 - Diagrams by area
-- lead.controller.ts
+- LeadService
 - 2. Checklist Evaluation & Verification Evidence
 - allowBuilds
 - api/tsconfig.json
 - types/tsconfig.json
 - nest-cli.json
-- CommunicationController
-- communication-queue.service.ts
+- RequirePermission
+- web/package.json
 - tsconfig.build.json
 - RequestContextStorage
 - department.controller.ts
-- appointment.controller.ts
-- clinical.service.ts
-- src/index.ts
-- Ponytail, lazy senior dev mode
-- AuditLogQueryDto
-- IRequestContext
+- AppointmentService
+- clinical.controller.ts
 - @nestjs/common
+- Ponytail, lazy senior dev mode
+- LeaveDecisionDto
+- AccessService
 - store.ts
-- Final Checklist: Petals ERP Backend
+- CreateTreatmentPlanDto
 - CommunicationService
 - audit.service.ts
-- Roles
-- RoleKey
+- AuthService
+- CreateClientDto
 - environment
-- VerifyOtpDto
+- communication.service.ts
 - common/index.ts
-- LockoutService
-- AuthGuard
-- PermissionAction
-- UpdateUserOverridesDto
+- src/index.ts
+- MonthlyAttendanceQueryDto
+- UserOverridesPanel.tsx
+- CreateProgressEntryDto
 - access.e2e-spec.ts
 - seed.ts
-- LeadsView.tsx
-- AccessService
+- LeadStage
+- AccessController
 - RoleKey
-- RecordPaymentDto
+- DocumentUploadUrlDto
 - ReportController
-- react
+- EmployeesView.tsx
 - api/package.json
-- Roles
+- IRequestContext
 - CreateGoalDto
 - api
 - class-validator
 - postgres
 - lucide-react
-- clinical-history.controller.ts
-- MessageStatus
-- reports/page.tsx
+- client.service.ts
+- AuditLogFilterBar.tsx
+- EmployeeDetailView.tsx
 - AppointmentsView.tsx
-- CreateAssessmentDto
-- usePageTitle
-- CreateExpenseDto
-- DocumentUploadUrlDto
-- CommunicationQueueService
+- HolidayQueryDto
+- SchedulePlanningView.tsx
+- vitest
+- ExpenseQueryDto
+- RecordCallLogDto
 - FinancialView.tsx
-- fetcher.ts
+- ClientProfileView.tsx
 - export-finance.dto.ts
 - clinical.service.ts
-- DashboardService
+- .set
 - role-access/page.tsx
 - migrator
 - redis
 - pagination/index.ts
-- SendMessageDto
+- communication.controller.ts
 - dependencies
-- .createSchedule
-- communication/page.tsx
-- employee.controller.ts
+- CreateTemplateDto
+- CommunicationChannel
+- CreateEmployeeDto
 - 4. Components
-- InvoiceQueryDto
-- web/package.json
+- CreateExpenseDto
+- StatCard
 - App Shell: Sidebar and Header
-- email-provider.interface.ts
-- clinical.controller.ts
+- CheckOutDto
 - Petals Child Development Centre ERP — Backend
-- PaymentQueryDto
+- InvoiceQueryDto
 - sw.ts
-- HolidayQueryDto
+- CreateLeadDto
 - 2. Deliverables Checklist
-- two-factor.dto.ts
 - PrismaService
 - CreateLeaveRequestDto
-- CreateEmployeeDto
+- class-transformer
 - services
 - healthcheck
-- app.service.ts
-- LoginDto
-- CreateLeaveRequestDto
+- BoardQueryDto
 - manifest.json
-- app/layout.tsx
-- ChangePasswordDto
+- usePageTitle
 - build
-- UpdateEmployeeDto
-- hr.controller.ts
-- CreateHolidayDto
+- hr.service.ts
 - scripts
-- MonthlyAttendanceQueryDto
-- CreateInvoiceDto
 - Page: Appointments
 - Page: Dashboard
 - Page: Financial (Payments)
 - Petals ERP Frontend Progress Log
-- SendBulkMessagesDto
-- UserQueryDto
-- DailyAttendanceQueryDto
-- CreateProgressEntryDto
+- clinical/dto/index.ts
 - @playwright/test
 - Page: Client profile
-- Page: Clients (list) and Add client modal
 - Page: Communication
 - ReportType
 - CreateUserDto
@@ -155,21 +141,19 @@
 - Page: Leads
 - Page: Login and auth screens
 - Page: Reports
-- communication.controller.ts
 - Page: Schedule planning
 - tailwind.config.ts
 - Petals ERP Frontend — Build Plan & Specification
 - Page: Employees (list and detail)
 - Page: Role access (Permission Manager and Branches)
 - Page: Audit log
-- EmployeeQueryDto
 - @testing-library/jest-dom
 - postcss.config.mjs
 
 ## God Nodes (most connected - your core abstractions)
 1. `RoleKey` - 290 edges
 2. `react` - 184 edges
-3. `Button` - 157 edges
+3. `Button` - 151 edges
 4. `CurrentUser` - 130 edges
 5. `@nestjs/common` - 124 edges
 6. `lucide-react` - 112 edges
@@ -179,69 +163,73 @@
 10. `AppModule` - 82 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `2. Add client (modal) (mockup)` --references--> `CreateClientDto`  [INFERRED]
-  docs/frontend/design-clients.md → apps/api/src/client/dto/create-client.dto.ts
-- `4. Architectural Rules Enforced` --references--> `usePermissions()`  [INFERRED]
-  docs/frontend/BUILD_PLAN.md → apps/web/src/lib/permissions/usePermissions.ts
+- `How to read the diagrams` --references--> `AppointmentStatus`  [INFERRED]
+  docs/er-diagram.md → packages/types/src/index.ts
 - `A. Project and Data Model` --references--> `RoleKey`  [INFERRED]
   docs/FINAL_REPORT.md → packages/types/src/index.ts
 - `A. Project and data model` --references--> `RoleKey`  [INFERRED]
   docs/phases/final-checklist.md → packages/types/src/index.ts
-- `How to read the diagrams` --references--> `AppointmentStatus`  [INFERRED]
-  docs/er-diagram.md → packages/types/src/index.ts
+- `4. Architectural Rules Enforced` --references--> `usePermissions()`  [INFERRED]
+  docs/frontend/BUILD_PLAN.md → apps/web/src/lib/permissions/usePermissions.ts
+- `C. Access Control` --references--> `AuthGuard`  [INFERRED]
+  docs/FINAL_REPORT.md → apps/api/src/common/guards/auth.guard.ts
 
 ## Import Cycles
 - 3-file cycle: `apps/web/src/lib/api/access.ts -> apps/web/src/lib/api/fetcher.ts -> apps/web/src/lib/permissions/store.ts -> apps/web/src/lib/api/access.ts`
 
-## Communities (177 total, 66 thin omitted)
+## Communities (166 total, 57 thin omitted)
+
+### Community 0 - "CurrentUser"
+Cohesion: 0.19
+Nodes (3): ClinicalController, CurrentUser, RequirePermission()
+
+### Community 1 - "ExpensesTab.tsx"
+Cohesion: 0.11
+Nodes (20): Column, DataTable(), DataTableProps, StatusChipProps, StatusType, mockReports, ReportsSubmittedTabProps, mockSessions (+12 more)
 
 ### Community 2 - "4.1 Director"
 Cohesion: 0.04
 Nodes (44): 10. Release Phasing, 11. Assumptions, 12. Decisions and Remaining Open Questions, 13.1 Proposed Stack, 13.2 RBAC Implementation, 13.3 Authentication, 13.4 PWA Requirements, 13.5 Suggested Build Order (+36 more)
 
 ### Community 3 - "RequirePermission"
-Cohesion: 0.08
-Nodes (5): RequirePermission(), ExportFinanceDto, PnlQueryDto, FinanceController, FinanceService
+Cohesion: 0.05
+Nodes (5): CreateInvoiceDto, ExportFinanceDto, PnlQueryDto, FinanceController, FinanceService
 
-### Community 4 - "CommunicationChannel"
-Cohesion: 0.25
-Nodes (6): CommunicationJobData, CommunicationLogQueryDto, CommunicationChannel, CALL, EMAIL, WHATSAPP
+### Community 4 - "finance.service.ts"
+Cohesion: 0.15
+Nodes (10): argon2@^0.41.1, hashPassword(), prisma, runDemoSeed(), FinanceModule, EXPENSE_SORT_FIELDS, INVOICE_SORT_FIELDS, PAYMENT_SORT_FIELDS (+2 more)
 
 ### Community 5 - "env"
 Cohesion: 0.05
 Nodes (38): COOKIE_SECRET, DATABASE_URL, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_URL (+30 more)
 
-### Community 6 - "report.service.spec.ts"
-Cohesion: 0.21
-Nodes (5): @nestjs/config@^4.0.0, ReportModule, ALLOWED_MIME_TYPES, StorageService, @nestjs/config
+### Community 6 - "ui/index.ts"
+Cohesion: 0.11
+Nodes (23): ClientsPage(), AddProgressEntryModalProps, AssessmentsTabProps, OverviewTabProps, ProgressTabProps, TreatmentPlansTabProps, AddClientModalProps, ClientsFilterBar() (+15 more)
 
 ### Community 7 - "devDependencies"
 Cohesion: 0.10
 Nodes (19): devDependencies, jsdom@^25.0.1, @petals/config@workspace:*, @testing-library/react@^16.1.0, @testing-library/user-event@^14.5.2, @types/node@^22.13.4, @types/react@^19.0.8, @types/react-dom@^19.0.3 (+11 more)
 
 ### Community 8 - "redis"
-Cohesion: 0.07
-Nodes (30): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_PASSWORD, interval, retries, test, timeout (+22 more)
-
-### Community 9 - "ui/index.ts"
-Cohesion: 0.04
-Nodes (78): ClientProfilePage(), ClientsPage(), BadgeProps, BottomSheet(), BottomSheetProps, Checkbox, CheckboxProps, Drawer() (+70 more)
+Cohesion: 0.08
+Nodes (29): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, REDIS_PASSWORD, interval, retries, test, timeout (+21 more)
 
 ### Community 10 - "compilerOptions"
 Cohesion: 0.08
 Nodes (24): compilerOptions, alwaysStrict, declaration, declarationMap, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames (+16 more)
 
-### Community 11 - "ClientService"
-Cohesion: 0.07
-Nodes (7): ALL_PROFILE_TABS, CLIENT_SORT_FIELDS, TAB_MODULE_MAP, ClientQueryDto, CreateClientDto, CreateGuardianDto, UpdateClientDto
+### Community 11 - "LeaveType"
+Cohesion: 0.12
+Nodes (8): CreateLeaveRequestDto, ApplyLeaveModalProps, LeaveType, CASUAL, OTHER, PAID, SICK, UNPAID
 
 ### Community 12 - "AppModule"
-Cohesion: 0.08
-Nodes (22): RolePermissionItemDto, AppModule, APPOINTMENTS, CLIENTS, COMMUNICATION, DASHBOARD, EMPLOYEE_SALARY, EMPLOYEES (+14 more)
+Cohesion: 0.06
+Nodes (25): RolePermissionItemDto, UserOverrideItemDto, CanProps, NavItem, AppModule, APPOINTMENTS, CLIENTS, COMMUNICATION (+17 more)
 
 ### Community 13 - "Button"
 Cohesion: 0.08
-Nodes (70): HrmsPage(), OtpLoginPage(), LoginPage(), Button, ButtonProps, ButtonVariant, ConfirmDialog(), ConfirmDialogProps (+62 more)
+Nodes (80): OtpLoginPage(), LoginPage(), NotFound(), Button, ButtonProps, ButtonVariant, ConfirmDialog(), ConfirmDialogProps (+72 more)
 
 ### Community 14 - "package.json"
 Cohesion: 0.11
@@ -256,8 +244,8 @@ Cohesion: 0.07
 Nodes (7): BranchController, BranchModule, BRANCH_SORT_FIELDS, BranchService, BranchQueryDto, CreateBranchDto, UpdateBranchDto
 
 ### Community 17 - "devDependencies"
-Cohesion: 0.03
-Nodes (81): dependencies, argon2@^0.41.1, bullmq@^5.41.3, class-transformer@^0.5.1, class-validator@^0.14.1, cookie-parser@^1.4.7, dotenv@^16.4.7, helmet@^8.0.0 (+73 more)
+Cohesion: 0.04
+Nodes (76): dependencies, bullmq@^5.41.3, class-transformer@^0.5.1, class-validator@^0.14.1, cookie-parser@^1.4.7, dotenv@^16.4.7, helmet@^8.0.0, ioredis@^5.5.0 (+68 more)
 
 ### Community 18 - "compilerOptions"
 Cohesion: 0.11
@@ -275,9 +263,9 @@ Nodes (16): devDependencies, @petals/config@workspace:*, rimraf@^6.0.1, typescri
 Cohesion: 0.13
 Nodes (14): Access control and identity, Branches, people and leads, Clinical records, Communication and system, Diagrams by area, Entity Relationship Diagram, Finance, Full diagram (+6 more)
 
-### Community 22 - "lead.controller.ts"
-Cohesion: 0.06
-Nodes (5): ConvertLeadDto, CreateLeadDto, UpdateLeadDto, LeadController, LeadService
+### Community 22 - "LeadService"
+Cohesion: 0.07
+Nodes (4): ConvertLeadDto, UpdateLeadDto, LeadController, LeadService
 
 ### Community 23 - "2. Checklist Evaluation & Verification Evidence"
 Cohesion: 0.10
@@ -299,101 +287,97 @@ Nodes (6): compilerOptions, outDir, rootDir, extends, include, @petals/config/ts
 Cohesion: 0.33
 Nodes (5): collection, compilerOptions, deleteOutDir, $schema, sourceRoot
 
-### Community 28 - "CommunicationController"
-Cohesion: 0.11
-Nodes (3): Roles(), CommunicationController, BoardQueryDto
-
-### Community 29 - "communication-queue.service.ts"
-Cohesion: 0.15
-Nodes (14): CommunicationModule, SENSITIVE_CLINICAL_KEYWORDS, EMAIL_PROVIDER, SendWhatsAppParams, SendWhatsAppResult, WHATSAPP_PROVIDER, WhatsAppProvider, FakeWhatsAppProvider (+6 more)
+### Community 29 - "web/package.json"
+Cohesion: 0.12
+Nodes (15): autoprefixer@^10.4.20, date-fns-tz@^3.2.0, postcss@^8.4.49, recharts@^2.14.1, @tanstack/react-query-devtools@^5.62.3, zustand@^5.0.2, name, private (+7 more)
 
 ### Community 30 - "tsconfig.build.json"
 Cohesion: 0.29
 Nodes (6): compilerOptions, declarationMap, sourceMap, exclude, extends, ./tsconfig.json
 
-### Community 32 - "department.controller.ts"
-Cohesion: 0.15
-Nodes (3): DepartmentController, DepartmentModule, DepartmentService
-
-### Community 33 - "appointment.controller.ts"
-Cohesion: 0.05
+### Community 33 - "AppointmentService"
+Cohesion: 0.04
 Nodes (10): AppointmentController, AppointmentService, AppointmentQueryDto, CancelAppointmentDto, ClientAppointmentQueryDto, CreateAppointmentDto, CreateScheduleDto, DailyScheduleQueryDto (+2 more)
 
-### Community 34 - "clinical.service.ts"
-Cohesion: 0.08
-Nodes (7): CreateTreatmentPlanDto, UpdateTreatmentPlanDto, PlanStatus, ACTIVE, CANCELLED, COMPLETED, PAUSED
+### Community 34 - "clinical.controller.ts"
+Cohesion: 0.04
+Nodes (6): NoStoreInterceptor, CreateAssessmentDto, UpdateAssessmentDto, UpdateProgressEntryDto, UpdateTreatmentPlanDto, RecordPaymentDto
 
-### Community 35 - "src/index.ts"
-Cohesion: 0.09
-Nodes (19): ResolvedModulePermissions, ResolvedPermissionsMap, RequestContext, CurrentBranch, IS_PUBLIC_KEY, PERMISSION_KEY, PermissionRequirement, ROLES_KEY (+11 more)
+### Community 35 - "@nestjs/common"
+Cohesion: 0.05
+Nodes (31): AccessModule, ResolvedModulePermissions, ResolvedPermissionsMap, AuditModule, COOKIE_OPTIONS, AuthModule, RequestContext, CurrentBranch (+23 more)
 
 ### Community 36 - "Ponytail, lazy senior dev mode"
 Cohesion: 0.50
 Nodes (3): Before you write, Ponytail, lazy senior dev mode, The smallest complete change
 
-### Community 39 - "@nestjs/common"
-Cohesion: 0.08
-Nodes (15): @prisma/client@^6.3.1, BRANCH_SCOPED_MODELS, FILTERABLE_READ_OPS, inTxStorage, SCOPED_WRITE_OPS, DashboardModule, EmployeeModule, EMPLOYEE_SORT_FIELDS (+7 more)
-
 ### Community 41 - "store.ts"
-Cohesion: 0.09
-Nodes (31): AppLayout(), BranchSwitcher(), GlobalSearch(), SearchResultItem, Header(), InactivityLock(), InstallBanner(), MobileDrawer() (+23 more)
-
-### Community 66 - "Final Checklist: Petals ERP Backend"
-Cohesion: 0.12
-Nodes (15): A. Project and data model, C. Access control, D. Parents, E. Branch isolation and row-level security, F. Clinical data integrity, Final Checklist: Petals ERP Backend, G. Business rules, H. Pagination and N+1 (+7 more)
+Cohesion: 0.07
+Nodes (53): AppLayout(), TwoFactorPage(), BranchSwitcher(), GlobalSearch(), Header(), InactivityLock(), BeforeInstallPromptEvent, InstallBanner() (+45 more)
 
 ### Community 70 - "audit.service.ts"
-Cohesion: 0.07
-Nodes (12): AccessModule, AuditController, AUDIT_ACTION_KEY, AUDIT_ENTITY_KEY, AUDIT_IGNORE_KEY, AUDIT_SENSITIVE_READ_KEY, AuditModule, AuditService (+4 more)
+Cohesion: 0.10
+Nodes (8): AuditController, AUDIT_ACTION_KEY, AUDIT_ENTITY_KEY, AUDIT_IGNORE_KEY, AUDIT_SENSITIVE_READ_KEY, AuditInterceptor, sanitizeAuditMetadata(), AuditService
 
-### Community 71 - "Roles"
-Cohesion: 0.14
-Nodes (3): AuthController, verifyPassword(), Public()
+### Community 71 - "AuthService"
+Cohesion: 0.05
+Nodes (12): AuthController, AuthService, ChangePasswordDto, LoginDto, RequestOtpDto, VerifyOtpDto, Disable2faDto, Enable2faDto (+4 more)
+
+### Community 72 - "CreateClientDto"
+Cohesion: 0.04
+Nodes (12): ClientController, ClientService, ClientQueryDto, CreateClientDto, CreateGuardianDto, UpdateClientDto, 1. Layout (desktop), 2. Add client (modal) (mockup) (+4 more)
 
 ### Community 73 - "environment"
 Cohesion: 0.18
 Nodes (11): environment, APP_CORS_ORIGIN, COOKIE_SECRET, DOCUMENT_HMAC_SECRET, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, NODE_ENV, PORT (+3 more)
 
+### Community 74 - "communication.service.ts"
+Cohesion: 0.09
+Nodes (20): CommunicationModule, CommunicationJobData, CommunicationQueueService, SENSITIVE_CLINICAL_KEYWORDS, EMAIL_PROVIDER, EmailProvider, SendEmailParams, SendEmailResult (+12 more)
+
 ### Community 75 - "common/index.ts"
 Cohesion: 0.06
 Nodes (17): CommonModule, EnvironmentVariables, validate(), RequestContextMiddleware, PrismaModule, LockoutResult, MemoryLockEntry, RateLimitModule (+9 more)
 
-### Community 78 - "PermissionAction"
+### Community 76 - "src/index.ts"
+Cohesion: 0.25
+Nodes (7): SearchResultItem, usePermissions(), AppointmentDto, DepartmentDto, LoginResponse, PaginationMetaCursor, PaginationMetaOffset
+
+### Community 78 - "UserOverridesPanel.tsx"
 Cohesion: 0.17
-Nodes (23): PermissionMatrixAccordions(), PermissionMatrixAccordionsProps, PermissionMatrixTable(), PermissionMatrixTableProps, PermissionsTab(), RoleAccessHeroProps, RoleCardsPanel(), RoleCardsPanelProps (+15 more)
+Nodes (25): PermissionMatrixAccordions(), PermissionMatrixAccordionsProps, PermissionMatrixTable(), PermissionMatrixTableProps, PermissionsTab(), PermissionsTabProps, RoleCardsPanel(), RoleCardsPanelProps (+17 more)
 
 ### Community 80 - "access.e2e-spec.ts"
-Cohesion: 0.19
-Nodes (13): AppModule, hashPassword(), GlobalExceptionFilter, QueryCounter, bootstrap(), runLoadTests(), ClientStatus, ACTIVE (+5 more)
+Cohesion: 0.17
+Nodes (15): AppModule, hashPassword(), GlobalExceptionFilter, QueryCounter, bootstrap(), runLoadTests(), scanDir(), ClientStatus (+7 more)
 
 ### Community 81 - "seed.ts"
 Cohesion: 0.29
 Nodes (7): ALL_ACTIONS, ALL_MODULES, hashPassword(), main(), prisma, ROLE_PERMISSIONS_CONFIG, RoleSeedConfig
 
-### Community 82 - "LeadsView.tsx"
-Cohesion: 0.07
-Nodes (38): LeadsPage(), SegmentedControl(), SegmentedControlOption, SegmentedControlProps, mockColumns, mockData, TestRow, ConvertToClientModalProps (+30 more)
+### Community 82 - "LeadStage"
+Cohesion: 0.15
+Nodes (21): ConvertToClientModalProps, LeadCard(), LeadCardProps, LeadDetailDrawerProps, columnsConfig, LeadsBoard(), LeadsBoardProps, LeadsList() (+13 more)
 
-### Community 83 - "AccessService"
-Cohesion: 0.07
-Nodes (7): AccessController, AccessService, RoleModuleItemDto, UpdateRoleModulesDto, UpdateRolePermissionsDto, AuditInterceptor, sanitizeAuditMetadata()
+### Community 83 - "AccessController"
+Cohesion: 0.10
+Nodes (3): AccessController, UpdateRolePermissionsDto, UpdateUserOverridesDto
 
 ### Community 84 - "RoleKey"
 Cohesion: 0.12
-Nodes (10): AuthTokens, ClinicalService, CachedUserData, DocumentsTabProps, DashboardStatsProps, RoleKey, DIRECTOR, MANAGER (+2 more)
+Nodes (12): AuthTokens, ClinicalService, CachedUserData, DocumentsTabProps, DashboardStatsProps, ReportsHeroProps, ReportsStatCardsProps, RoleKey (+4 more)
 
 ### Community 86 - "ReportController"
-Cohesion: 0.09
-Nodes (3): CreateDocumentDto, ReportController, ReportService
-
-### Community 87 - "react"
 Cohesion: 0.06
-Nodes (58): EmployeeDetailPage(), EmployeesPage(), Avatar(), AvatarProps, Column, DataTable(), DataTableProps, ProgressBar() (+50 more)
+Nodes (5): CreateDocumentDto, CreateReportDto, UpdateReportDto, ReportController, ReportService
+
+### Community 87 - "EmployeesView.tsx"
+Cohesion: 0.09
+Nodes (33): EmployeeDetailPage(), Avatar(), AvatarProps, ProgressBar(), ProgressBarProps, ActivityLogTab(), ActivityLogTabProps, mockFullActivityLog (+25 more)
 
 ### Community 88 - "api/package.json"
-Cohesion: 0.12
-Nodes (14): @nestjs/jwt@^11.0.2, COOKIE_OPTIONS, TokenPayload, ConsoleOtpSender, IOtpSender, OTP_SENDER, OtpService, decryptSecret() (+6 more)
+Cohesion: 0.09
+Nodes (18): @nestjs/config@^4.0.0, @nestjs/jwt@^11.0.2, TokenPayload, ConsoleOtpSender, IOtpSender, OTP_SENDER, OtpService, decryptSecret() (+10 more)
 
 ### Community 90 - "CreateGoalDto"
 Cohesion: 0.06
@@ -403,57 +387,61 @@ Nodes (16): CreateGoalDto, CreateSubgoalDto, UpdateGoalDto, UpdateSubgoalDto, Go
 Cohesion: 0.20
 Nodes (10): container_name, depends_on, networks, ports, restart, migrator, redis, condition (+2 more)
 
-### Community 92 - "class-validator"
-Cohesion: 0.08
-Nodes (11): ExportFormat, EXCEL, PDF, PaymentMethod, BANK_TRANSFER, CARD, CASH, UPI (+3 more)
-
 ### Community 93 - "postgres"
 Cohesion: 0.20
 Nodes (10): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, container_name, environment, image, networks, restart (+2 more)
 
 ### Community 94 - "lucide-react"
-Cohesion: 0.05
-Nodes (58): DashboardPage(), AuditLogPage(), TwoFactorPage(), NotFound(), BeforeInstallPromptEvent, Switch(), AuditLogDetailDrawer(), AuditLogDetailDrawerProps (+50 more)
+Cohesion: 0.06
+Nodes (40): DashboardPage(), TreatmentPlansTab(), ConfigureWidgetsModal(), ConfigureWidgetsModalProps, DashboardHero(), DashboardHeroProps, DashboardStats(), DashboardView() (+32 more)
 
-### Community 95 - "clinical-history.controller.ts"
-Cohesion: 0.08
-Nodes (4): AuditSensitiveRead(), ClinicalHistoryController, RestoreEntityDto, VersionService
+### Community 95 - "client.service.ts"
+Cohesion: 0.06
+Nodes (12): AuditSensitiveRead(), ClientModule, ALL_PROFILE_TABS, CLIENT_SORT_FIELDS, TAB_MODULE_MAP, ClinicalModule, ClinicalHistoryController, ClinicalHistoryModule (+4 more)
 
-### Community 97 - "reports/page.tsx"
-Cohesion: 0.09
-Nodes (34): ReportDetailPage(), ReportsPage(), ReportsTab(), ReportsTabProps, defaultFallbackReport, ReportEditor(), ReportEditorProps, ReportsFilterBar() (+26 more)
+### Community 96 - "AuditLogFilterBar.tsx"
+Cohesion: 0.26
+Nodes (11): AuditLogPage(), AuditLogDetailDrawer(), AuditLogDetailDrawerProps, AuditLogFilterBar(), AuditLogFilterBarProps, AuditLogHero(), AuditLogHeroProps, AuditLogTable() (+3 more)
+
+### Community 97 - "EmployeeDetailView.tsx"
+Cohesion: 0.06
+Nodes (54): ReportDetailPage(), ReportsPage(), Checkbox, StatusChip(), TabContentProps, TabList(), TabListProps, Tabs() (+46 more)
 
 ### Community 98 - "AppointmentsView.tsx"
-Cohesion: 0.11
-Nodes (31): AppointmentsPage(), AppointmentsHero(), AppointmentsHeroProps, AppointmentsToolbar(), AppointmentsToolbarProps, AppointmentsView(), CalendarSurface(), CalendarSurfaceProps (+23 more)
+Cohesion: 0.12
+Nodes (29): AppointmentsPage(), SegmentedControl(), AppointmentsHero(), AppointmentsHeroProps, AppointmentsToolbar(), AppointmentsToolbarProps, AppointmentsView(), CalendarSurface() (+21 more)
 
-### Community 100 - "usePageTitle"
-Cohesion: 0.08
-Nodes (30): ForbiddenPage(), FinancialPage(), SchedulePlanningPage(), ToastProvider(), DAYS, NewScheduleModalProps, TIME_SLOTS, SchedulePlanningHero() (+22 more)
+### Community 100 - "SchedulePlanningView.tsx"
+Cohesion: 0.11
+Nodes (23): SchedulePlanningPage(), DAYS, NewScheduleModalProps, TIME_SLOTS, SchedulePlanningHero(), SchedulePlanningHeroProps, SchedulePlanningStats(), SchedulePlanningStatsProps (+15 more)
+
+### Community 101 - "vitest"
+Cohesion: 0.32
+Nodes (5): mockColumns, mockData, TestRow, @testing-library/react, vitest
 
 ### Community 104 - "FinancialView.tsx"
-Cohesion: 0.11
-Nodes (32): ExpensesTabProps, FinancialView(), mockTrackingData, MonthlyTrackingTab(), MonthlyTrackingTabProps, OverdueReminders(), OverdueRemindersProps, PaymentHero() (+24 more)
+Cohesion: 0.14
+Nodes (21): FinancialPage(), FinancialView(), mockTrackingData, MonthlyTrackingTab(), MonthlyTrackingTabProps, OverdueReminders(), OverdueRemindersProps, PaymentHero() (+13 more)
 
-### Community 105 - "fetcher.ts"
-Cohesion: 0.12
-Nodes (19): AuditLogFilterBarProps, AuditLogFilterState, RecordPaymentModalProps, PermissionsTabProps, UserOverridesPanelProps, LoginResult, EmployeeDto, ApiError (+11 more)
+### Community 105 - "ClientProfileView.tsx"
+Cohesion: 0.08
+Nodes (26): ClientProfilePage(), Switch(), ClientProfileView(), DEFAULT_DOCS, DocumentItem, DocumentsTab(), ProgressTab(), DEFAULT_SESSIONS (+18 more)
 
 ### Community 106 - "export-finance.dto.ts"
-Cohesion: 0.40
-Nodes (5): ExportType, EXPENSES, INVOICES, PAYMENTS, PNL
+Cohesion: 0.22
+Nodes (8): ExportFormat, EXCEL, PDF, ExportType, EXPENSES, INVOICES, PAYMENTS, PNL
 
 ### Community 107 - "clinical.service.ts"
-Cohesion: 0.14
-Nodes (12): ASSESSMENT_SORT_FIELDS, VersionHistoryQueryDto, RecordVersionParams, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy() (+4 more)
+Cohesion: 0.12
+Nodes (12): ASSESSMENT_SORT_FIELDS, AssessmentQueryDto, buildCursorMeta(), buildCursorPagination(), buildOffsetMeta(), buildOffsetPagination(), buildOrderBy(), DocumentQueryDto (+4 more)
 
-### Community 108 - "DashboardService"
-Cohesion: 0.14
-Nodes (3): DashboardController, DashboardService, DashboardQueryDto
+### Community 108 - ".set"
+Cohesion: 0.06
+Nodes (20): AuthGuard, DashboardController, DashboardService, DashboardQueryDto, A. Project and data model, B. Authentication and sessions, C. Access control, D. Parents (+12 more)
 
 ### Community 109 - "role-access/page.tsx"
-Cohesion: 0.22
-Nodes (16): RoleAccessPage(), AssignUsersModal(), AssignUsersModalProps, BranchCard(), BranchCardProps, BranchesTab(), BranchesTabProps, CreateEditBranchModalProps (+8 more)
+Cohesion: 0.12
+Nodes (20): RoleAccessPage(), EmptyState(), AssignUsersModal(), AssignUsersModalProps, BranchCard(), BranchCardProps, BranchesTab(), BranchesTabProps (+12 more)
 
 ### Community 110 - "migrator"
 Cohesion: 0.22
@@ -465,47 +453,43 @@ Nodes (9): REDIS_PASSWORD, command, container_name, environment, image, networks
 
 ### Community 112 - "pagination/index.ts"
 Cohesion: 0.07
-Nodes (12): AssessmentQueryDto, ProgressEntryQueryDto, CursorPaginationDto, OffsetPaginationDto, CursorPaginatedResponse, CursorPaginationMeta, OffsetPaginatedResponse, OffsetPaginationMeta (+4 more)
+Nodes (11): AuditLogQueryDto, ProgressEntryQueryDto, CursorPaginationDto, OffsetPaginationDto, CursorPaginatedResponse, CursorPaginationMeta, OffsetPaginatedResponse, OffsetPaginationMeta (+3 more)
+
+### Community 113 - "communication.controller.ts"
+Cohesion: 0.06
+Nodes (6): CommunicationLogQueryDto, SendBulkMessagesDto, SendMessageDto, TemplateQueryDto, UpdateTemplateDto, WebhookPayloadDto
 
 ### Community 114 - "dependencies"
 Cohesion: 0.10
 Nodes (20): dependencies, clsx@^2.1.1, date-fns@^4.1.0, @hookform/resolvers@^3.9.1, lucide-react@^0.469.0, next@^15.1.7, @petals/types@workspace:*, react@^19.0.0 (+12 more)
 
-### Community 115 - ".createSchedule"
-Cohesion: 0.25
-Nodes (6): DAY_MAP, GeneratedSlot, generateScheduleSlots(), Decisions Made, Open Items, Petals ERP – Build Progress
+### Community 116 - "CommunicationChannel"
+Cohesion: 0.12
+Nodes (30): CommunicationPage(), BulkSendTabProps, CommunicationHero(), CommunicationHeroProps, CommunicationStatCards(), CommunicationStatCardsProps, MessageDetailDrawer(), MessageDetailDrawerProps (+22 more)
 
-### Community 116 - "communication/page.tsx"
-Cohesion: 0.13
-Nodes (29): CommunicationPage(), EmptyState(), BulkSendTab(), BulkSendTabProps, CommunicationHero(), CommunicationStatCards(), MessageDetailDrawer(), MessageDetailDrawerProps (+21 more)
+### Community 117 - "CreateEmployeeDto"
+Cohesion: 0.07
+Nodes (4): CreateEmployeeDto, UpdateEmployeeDto, EmployeeController, EmployeeService
 
 ### Community 118 - "4. Components"
 Cohesion: 0.10
 Nodes (19): 1. Principles, 2. Colour tokens, 3. Typography, 4. Components, 5. Layout and breakpoints, 6. Mobile patterns (apply to every page), 7. PWA rules, 8. Accessibility (+11 more)
 
-### Community 119 - "InvoiceQueryDto"
-Cohesion: 0.20
-Nodes (4): InvoiceQueryDto, RevenueCategory, ASSESSMENT_FEE, CLINICAL_THERAPY
-
-### Community 120 - "web/package.json"
-Cohesion: 0.12
-Nodes (15): autoprefixer@^10.4.20, date-fns-tz@^3.2.0, postcss@^8.4.49, recharts@^2.14.1, @tanstack/react-query-devtools@^5.62.3, zustand@^5.0.2, name, private (+7 more)
+### Community 120 - "StatCard"
+Cohesion: 0.13
+Nodes (19): StatCard(), StatCardProps, EmployeesStatCards(), EmployeesStatCardsProps, PaymentStatCards(), PaymentStatCardsProps, mockMonths, PnlTab() (+11 more)
 
 ### Community 121 - "App Shell: Sidebar and Header"
 Cohesion: 0.17
 Nodes (11): 1. Structure, 2. Sidebar (sticky, collapsible), 3. Header (on every page), 4. Mobile shell (< 768 px), 5. Page content wrapper, 6. Global behaviours, App Shell: Sidebar and Header, Collapsed (icon rail, 72 px) (+3 more)
 
-### Community 122 - "email-provider.interface.ts"
-Cohesion: 0.39
-Nodes (4): EmailProvider, SendEmailParams, SendEmailResult, FakeEmailProvider
-
-### Community 123 - "clinical.controller.ts"
-Cohesion: 0.11
-Nodes (5): ClientModule, NoStoreInterceptor, ClinicalModule, UpdateAssessmentDto, ClinicalHistoryModule
-
 ### Community 124 - "Petals Child Development Centre ERP — Backend"
 Cohesion: 0.07
 Nodes (28): 1. Objectives & SLA Targets, 2. Automated PostgreSQL Backup Procedure, 3. Redis Persistence & Backup, 4. Step-by-Step Restoration Checklist, Database Backup & Disaster Recovery Guide, Phase A: Pre-Restoration Sanity Checks, Phase B: Database Restore Execution, Phase C: Post-Restoration Verification Queries (+20 more)
+
+### Community 125 - "InvoiceQueryDto"
+Cohesion: 0.09
+Nodes (5): InvoiceQueryDto, PaymentQueryDto, RevenueCategory, ASSESSMENT_FEE, CLINICAL_THERAPY
 
 ### Community 126 - "sw.ts"
 Cohesion: 0.18
@@ -515,17 +499,17 @@ Nodes (9): nextConfig, withSerwist, serwist@^9.0.9, @serwist/next@^9.0.9, custom
 Cohesion: 0.20
 Nodes (9): 1. Executive Summary, 2. Deliverables Checklist, 3. Route Output Matrix, 4. Known Limitations & Recommendations, Petals ERP Frontend — Final Verification Report, Phase A: Foundations, App Shell, Auth & PWA ✅, Phase B: Core Pages Implementation ✅, Phase C: PWA Hardening & Security ✅ (+1 more)
 
-### Community 129 - "two-factor.dto.ts"
-Cohesion: 0.50
-Nodes (3): Disable2faDto, Enable2faDto, Verify2faLoginDto
-
 ### Community 130 - "PrismaService"
-Cohesion: 0.05
-Nodes (17): AppointmentModule, PrismaService, CacheService, FinanceModule, EXPENSE_SORT_FIELDS, INVOICE_SORT_FIELDS, PAYMENT_SORT_FIELDS, AppointmentStatus (+9 more)
+Cohesion: 0.04
+Nodes (19): AppController, AppService, AppointmentModule, DAY_MAP, GeneratedSlot, generateScheduleSlots(), PrismaService, CacheService (+11 more)
 
 ### Community 131 - "CreateLeaveRequestDto"
-Cohesion: 0.14
-Nodes (8): LeaveQueryDto, ApplyLeaveModalProps, LeaveType, CASUAL, OTHER, PAID, SICK, UNPAID
+Cohesion: 0.17
+Nodes (6): LeaveQueryDto, LeaveStatus, APPROVED, CANCELLED, PENDING, REJECTED
+
+### Community 132 - "class-transformer"
+Cohesion: 0.12
+Nodes (3): RoleModuleItemDto, UpdateRoleModulesDto, class-transformer
 
 ### Community 133 - "services"
 Cohesion: 0.25
@@ -539,17 +523,17 @@ Nodes (8): healthcheck, interval, retries, start_period, test, timeout, healthch
 Cohesion: 0.22
 Nodes (8): background_color, description, display, icons, name, short_name, start_url, theme_color
 
-### Community 139 - "app/layout.tsx"
-Cohesion: 0.25
-Nodes (7): inter, metadata, quicksand, RootLayout(), viewport, Providers(), PageTitleProvider()
+### Community 139 - "usePageTitle"
+Cohesion: 0.09
+Nodes (22): ForbiddenPage(), EmployeesPage(), HrmsPage(), LeadsPage(), inter, metadata, quicksand, RootLayout() (+14 more)
 
 ### Community 142 - "build"
 Cohesion: 0.50
 Nodes (5): build, context, dockerfile, target, build
 
-### Community 144 - "hr.controller.ts"
-Cohesion: 0.11
-Nodes (4): CheckInDto, CheckOutDto, DirectorAvailabilityDto, LeaveDecisionDto
+### Community 144 - "hr.service.ts"
+Cohesion: 0.08
+Nodes (6): CheckInDto, CreateHolidayDto, DailyAttendanceQueryDto, DirectorAvailabilityDto, EmployeeActivityQueryDto, EmployeeGoalsQueryDto
 
 ### Community 146 - "scripts"
 Cohesion: 0.25
@@ -571,29 +555,25 @@ Nodes (7): 1. Payments view (mockup), 2. Record payment (modal), 3. Additional t
 Cohesion: 0.25
 Nodes (7): 1. What was built:, 1. What was built:, 2. Test & Verification Status:, 2. Test & Verification Status:, Petals ERP Frontend Progress Log, Phase A: Foundation, Shell, Auth, Shared UI & PWA Setup, Phase B: Core Pages Implementation (13 ERP Modules)
 
-### Community 156 - "CreateProgressEntryDto"
-Cohesion: 0.09
-Nodes (8): CreateProgressEntryDto, UpdateProgressEntryDto, ProgressLevel, ACHIEVED, EMERGING, NO_CHANGE, PROGRESSING, REGRESSED
+### Community 156 - "clinical/dto/index.ts"
+Cohesion: 0.12
+Nodes (11): PlanStatus, ACTIVE, CANCELLED, COMPLETED, PAUSED, ProgressLevel, ACHIEVED, EMERGING (+3 more)
 
 ### Community 158 - "Page: Client profile"
 Cohesion: 0.29
 Nodes (6): 1. Header card, 2. Tabs (permission driven), 3. Shared cases, 4. Parent view, 5. Mobile, Page: Client profile
-
-### Community 159 - "Page: Clients (list) and Add client modal"
-Cohesion: 0.29
-Nodes (6): 1. Layout (desktop), 2. Add client (modal) (mockup), 3. Role behaviour, 4. Mobile, 5. States, Page: Clients (list) and Add client modal
 
 ### Community 160 - "Page: Communication"
 Cohesion: 0.29
 Nodes (6): 1. Layout, 2. Tabs, 3. New message (modal), 4. Rules to reflect in UI, 5. Mobile, Page: Communication
 
 ### Community 161 - "ReportType"
-Cohesion: 0.06
-Nodes (9): CreateReportDto, DueReportQueryDto, ReportQueryDto, UpdateReportDto, ReportType, ASSESSMENT, DISCHARGE, OTHER (+1 more)
+Cohesion: 0.10
+Nodes (9): DueReportQueryDto, ReportQueryDto, NewReportFormValues, CreateReportPayload, ReportType, ASSESSMENT, DISCHARGE, OTHER (+1 more)
 
 ### Community 162 - "CreateUserDto"
 Cohesion: 0.06
-Nodes (5): AssignBranchDto, CreateUserDto, UpdateUserDto, UserController, UserService
+Nodes (4): AssignBranchDto, CreateUserDto, UpdateUserDto, UserController
 
 ### Community 163 - "Page: HRMS (Attendance · Leave · Holiday calendar)"
 Cohesion: 0.29
@@ -610,10 +590,6 @@ Nodes (6): 1. Staff login (`/login`), 2. 2FA (`/login/2fa`), 3. Parent OTP (`/lo
 ### Community 166 - "Page: Reports"
 Cohesion: 0.29
 Nodes (6): 1. Layout (Director / Manager), 2. Therapist view, 3. Report page, 4. Parent view, 5. Mobile, Page: Reports
-
-### Community 167 - "communication.controller.ts"
-Cohesion: 0.09
-Nodes (4): CreateTemplateDto, RecordCallLogDto, TemplateQueryDto, UpdateTemplateDto
 
 ### Community 168 - "Page: Schedule planning"
 Cohesion: 0.29
@@ -640,24 +616,24 @@ Cohesion: 0.40
 Nodes (4): 1. Layout, 2. Version history (inside clinical pages), 3. Mobile, Page: Audit log
 
 ## Knowledge Gaps
-- **109 isolated node(s):** `INVOICES`, `PAYMENTS`, `EXPENSES`, `PNL`, `EXCEL` (+104 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1437 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **109 isolated node(s):** `ADVANCE`, `PAID`, `PENDING`, `EXPENSES`, `INVOICES` (+104 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1447 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RoleKey` connect `RoleKey` to `RequirePermission`, `PrismaService`, `RequirePermission`, `report.service.spec.ts`, `ui/index.ts`, `ClientService`, `Button`, `branch.controller.ts`, `hr.controller.ts`, `lead.controller.ts`, `2. Checklist Evaluation & Verification Evidence`, `CommunicationController`, `communication-queue.service.ts`, `department.controller.ts`, `appointment.controller.ts`, `ReportType`, `src/index.ts`, `IRequestContext`, `@nestjs/common`, `communication.controller.ts`, `store.ts`, `Final Checklist: Petals ERP Backend`, `CommunicationService`, `audit.service.ts`, `RoleKey`, `PermissionAction`, `access.e2e-spec.ts`, `AccessService`, `ReportController`, `react`, `api/package.json`, `lucide-react`, `clinical-history.controller.ts`, `reports/page.tsx`, `AppointmentsView.tsx`, `clinical.service.ts`, `role-access/page.tsx`, `communication/page.tsx`, `employee.controller.ts`, `clinical.controller.ts`?**
-  _High betweenness centrality (0.166) - this node is a cross-community bridge._
+- **Why does `RoleKey` connect `RoleKey` to `CurrentUser`, `PrismaService`, `RequirePermission`, `finance.service.ts`, `ui/index.ts`, `usePageTitle`, `Button`, `branch.controller.ts`, `hr.service.ts`, `LeadService`, `2. Checklist Evaluation & Verification Evidence`, `RequirePermission`, `AppointmentService`, `clinical.controller.ts`, `@nestjs/common`, `AccessService`, `store.ts`, `CommunicationService`, `CreateClientDto`, `communication.service.ts`, `src/index.ts`, `UserOverridesPanel.tsx`, `access.e2e-spec.ts`, `AccessController`, `ReportController`, `EmployeesView.tsx`, `api/package.json`, `IRequestContext`, `lucide-react`, `client.service.ts`, `AuditLogFilterBar.tsx`, `EmployeeDetailView.tsx`, `AppointmentsView.tsx`, `RecordCallLogDto`, `ClientProfileView.tsx`, `clinical.service.ts`, `.set`, `role-access/page.tsx`, `communication.controller.ts`, `CommunicationChannel`, `CreateEmployeeDto`?**
+  _High betweenness centrality (0.193) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `RoleKey` (e.g. with `A. Project and Data Model` and `A. Project and data model`) actually correct?**
   _`RoleKey` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `INVOICES`, `PAYMENTS`, `EXPENSES` to the rest of the system?**
+- **What connects `ADVANCE`, `PAID`, `PENDING` to the rest of the system?**
   _109 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `ExpensesTab.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.11396011396011396 - nodes in this community are weakly interconnected._
+- **Why does `@nestjs/common` connect `@nestjs/common` to `PrismaService`, `clinical.controller.ts`, `finance.service.ts`, `audit.service.ts`, `communication.service.ts`, `clinical.service.ts`, `common/index.ts`, `access.e2e-spec.ts`, `devDependencies`, `branch.controller.ts`, `communication.controller.ts`, `hr.service.ts`, `api/package.json`, `client.service.ts`?**
+  _High betweenness centrality (0.047) - this node is a cross-community bridge._
 - **Should `4.1 Director` be split into smaller, more focused modules?**
   _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
-- **Why does `@nestjs/common` connect `@nestjs/common` to `PrismaService`, `RequirePermission`, `report.service.spec.ts`, `app.service.ts`, `ClientService`, `branch.controller.ts`, `devDependencies`, `hr.controller.ts`, `lead.controller.ts`, `communication-queue.service.ts`, `department.controller.ts`, `appointment.controller.ts`, `src/index.ts`, `communication.controller.ts`, `audit.service.ts`, `common/index.ts`, `access.e2e-spec.ts`, `api/package.json`, `clinical-history.controller.ts`, `clinical.service.ts`, `email-provider.interface.ts`, `clinical.controller.ts`?**
-  _High betweenness centrality (0.058) - this node is a cross-community bridge._
-- **Should `RequirePermission` be split into smaller, more focused modules?**
-  _Cohesion score 0.07656341320864991 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `react` to `reports/page.tsx`, `AppointmentsView.tsx`, `usePageTitle`, `FinancialView.tsx`, `store.ts`, `ui/index.ts`, `app/layout.tsx`, `fetcher.ts`, `role-access/page.tsx`, `Button`, `PermissionAction`, `dependencies`, `LeadsView.tsx`, `communication/page.tsx`, `web/package.json`, `lucide-react`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `react` connect `store.ts` to `ExpensesTab.tsx`, `ui/index.ts`, `usePageTitle`, `Button`, `web/package.json`, `src/index.ts`, `UserOverridesPanel.tsx`, `LeadStage`, `EmployeesView.tsx`, `lucide-react`, `AuditLogFilterBar.tsx`, `EmployeeDetailView.tsx`, `AppointmentsView.tsx`, `SchedulePlanningView.tsx`, `FinancialView.tsx`, `ClientProfileView.tsx`, `role-access/page.tsx`, `dependencies`, `CommunicationChannel`, `StatCard`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._

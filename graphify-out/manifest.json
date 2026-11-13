@@ -444,9 +444,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/layout.tsx": {
-    "mtime": 1794474326.3752196,
-    "seen": 1794480676.4294238,
-    "ast_hash": "f56119ac34d475bf9cbcef81de1c9790",
+    "mtime": 1794498279.687903,
+    "seen": 1794506332.0612216,
+    "ast_hash": "583030540995050ff12ba576c907745e",
     "semantic_hash": ""
   },
   "apps/web/src/app/page.tsx": {
@@ -462,9 +462,9 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1794398215.9597392,
-    "seen": 1794404370.8159792,
-    "ast_hash": "ff8dbc6ddf87b3a0a8a91f19c59d70fc",
+    "mtime": 1794482489.3703234,
+    "seen": 1794483742.5860095,
+    "ast_hash": "5c50ff26770ebde9ca3ae4f251eae669",
     "semantic_hash": ""
   },
   "eslint.config.mjs": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/client-query.dto.ts": {
-    "mtime": 1794320275.9768178,
-    "seen": 1794320411.8919783,
-    "ast_hash": "f8e8d2f9c5ea67209eb2b31dab833736",
+    "mtime": 1794505897.4691167,
+    "seen": 1794506331.7388558,
+    "ast_hash": "5b457d8c3ad4840e5f869c412a112319",
     "semantic_hash": ""
   },
   "apps/api/src/client/dto/create-client.dto.ts": {
@@ -1248,9 +1248,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/appointment-query.dto.ts": {
-    "mtime": 1794335731.946944,
-    "seen": 1794335877.0437896,
-    "ast_hash": "208d589e016ca309806507ed65c750f0",
+    "mtime": 1794505912.6424963,
+    "seen": 1794506331.6129286,
+    "ast_hash": "55fcbd874137d76f37dd930521826c45",
     "semantic_hash": ""
   },
   "apps/api/src/appointment/dto/cancel-appointment.dto.ts": {
@@ -1554,9 +1554,9 @@
     "semantic_hash": ""
   },
   "apps/api/src/communication/communication-queue.service.ts": {
-    "mtime": 1794384613.3195646,
-    "seen": 1794385047.725896,
-    "ast_hash": "07903570b329d80819ec1c6e820f646b",
+    "mtime": 1794484019.5756621,
+    "seen": 1794484136.347493,
+    "ast_hash": "bd0581851c2f96b8cb52b46963aa0307",
     "semantic_hash": ""
   },
   "apps/api/src/communication/communication.controller.ts": {
@@ -1872,27 +1872,27 @@
     "semantic_hash": ""
   },
   "apps/web/e2e/auth-flow.spec.ts": {
-    "mtime": 1794480429.2979436,
-    "seen": 1794480676.4284241,
-    "ast_hash": "04aede5e753436aeb8ae9de24dc95e24",
+    "mtime": 1794480775.3995368,
+    "seen": 1794483742.2422915,
+    "ast_hash": "239277d663b3f65cf91041260995bea1",
     "semantic_hash": ""
   },
   "apps/web/e2e/clients-appointments.spec.ts": {
-    "mtime": 1794480444.9495988,
-    "seen": 1794480676.4284241,
-    "ast_hash": "8c751295891e45d9c743b6a90f11bcde",
+    "mtime": 1794480775.4760072,
+    "seen": 1794483742.2422915,
+    "ast_hash": "64f94f6ddc5e1ef669377133c16aeab7",
     "semantic_hash": ""
   },
   "apps/web/e2e/navigation-shell.spec.ts": {
-    "mtime": 1794480437.4178767,
-    "seen": 1794480676.4284241,
-    "ast_hash": "9a6427243d373f67029e267b91910e00",
+    "mtime": 1794480775.656925,
+    "seen": 1794483742.2422915,
+    "ast_hash": "4f8022844d3815785e3faa8209d0ee59",
     "semantic_hash": ""
   },
   "apps/web/e2e/operations-admin.spec.ts": {
-    "mtime": 1794480452.915989,
-    "seen": 1794480676.4284241,
-    "ast_hash": "c7a856116f727cce9e5f9fd822f965cf",
+    "mtime": 1794480775.7602232,
+    "seen": 1794483742.2422915,
+    "ast_hash": "f7b0bd6d7e70377ba70cada1fbca7ca7",
     "semantic_hash": ""
   },
   "apps/web/next.config.ts": {
@@ -2034,21 +2034,21 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(auth)/login/2fa/page.tsx": {
-    "mtime": 1794475514.8583791,
-    "seen": 1794480676.4294238,
-    "ast_hash": "1f1192640d500d30dae0250a5dfd7a44",
+    "mtime": 1794483395.5105283,
+    "seen": 1794483742.2628338,
+    "ast_hash": "e977efdc7a508da2b50944824ff7b98f",
     "semantic_hash": ""
   },
   "apps/web/src/app/(auth)/login/otp/page.tsx": {
-    "mtime": 1794475514.8598738,
-    "seen": 1794480676.4294238,
-    "ast_hash": "b40e9cceabdec32d7706dcb422a10128",
+    "mtime": 1794483333.0352306,
+    "seen": 1794483742.2628338,
+    "ast_hash": "31c75bbc81a908b4afcaecda303e9515",
     "semantic_hash": ""
   },
   "apps/web/src/app/(auth)/login/page.tsx": {
-    "mtime": 1794475514.8639023,
-    "seen": 1794480676.4294238,
-    "ast_hash": "9bf3f9d5c411f859471b60b66e5c2488",
+    "mtime": 1794498407.9266405,
+    "seen": 1794506332.0612216,
+    "ast_hash": "173c2b4ebe57512ae7e02c70acebf436",
     "semantic_hash": ""
   },
   "apps/web/src/app/not-found.tsx": {
@@ -2058,9 +2058,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/providers.tsx": {
-    "mtime": 1794475514.866228,
-    "seen": 1794480676.4294238,
-    "ast_hash": "ceb7fc39c911b22e5bc3fa0794e233de",
+    "mtime": 1794481880.9036448,
+    "seen": 1794483742.2648284,
+    "ast_hash": "8df011645825beee97742a88df9be9b3",
     "semantic_hash": ""
   },
   "apps/web/src/app/sw.ts": {
@@ -2118,9 +2118,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/shell/Sidebar.tsx": {
-    "mtime": 1794475514.883493,
-    "seen": 1794480676.4294238,
-    "ast_hash": "f561f9fab228a928754fc51a94d93b3c",
+    "mtime": 1794498578.7205727,
+    "seen": 1794506332.0727317,
+    "ast_hash": "74e3a01ebd31e632564d6c3925b6fea2",
     "semantic_hash": ""
   },
   "apps/web/src/components/shell/UserMenu.tsx": {
@@ -2136,9 +2136,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/ui/Avatar.tsx": {
-    "mtime": 1794475514.8888316,
-    "seen": 1794480676.4294238,
-    "ast_hash": "687409552776f3677e296b447d9ce0c7",
+    "mtime": 1794486047.545872,
+    "seen": 1794486521.0269299,
+    "ast_hash": "357aa82b5e7887794edc08e44b4d0878",
     "semantic_hash": ""
   },
   "apps/web/src/components/ui/Badge.tsx": {
@@ -2328,9 +2328,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/appointments/AppointmentsView.tsx": {
-    "mtime": 1794477588.2530599,
-    "seen": 1794480676.4294238,
-    "ast_hash": "a74e28fc6f3cf8e399c9f476b5c9aa0c",
+    "mtime": 1794484793.519641,
+    "seen": 1794484979.594087,
+    "ast_hash": "213c2011f91857a66a410fc9fdf4b13e",
     "semantic_hash": ""
   },
   "apps/web/src/features/appointments/CalendarSurface.tsx": {
@@ -2352,9 +2352,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/appointments/NewAppointmentModal.tsx": {
-    "mtime": 1794477562.2850428,
-    "seen": 1794480676.4294238,
-    "ast_hash": "61a91e7eacee51d181bdac49b7fb2a9c",
+    "mtime": 1794499198.9182935,
+    "seen": 1794506332.1210742,
+    "ast_hash": "6c317ccf1ad1ee0f4f2e1c15aaab263e",
     "semantic_hash": ""
   },
   "apps/web/src/features/appointments/RescheduleModal.tsx": {
@@ -2424,9 +2424,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/client-profile/ClientProfileView.tsx": {
-    "mtime": 1794477392.8621023,
-    "seen": 1794480676.4294238,
-    "ast_hash": "5028b09a5201e296d8eaf72565227e7c",
+    "mtime": 1794484777.7011452,
+    "seen": 1794484979.6115842,
+    "ast_hash": "5e878bc833d7fcf06452e21836df1889",
     "semantic_hash": ""
   },
   "apps/web/src/features/client-profile/EditClientModal.tsx": {
@@ -2544,9 +2544,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/clients/ClientsView.tsx": {
-    "mtime": 1794477088.0010695,
-    "seen": 1794480676.4294238,
-    "ast_hash": "e0cdd6a13532214eed6ee755e535645d",
+    "mtime": 1794484785.033355,
+    "seen": 1794484979.6373954,
+    "ast_hash": "4dba4bf71b2a5d14993e700adf513054",
     "semantic_hash": ""
   },
   "apps/web/src/features/clients/index.ts": {
@@ -2646,9 +2646,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/dashboard/DashboardView.tsx": {
-    "mtime": 1794476848.148802,
-    "seen": 1794480676.4294238,
-    "ast_hash": "959d9dc0edd57bc8cad89cd180048385",
+    "mtime": 1794484671.6563835,
+    "seen": 1794484979.6613977,
+    "ast_hash": "4d488d2877203c1c86649e9a22bb4b0d",
     "semantic_hash": ""
   },
   "apps/web/src/features/dashboard/index.ts": {
@@ -2760,9 +2760,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/employees/components/EmployeesView.tsx": {
-    "mtime": 1794477106.8413506,
-    "seen": 1794480676.4294238,
-    "ast_hash": "ae1defb8fde9477f6075a507a7578cd4",
+    "mtime": 1794486139.161115,
+    "seen": 1794486521.1530545,
+    "ast_hash": "9d2225e9bb841440f80b0f68f56acbcd",
     "semantic_hash": ""
   },
   "apps/web/src/features/employees/components/OverviewTab.tsx": {
@@ -3108,9 +3108,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/role-access/components/AssignUsersModal.tsx": {
-    "mtime": 1794478814.051104,
-    "seen": 1794480676.4294238,
-    "ast_hash": "854cbb2205eff7e1fbcd0cc99a5f9e84",
+    "mtime": 1794493650.5234854,
+    "seen": 1794506332.2661667,
+    "ast_hash": "3fd254341335a7a4a049cb423f827371",
     "semantic_hash": ""
   },
   "apps/web/src/features/role-access/components/BranchCard.tsx": {
@@ -3168,9 +3168,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/role-access/components/UserBranchAssignmentsTable.tsx": {
-    "mtime": 1794478818.546991,
-    "seen": 1794480676.4294238,
-    "ast_hash": "c64762fdf1c66818558e6f0f4e8cc9c3",
+    "mtime": 1794493563.1888394,
+    "seen": 1794506332.2771778,
+    "ast_hash": "ba4214f447a5c0f6506080f968e52f51",
     "semantic_hash": ""
   },
   "apps/web/src/features/role-access/components/UserOverridesPanel.tsx": {
@@ -3216,9 +3216,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/features/schedule-planning/SchedulePlanningView.tsx": {
-    "mtime": 1794477839.5467079,
-    "seen": 1794480676.4294238,
-    "ast_hash": "4ee60535b2f5811f8bf06a6c11b47be5",
+    "mtime": 1794484683.62728,
+    "seen": 1794484979.7599382,
+    "ast_hash": "bfd5c0a557681b5d8cb8be2b83a32440",
     "semantic_hash": ""
   },
   "apps/web/src/features/schedule-planning/index.ts": {
@@ -3270,9 +3270,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/api/auth.ts": {
-    "mtime": 1794475514.9541671,
-    "seen": 1794480676.4294238,
-    "ast_hash": "69f883f7fe7216a7f273dcf4a1f53cd4",
+    "mtime": 1794483311.3959904,
+    "seen": 1794483742.557711,
+    "ast_hash": "24b4947c3fee95927670ffb7ed1b4373",
     "semantic_hash": ""
   },
   "apps/web/src/lib/api/branches.ts": {
@@ -3312,9 +3312,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/api/fetcher.ts": {
-    "mtime": 1794475514.9713466,
-    "seen": 1794480676.4294238,
-    "ast_hash": "03fc4c1560dade0c1a0e176a599edb42",
+    "mtime": 1794505841.6626494,
+    "seen": 1794506332.2968352,
+    "ast_hash": "01491a6a0b19a62cb34012d6093bcd0c",
     "semantic_hash": ""
   },
   "apps/web/src/lib/api/finance.ts": {
@@ -3414,9 +3414,9 @@
     "semantic_hash": ""
   },
   "apps/web/vitest.config.ts": {
-    "mtime": 1794475514.9983556,
-    "seen": 1794480676.4304237,
-    "ast_hash": "8aeeafdfd9e4a5f830e3c931a1e29a1e",
+    "mtime": 1794483589.9951754,
+    "seen": 1794483742.5834758,
+    "ast_hash": "4f9ab6b6f7bf5f5c754b41ed0f9faf30",
     "semantic_hash": ""
   },
   "apps/web/vitest.setup.ts": {
@@ -3426,9 +3426,9 @@
     "semantic_hash": ""
   },
   "docs/frontend/BUILD_PLAN.md": {
-    "mtime": 1794480487.8011763,
-    "seen": 1794480676.4464235,
-    "ast_hash": "235ef1fa52c900375e3c2a3f57787967",
+    "mtime": 1794480776.343542,
+    "seen": 1794483742.61451,
+    "ast_hash": "8c7cbbd340692cf08e319b17d2991500",
     "semantic_hash": ""
   },
   "docs/frontend/FRONTEND_PROGRESS.md": {
@@ -3438,9 +3438,9 @@
     "semantic_hash": ""
   },
   "docs/frontend/FRONTEND_REPORT.md": {
-    "mtime": 1794480511.9963582,
-    "seen": 1794480676.4464235,
-    "ast_hash": "1dc39d6d32d318dab7c5d6135bed18e4",
+    "mtime": 1794480776.5305216,
+    "seen": 1794483742.6156392,
+    "ast_hash": "429c0a6c7069d48aaf65c85da6ab8979",
     "semantic_hash": ""
   },
   "docs/frontend/design-app-shell.md": {
@@ -3573,6 +3573,18 @@
     "mtime": 1794475514.822905,
     "seen": 1794480676.4604244,
     "ast_hash": "876ab697b341229263e8428e965f0672",
+    "semantic_hash": ""
+  },
+  "apps/web/public/icons/apple-touch-icon.png": {
+    "mtime": 1794498215.750098,
+    "seen": 1794506332.3897693,
+    "ast_hash": "cb4f4b4551d76533544b25f449e26ecf",
+    "semantic_hash": ""
+  },
+  "apps/web/public/icons/logo.png": {
+    "mtime": 1794498215.9289837,
+    "seen": 1794506332.3967686,
+    "ast_hash": "43c252a444a34bd43db73e3a3ab5429c",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

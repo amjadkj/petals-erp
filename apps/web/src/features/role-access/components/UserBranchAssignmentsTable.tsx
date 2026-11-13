@@ -161,7 +161,7 @@ export function UserBranchAssignmentsTable({
                       {/* Role */}
                       <td className="px-4">
                         <span className="font-medium text-ink capitalize">
-                          {user.roleKey.toLowerCase()}
+                          {user.roleKey}
                         </span>
                       </td>
 
@@ -240,7 +240,7 @@ export function UserBranchAssignmentsTable({
                       <span className="text-gray-400 text-xs">{user.email}</span>
                     </div>
                     <span className="px-2 py-0.5 rounded-chip bg-gray-100 text-gray-700 capitalize font-medium">
-                      {user.roleKey.toLowerCase()}
+                      {user.roleKey}
                     </span>
                   </div>
 

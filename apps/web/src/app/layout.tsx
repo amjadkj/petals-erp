@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   description: 'Enterprise ERP for Petals Child Development Centre',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icons/icon-192.svg',
-    apple: '/icons/icon-192.svg',
+    icon: '/icons/favicon.ico',
+    apple: '/icons/apple-touch-icon.png',
   },
 };
 

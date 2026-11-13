@@ -114,7 +114,7 @@ export function AssignUsersModal({
                     className="w-4 h-4 rounded text-purple-600 border-gray-300"
                   />
                   <span className="font-medium text-ink">{u.name}</span>
-                  <span className="text-gray-400 capitalize">({u.roleKey.toLowerCase()})</span>
+                  <span className="text-gray-400 capitalize">({u.roleKey})</span>
                 </label>
               );
             })}
