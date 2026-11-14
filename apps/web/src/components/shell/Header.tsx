@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { BranchSwitcher } from './BranchSwitcher';
 import { GlobalSearch } from './GlobalSearch';
@@ -12,6 +12,7 @@ import { usePermissionsStore } from '@/lib/permissions/store';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { branchesApi } from '@/lib/api/branches';
 import { BranchDto, RoleKey } from '@petals/types';
+import { session } from '@/lib/auth/session';
 
 export function Header() {
   const { title } = usePageTitle();
@@ -20,6 +21,10 @@ export function Header() {
   const [mobileBranchOpen, setMobileBranchOpen] = useState(false);
   const [branches, setBranches] = useState<BranchDto[]>([]);
   const { selectedBranchId, setSelectedBranchId, roleKey } = usePermissionsStore();
+
+  const handleCloseDrawer = useCallback(() => {
+    setDrawerOpen(false);
+  }, []);
 
   const handleOpenBranchSheet = async () => {
     try {
@@ -118,7 +123,7 @@ export function Header() {
           <NotificationsPopover />
           <div className="h-6 w-px bg-[#E6D8F1]/60" />
           <UserMenu
-            name="Priya Nair"
+            name={session.getUserName() || 'Staff'}
             role={roleKey ? roleKey.toLowerCase() : 'Director'}
           />
         </div>
@@ -142,7 +147,7 @@ export function Header() {
       )}
 
       {/* Mobile Drawer */}
-      <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer isOpen={drawerOpen} onClose={handleCloseDrawer} />
 
       {/* Mobile Branch BottomSheet */}
       <BottomSheet
@@ -151,26 +156,6 @@ export function Header() {
         title="Select Branch"
       >
         <div className="space-y-2 py-2">
-          {roleKey === RoleKey.DIRECTOR && (
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedBranchId('ALL');
-                setMobileBranchOpen(false);
-              }}
-              className={`w-full text-left p-3.5 rounded-card border transition-colors flex items-center justify-between ${
-                selectedBranchId === 'ALL'
-                  ? 'border-purple-600 bg-purple-50 text-purple-800 font-semibold'
-                  : 'border-[#E6D8F1]/60 text-ink'
-              }`}
-            >
-              <span>All Branches</span>
-              {selectedBranchId === 'ALL' && (
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-600" />
-              )}
-            </button>
-          )}
-
           {branches.map((b) => {
             const isSelected = selectedBranchId === b.id;
             return (

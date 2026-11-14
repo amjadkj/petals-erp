@@ -98,17 +98,14 @@ export function ClientsView() {
   const meta = (clientsResponse as any)?.meta;
   const total = meta?.total ?? rawClients.length;
 
-  // Enrich client rows with department/therapist display names
-  const clients: ClientRowItem[] = rawClients.map((c, index) => {
-    // Alternating dummy department/therapist if not populated by api
-    const depts = ['Speech Therapy', 'Occupational Therapy', 'Behavioural Therapy'];
-    const therapists = ['Dr. Ananya Sharma', 'Rajesh Menon', 'Kavitha Sundaram'];
+  // Client rows mapped cleanly from API response
+  const clients: ClientRowItem[] = rawClients.map((c: any) => {
     return {
       ...c,
-      departmentName: depts[index % depts.length],
-      therapistName: therapists[index % therapists.length],
-      scheduledCount: c.sessionCount ?? 24,
-      attendedCount: Math.round((c.sessionCount ?? 24) * 0.75),
+      departmentName: c.departmentName || c.department?.name || c.plans?.[0]?.department?.name || '—',
+      therapistName: c.therapistName || c.therapist?.user?.name || c.plans?.[0]?.therapist?.user?.name || '—',
+      scheduledCount: c.sessionCount ?? c.scheduledCount ?? 0,
+      attendedCount: c.attendedCount ?? 0,
     };
   });
 

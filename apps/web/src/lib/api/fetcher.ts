@@ -26,7 +26,7 @@ const BASE_URL =
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
 
-async function doRefresh(): Promise<boolean> {
+export async function doRefresh(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_URL}/api/v1/auth/refresh`, {
       method: 'POST',
@@ -37,14 +37,65 @@ async function doRefresh(): Promise<boolean> {
     });
     if (!res.ok) return false;
     const json = await res.json();
-    if (json?.data?.accessToken) {
-      session.setAccessToken(json.data.accessToken);
+    const token = json?.data?.accessToken || json?.accessToken;
+    if (token) {
+      session.setAccessToken(token);
       return true;
     }
     return false;
   } catch {
     return false;
   }
+}
+
+let restorePromise: Promise<boolean> | null = null;
+
+export async function restoreSession(): Promise<boolean> {
+  if (session.getAccessToken()) return true;
+
+  if (restorePromise) return restorePromise;
+
+  restorePromise = (async () => {
+    const ok = await doRefresh();
+    if (!ok) {
+      session.clear();
+      return false;
+    }
+
+    try {
+      const meRes = await fetcher<any>('/auth/me', {}, { skipBranchId: true });
+      const me = meRes?.data ?? meRes;
+      if (me?.id) {
+        session.setUserId(me.id);
+        if (me.role?.key) session.setRoleKey(me.role.key);
+        if (me.name) session.setUserName(me.name);
+        if (me.email) session.setUserEmail(me.email);
+
+        const bIds = me.branches?.map((b: any) => b.branch?.id || b.branchId).filter(Boolean) || [];
+        session.setBranchIds(bIds);
+
+        // Ensure selected branch is valid (never 'ALL')
+        const currentBranch = usePermissionsStore.getState().selectedBranchId;
+        if (!currentBranch || currentBranch === 'ALL' || (bIds.length > 0 && !bIds.includes(currentBranch))) {
+          const primary = me.branches?.find((b: any) => b.isPrimary)?.branch?.id || bIds[0] || '';
+          if (primary) {
+            usePermissionsStore.getState().setSelectedBranchId(primary);
+          }
+        }
+
+        // Trigger permissions load in background
+        usePermissionsStore.getState().loadPermissions().catch(() => {});
+      }
+      return true;
+    } catch {
+      // Access token was refreshed even if me failed
+      return true;
+    }
+  })().finally(() => {
+    restorePromise = null;
+  });
+
+  return restorePromise;
 }
 
 export async function fetcher<T>(

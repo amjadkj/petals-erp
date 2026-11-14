@@ -39,7 +39,7 @@ export function AddProgressEntryModal({
         entryDate: new Date(entryDate).toISOString(),
         level,
         description: description.trim(),
-        clientResponse: clientResponse.trim() || undefined,
+        response: clientResponse.trim() || undefined,
         remarks: remarks.trim() || undefined,
       });
 

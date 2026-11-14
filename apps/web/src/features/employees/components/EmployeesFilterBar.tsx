@@ -14,6 +14,7 @@ interface EmployeesFilterBarProps {
   onDepartmentChange: (val: string) => void;
   statusFilter: string;
   onStatusChange: (val: string) => void;
+  departments?: Array<{ id: string; name: string }>;
 }
 
 export function EmployeesFilterBar({
@@ -25,6 +26,7 @@ export function EmployeesFilterBar({
   onDepartmentChange,
   statusFilter,
   onStatusChange,
+  departments = [],
 }: EmployeesFilterBarProps) {
   return (
     <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-3.5">
@@ -55,12 +57,15 @@ export function EmployeesFilterBar({
           className="h-10 text-xs"
           options={[
             { value: 'ALL', label: 'All departments' },
-            { value: 'Speech Therapy', label: 'Speech Therapy' },
-            { value: 'Occupational Therapy', label: 'Occupational Therapy' },
-            { value: 'Behavioural Therapy', label: 'Behavioural Therapy' },
-            { value: 'Special Education', label: 'Special Education' },
-            { value: 'Operations', label: 'Operations' },
-            { value: 'Front Office', label: 'Front Office' },
+            ...(departments.length > 0
+              ? departments.map((d) => ({ value: d.name, label: d.name }))
+              : [
+                  { value: 'Speech Therapy', label: 'Speech Therapy' },
+                  { value: 'Occupational Therapy', label: 'Occupational Therapy' },
+                  { value: 'Physiotherapy', label: 'Physiotherapy' },
+                  { value: 'ABA / Behavioral Therapy', label: 'ABA / Behavioral Therapy' },
+                  { value: 'Child Psychotherapy', label: 'Child Psychotherapy' },
+                ]),
           ]}
         />
 

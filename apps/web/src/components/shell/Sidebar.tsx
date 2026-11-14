@@ -35,10 +35,11 @@ export function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleSidebar]);
 
-  const navItems = buildNav(permissions, roleKey);
+  const navItems = buildNav(permissions || {}, roleKey);
 
   return (
     <aside
+      suppressHydrationWarning
       className={cn(
         'hidden md:flex flex-col bg-white border-r border-[#E6D8F1]/60 sticky top-0 h-screen z-30 transition-[width] duration-150 ease-out select-none',
         sidebarExpanded ? 'w-[240px]' : 'w-[72px]',
@@ -123,7 +124,7 @@ export function Sidebar() {
       </div>
 
       {/* Bottom Block */}
-      <div className="p-3 border-t border-[#E6D8F1]/40 shrink-0 space-y-2">
+      {/* <div className="p-3 border-t border-[#E6D8F1]/40 shrink-0 space-y-2">
         {sidebarExpanded ? (
           <button
             type="button"
@@ -163,7 +164,7 @@ export function Sidebar() {
             }
           />
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 }

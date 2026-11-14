@@ -92,7 +92,7 @@ export const ALL_NAV_ITEMS: NavItem[] = [
 ];
 
 export function buildNav(
-  permissions: PermissionsMap,
+  permissions: PermissionsMap | undefined,
   roleKey: RoleKey | null,
 ): NavItem[] {
   // Director gets all items
@@ -100,10 +100,12 @@ export function buildNav(
     return ALL_NAV_ITEMS;
   }
 
+  const perms = permissions || {};
+
   return ALL_NAV_ITEMS.filter((item) => {
     // Dashboard is always visible to authenticated users
     if (item.label === 'Dashboard') return true;
     if (!item.module) return true;
-    return !!permissions[item.module]?.enabled;
+    return !!perms[item.module]?.enabled;
   });
 }

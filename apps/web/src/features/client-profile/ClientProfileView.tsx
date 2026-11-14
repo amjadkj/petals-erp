@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
@@ -10,17 +12,64 @@ import { branchesApi } from '@/lib/api/branches';
 import { departmentsApi } from '@/lib/api/departments';
 import { employeesApi } from '@/lib/api/employees';
 import { ProfileHeader } from './ProfileHeader';
-import { EditClientModal } from './EditClientModal';
 import { OverviewTab } from './tabs/OverviewTab';
-import { AssessmentsTab } from './tabs/AssessmentsTab';
-import { TreatmentPlansTab } from './tabs/TreatmentPlansTab';
-import { ProgressTab } from './tabs/ProgressTab';
-import { ReportsTab } from './tabs/ReportsTab';
-import { DocumentsTab } from './tabs/DocumentsTab';
-import { SessionsTab } from './tabs/SessionsTab';
 import { Tabs, TabList, TabTrigger } from '@/components/ui';
 import { ProfileTabId, ALL_PROFILE_TABS } from './types';
 import { RoleKey } from '@petals/types';
+
+// Dynamically import non-default tabs to slash initial chunk weight
+const AssessmentsTab = dynamic(
+  () => import('./tabs/AssessmentsTab').then((m) => m.AssessmentsTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const TreatmentPlansTab = dynamic(
+  () => import('./tabs/TreatmentPlansTab').then((m) => m.TreatmentPlansTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const ProgressTab = dynamic(
+  () => import('./tabs/ProgressTab').then((m) => m.ProgressTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const ReportsTab = dynamic(
+  () => import('./tabs/ReportsTab').then((m) => m.ReportsTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const DocumentsTab = dynamic(
+  () => import('./tabs/DocumentsTab').then((m) => m.DocumentsTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const SessionsTab = dynamic(
+  () => import('./tabs/SessionsTab').then((m) => m.SessionsTab),
+  {
+    loading: () => <div className="h-48 bg-white rounded-card animate-pulse" />,
+    ssr: false,
+  },
+);
+
+const EditClientModal = dynamic(
+  () => import('./EditClientModal').then((m) => m.EditClientModal),
+  { ssr: false },
+);
 
 export function ClientProfileView() {
   usePageTitle('Clients');
@@ -88,7 +137,7 @@ export function ClientProfileView() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Fetch assessments
+  // Fetch assessments (lazy: only when activeTab === 'assessments')
   const { data: assessments, refetch: refetchAssessments } = useQuery({
     queryKey: ['client-assessments', clientId],
     queryFn: async () => {
@@ -98,7 +147,7 @@ export function ClientProfileView() {
     enabled: !!clientId && activeTab === 'assessments',
   });
 
-  // Fetch treatment plans
+  // Fetch treatment plans (lazy: only when activeTab === 'treatment-plans')
   const { data: treatmentPlans, refetch: refetchPlans } = useQuery({
     queryKey: ['client-treatment-plans', clientId],
     queryFn: async () => {
@@ -108,7 +157,7 @@ export function ClientProfileView() {
     enabled: !!clientId && activeTab === 'treatment-plans',
   });
 
-  // Fetch goals
+  // Fetch goals (lazy: only when activeTab === 'progress')
   const { data: goals, refetch: refetchGoals } = useQuery({
     queryKey: ['client-goals', clientId],
     queryFn: async () => {
@@ -120,10 +169,9 @@ export function ClientProfileView() {
 
   const branchName =
     branches?.find((b) => b.id === clientResponse?.branchId)?.name ||
-    'Indiranagar Main';
+    'Clinic Facility';
 
-  // Determine allowed tabs:
-  // If parent: only Overview, Treatment & Payments (payment status), Assessments, Reports
+  // Determine allowed tabs
   const allowedTabIds: ProfileTabId[] = React.useMemo(() => {
     if (role === RoleKey.PARENT) {
       return ['overview', 'treatment-plans', 'assessments', 'reports'];
@@ -144,23 +192,24 @@ export function ClientProfileView() {
     );
   }
 
-  // Fallback client data if server has not created client yet in test environment
-  const client: ClientProfileHeader = clientResponse || {
-    id: clientId,
-    branchId: 'b1',
-    clientCode: 'PN-001',
-    name: 'Aadhya Nair',
-    dob: '2021-06-15T00:00:00.000Z',
-    gender: 'FEMALE',
-    status: 'ACTIVE' as any,
-    bloodGroup: 'B+',
-    allergies: 'Mild dust sensitivity',
-    caseHistory:
-      'Initial evaluation completed in October 2026. Referred for speech sound delays and sensory processing sensitivity. Shows receptive language strengths, currently focusing on expressive clarity and fine motor bilateral coordination.',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    allowedTabs: allowedTabIds,
-  };
+  if (!clientResponse) {
+    return (
+      <div className="bg-white rounded-card border border-[#E6D8F1]/60 p-12 text-center space-y-3 shadow-sm">
+        <h2 className="font-quicksand font-bold text-lg text-ink">Client Record Not Found</h2>
+        <p className="text-xs text-gray-500 max-w-sm mx-auto">
+          The requested client record could not be found or you do not have permission to view it.
+        </p>
+        <Link
+          href="/clients"
+          className="inline-block text-xs font-semibold text-purple-600 hover:underline pt-2"
+        >
+          ← Return to Clients List
+        </Link>
+      </div>
+    );
+  }
+
+  const client: ClientProfileHeader = clientResponse;
 
   const handleRefreshAll = () => {
     queryClient.invalidateQueries({ queryKey: ['client', clientId] });
@@ -171,7 +220,7 @@ export function ClientProfileView() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 animate-fade-in">
       {/* Header Profile Summary */}
       <ProfileHeader
         client={client}
@@ -186,7 +235,7 @@ export function ClientProfileView() {
       )}
 
       {/* Tabs Navigation */}
-      <div className="bg-white border-b border-[#E6D8F1]/60 px-5 pt-1 rounded-t-card overflow-x-auto">
+      <div className="bg-white border-b border-[#E6D8F1]/60 px-5 pt-1 rounded-t-card overflow-x-auto shadow-xs">
         <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as ProfileTabId)}>
           <TabList className="gap-6 border-b-0">
             {visibleTabs.map((tab) => (
@@ -198,7 +247,7 @@ export function ClientProfileView() {
         </Tabs>
       </div>
 
-      {/* Active Tab Surface */}
+      {/* Active Tab Surface (Only renders the active tab) */}
       <div>
         {activeTab === 'overview' && (
           <OverviewTab
@@ -257,12 +306,14 @@ export function ClientProfileView() {
       </div>
 
       {/* Edit Client Modal */}
-      <EditClientModal
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        client={client}
-        onSuccess={handleRefreshAll}
-      />
+      {isEditOpen && (
+        <EditClientModal
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          client={client}
+          onSuccess={handleRefreshAll}
+        />
+      )}
     </div>
   );
 }

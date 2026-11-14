@@ -8,7 +8,8 @@ export interface ModulePermissionMap {
 
 export type UserPermissionsResponse = {
   roleKey: string;
-  modules: Record<AppModule, ModulePermissionMap>;
+  permissions?: Record<AppModule, ModulePermissionMap>;
+  modules?: Record<AppModule, ModulePermissionMap>;
 };
 
 export interface RoleDetailDto {

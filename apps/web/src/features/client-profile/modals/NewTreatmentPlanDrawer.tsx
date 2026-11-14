@@ -47,7 +47,7 @@ export function NewTreatmentPlanDrawer({
         departmentId,
         therapistId,
         sessionsPerWeek: Number(sessionsPerWeek) || 1,
-        sessionDurationMinutes: Number(durationMinutes) || 45,
+        sessionMinutes: Number(durationMinutes) || 45,
         feePerSession: Number(feePerSession) || 0,
         startDate: new Date(startDate).toISOString(),
         endDate: endDate ? new Date(endDate).toISOString() : undefined,

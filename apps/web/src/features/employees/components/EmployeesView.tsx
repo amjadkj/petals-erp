@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { usePermissions } from '@/lib/permissions/usePermissions';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { employeesApi } from '@/lib/api/employees';
+import { departmentsApi } from '@/lib/api/departments';
 import { AppModule, PermissionAction, RoleKey } from '@petals/types';
 
 import { EmployeesHero } from './EmployeesHero';
@@ -14,99 +15,6 @@ import { EmployeesFilterBar } from './EmployeesFilterBar';
 import { EmployeesTable } from './EmployeesTable';
 import { AddEmployeeModal } from './AddEmployeeModal';
 import type { EmployeeItem } from '../types';
-
-const mockInitialEmployees: EmployeeItem[] = [
-  {
-    id: 'e1',
-    name: 'Anu Menon',
-    email: 'anu.menon@petals.org',
-    phone: '+91 98450 11223',
-    roleKey: RoleKey.THERAPIST,
-    isActive: true,
-    branchIds: ['branch-1'],
-    employeeCode: 'PTL-E002',
-    designation: 'Senior Speech Therapist',
-    department: 'Speech Therapy',
-    branchName: 'Indiranagar',
-    joiningDate: '2023-06-15',
-    salary: 55000,
-  },
-  {
-    id: 'e2',
-    name: 'Nikhil Kumar',
-    email: 'nikhil.kumar@petals.org',
-    phone: '+91 98450 22334',
-    roleKey: RoleKey.MANAGER,
-    isActive: true,
-    branchIds: ['branch-1'],
-    employeeCode: 'PTL-E001',
-    designation: 'Centre Manager',
-    department: 'Operations',
-    branchName: 'Indiranagar',
-    joiningDate: '2022-03-10',
-    salary: 75000,
-  },
-  {
-    id: 'e3',
-    name: 'Priya Nair',
-    email: 'priya.nair@petals.org',
-    phone: '+91 98450 33445',
-    roleKey: RoleKey.THERAPIST,
-    isActive: true,
-    branchIds: ['branch-1'],
-    employeeCode: 'PTL-E003',
-    designation: 'Lead OT Therapist',
-    department: 'Occupational Therapy',
-    branchName: 'Indiranagar',
-    joiningDate: '2023-01-20',
-    salary: 58000,
-  },
-  {
-    id: 'e4',
-    name: 'Anita Sen',
-    email: 'anita.sen@petals.org',
-    phone: '+91 98450 44556',
-    roleKey: RoleKey.THERAPIST,
-    isActive: true,
-    branchIds: ['branch-2'],
-    employeeCode: 'PTL-E004',
-    designation: 'Behavioural Therapist',
-    department: 'Behavioural Therapy',
-    branchName: 'Koramangala',
-    joiningDate: '2023-09-01',
-    salary: 52000,
-  },
-  {
-    id: 'e5',
-    name: 'Kavita Pillai',
-    email: 'kavita.p@petals.org',
-    phone: '+91 98450 55667',
-    roleKey: RoleKey.MANAGER,
-    isActive: true,
-    branchIds: ['branch-1'],
-    employeeCode: 'PTL-E005',
-    designation: 'Front Office Coordinator',
-    department: 'Front Office',
-    branchName: 'Indiranagar',
-    joiningDate: '2024-02-15',
-    salary: 35000,
-  },
-  {
-    id: 'e6',
-    name: 'Rahul Bose',
-    email: 'rahul.b@petals.org',
-    phone: '+91 98450 66778',
-    roleKey: RoleKey.THERAPIST,
-    isActive: true,
-    branchIds: ['branch-1', 'branch-2'],
-    employeeCode: 'PTL-E006',
-    designation: 'Special Educator',
-    department: 'Special Education',
-    branchName: 'Indiranagar',
-    joiningDate: '2023-11-10',
-    salary: 50000,
-  },
-];
 
 export function EmployeesView() {
   const { showToast } = useToast();
@@ -125,12 +33,21 @@ export function EmployeesView() {
 
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [localEmployees, setLocalEmployees] = useState<EmployeeItem[]>(mockInitialEmployees);
+  const [localEmployees, setLocalEmployees] = useState<EmployeeItem[]>([]);
 
   // Fetch employees
   const { data: employeesResponse, isLoading } = useQuery({
     queryKey: ['employees', selectedBranchId],
     queryFn: () => employeesApi.getEmployees(),
+  });
+
+  // Fetch departments
+  const { data: departmentsData } = useQuery({
+    queryKey: ['departments'],
+    queryFn: async () => {
+      const res = await departmentsApi.getDepartments();
+      return res?.data || [];
+    },
   });
 
   const allEmployees: EmployeeItem[] = useMemo(() => {
@@ -201,6 +118,7 @@ export function EmployeesView() {
         onDepartmentChange={setDeptFilter}
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        departments={departmentsData || []}
       />
 
       {/* Table */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { EmployeesHero } from '../components/EmployeesHero';
 import { EmployeesStatCards } from '../components/EmployeesStatCards';
 import { EmployeesTable } from '../components/EmployeesTable';
@@ -116,7 +117,14 @@ describe('Employees Feature Components', () => {
   });
 
   it('PerformanceTab renders performance stat cards, progress bars, and assigned cases', () => {
-    render(<PerformanceTab employee={mockEmployees[0]} />);
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <PerformanceTab employee={mockEmployees[0]} />
+      </QueryClientProvider>,
+    );
 
     expect(screen.getByText('Sessions completed')).toBeInTheDocument();
     expect(screen.getByText('108')).toBeInTheDocument();

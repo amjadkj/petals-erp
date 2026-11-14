@@ -17,10 +17,14 @@ export interface MobileDrawerProps {
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname();
   const { permissions, roleKey } = usePermissionsStore();
+  const prevPathname = React.useRef(pathname);
 
-  // Close on route change
+  // Close only when route actually changes
   useEffect(() => {
-    onClose();
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      onClose();
+    }
   }, [pathname, onClose]);
 
   // Lock scroll when open
@@ -40,7 +44,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
   if (!isOpen) return null;
 
-  const navItems = buildNav(permissions, roleKey);
+  const navItems = buildNav(permissions || {}, roleKey);
 
   return (
     <div className="fixed inset-0 z-50 md:hidden flex">

@@ -58,6 +58,8 @@ export default function LoginPage() {
         session.setAccessToken(data.accessToken);
         session.setUserId(data.user.id);
         session.setRoleKey(data.user.roleKey);
+        if (data.user.name) session.setUserName(data.user.name);
+        if (data.user.email) session.setUserEmail(data.user.email);
         session.setBranchIds(data.user.branchIds);
         router.push('/dashboard');
         return;

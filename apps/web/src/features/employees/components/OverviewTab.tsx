@@ -64,11 +64,11 @@ export function OverviewTab({ employee }: OverviewTabProps) {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Qualifications</span>
-            <span className="font-medium text-ink">{employee.qualifications || 'BASLP, RCI Registered'}</span>
+            <span className="font-medium text-ink">{employee.qualifications || '—'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Emergency Contact</span>
-            <span className="font-medium text-ink">{employee.emergencyContact || '+91 98450 99887 (Spouse)'}</span>
+            <span className="font-medium text-ink">{employee.emergencyContact || '—'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Account Status</span>

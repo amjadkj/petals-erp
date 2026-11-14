@@ -63,9 +63,11 @@ export function ProfileHeader({
                 <h1 className="font-quicksand font-bold text-xl md:text-2xl text-ink">
                   {client.name}
                 </h1>
-                <span className="text-xs md:text-sm font-semibold text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
-                  {client.clientCode || 'PN-001'}
-                </span>
+                {client.clientCode && (
+                  <span className="text-xs md:text-sm font-semibold text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                    {client.clientCode}
+                  </span>
+                )}
                 <StatusChip status={client.status || 'ACTIVE'} />
               </div>
 

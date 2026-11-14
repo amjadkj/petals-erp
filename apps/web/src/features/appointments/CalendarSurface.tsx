@@ -1,245 +1,390 @@
 'use client';
 
 import React from 'react';
-import { format, addDays, isSameDay } from 'date-fns';
+import { format, addDays, isSameDay, startOfWeek } from 'date-fns';
 import { ExtendedAppointment } from '@/lib/api/appointments';
-import { AppointmentStatus } from '@petals/types';
-import { AlertTriangle } from 'lucide-react';
+import { AppointmentStatus, RoleKey } from '@petals/types';
+import { CLINIC_SCHEDULE_SLOTS, ScheduleSlot } from './types';
+import { Clock, Plus, MapPin, User as UserIcon } from 'lucide-react';
+import { Avatar } from '@/components/ui/Avatar';
 
 interface CalendarSurfaceProps {
   currentDate: Date;
   appointments: ExtendedAppointment[];
   onSelectAppointment: (appointment: ExtendedAppointment) => void;
+  onBookSlot?: (slot: ScheduleSlot, therapistId?: string, dayDate?: Date) => void;
   isLoading?: boolean;
+  role: RoleKey;
+  therapists: Array<{
+    id: string;
+    name?: string | null;
+    designation?: string | null;
+    departmentName?: string | null;
+    department?: { name: string };
+    user?: { name: string };
+  }>;
 }
 
-const HOURS = [9, 10, 11, 12, 13, 14, 15, 16, 17];
-const HOUR_HEIGHT = 64; // 64px per hour
+function getAppMins(app: ExtendedAppointment): number {
+  const dateStr = app.startsAt || app.startTime;
+  if (!dateStr) return -1;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return -1;
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+function matchesSlot(appMins: number, slot: ScheduleSlot): boolean {
+  if (appMins < 0) return false;
+  return Math.abs(appMins - slot.startMinutes) <= 25;
+}
 
 export function CalendarSurface({
   currentDate,
   appointments = [],
   onSelectAppointment,
+  onBookSlot,
   isLoading = false,
+  role,
+  therapists = [],
 }: CalendarSurfaceProps) {
-  // Compute Monday to Sunday of the current week
-  const daysOfWeek = React.useMemo(() => {
-    const dayOfWeek = currentDate.getDay();
-    const distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const monday = addDays(currentDate, distanceToMonday);
+  const isDirectorOrManager = role === RoleKey.DIRECTOR || role === RoleKey.MANAGER;
 
-    return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+  // Days for therapist weekly schedule view (Monday to Saturday)
+  const weekDays = React.useMemo(() => {
+    const monday = startOfWeek(currentDate, { weekStartsOn: 1 });
+    return Array.from({ length: 6 }, (_, i) => addDays(monday, i));
   }, [currentDate]);
 
   const today = new Date();
 
-  // Current time line calculation
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const isNowWithinHours = currentHour >= 9 && currentHour <= 18;
-  const nowTopPx = isNowWithinHours
-    ? ((currentHour - 9) * 60 + currentMinute) * (HOUR_HEIGHT / 60)
-    : -1;
-  const nowTimeStr = format(now, 'HH:mm');
-
-  // Filter and position appointments per day
-  const getAppointmentsForDay = (day: Date) => {
-    return appointments.filter((app) => {
-      const dateStr = app.startsAt || app.startTime;
-      if (!dateStr) return false;
-      const appDate = new Date(dateStr);
-      return isSameDay(appDate, day);
-    });
+  // Helper for status styles
+  const getCardStyle = (status: AppointmentStatus) => {
+    switch (status) {
+      case AppointmentStatus.ATTENDED:
+        return 'bg-teal-50/80 border-teal-300 text-teal-950 hover:bg-teal-100/80';
+      case AppointmentStatus.NO_SHOW:
+        return 'bg-amber-50/80 border-amber-300 text-amber-950 hover:bg-amber-100/80';
+      case AppointmentStatus.CANCELLED:
+        return 'bg-gray-50 border-danger/30 text-gray-500 opacity-75';
+      case AppointmentStatus.SCHEDULED:
+      default:
+        return 'bg-purple-50/80 border-purple-300 text-purple-950 hover:bg-purple-100/80';
+    }
   };
 
-  return (
-    <div className="bg-white border border-[#E6D8F1]/60 rounded-card overflow-hidden shadow-sm flex flex-col">
-      {/* Calendar Header Row */}
-      <div className="grid grid-cols-[64px_repeat(7,1fr)] border-b border-[#E6D8F1]/60 bg-white">
-        {/* Timezone cell */}
-        <div className="h-14 flex items-center justify-center border-r border-[#E6D8F1]/40 text-xs font-bold text-gray-400 select-none">
-          IST
+  if (isLoading) {
+    return (
+      <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-12 text-center shadow-sm">
+        <div className="inline-block w-8 h-8 border-3 border-purple-600 border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-sm text-gray-500 font-medium">Loading clinical schedule matrix...</p>
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 1. DIRECTOR / MANAGER VIEW: Therapists on Top, Time on Left, Single Day
+  // ─────────────────────────────────────────────────────────────
+  if (isDirectorOrManager) {
+    // If no therapists found in this branch
+    if (therapists.length === 0) {
+      return (
+        <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-12 text-center shadow-sm space-y-2">
+          <UserIcon className="w-10 h-10 text-purple-400 mx-auto" />
+          <h3 className="font-quicksand font-bold text-base text-ink">
+            No Active Therapists Found
+          </h3>
+          <p className="text-xs text-gray-500 max-w-md mx-auto">
+            Please ensure staff members with the role of Therapist are assigned to this branch
+            to view their daily scheduling columns.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="bg-white border border-[#E6D8F1]/60 rounded-card shadow-sm overflow-hidden flex flex-col">
+        {/* Top Header Banner */}
+        <div className="px-5 py-3 border-b border-[#E6D8F1]/60 bg-purple-50/40 flex items-center justify-between text-xs font-semibold text-purple-900">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-600" />
+            <span>Daily Therapist Schedule — {format(currentDate, 'EEEE, dd MMMM yyyy')}</span>
+          </div>
+          <span className="text-gray-500 font-normal">
+            {therapists.length} active therapists · 45-min sessions (1:15–2:00 PM lunch hidden)
+          </span>
         </div>
 
-        {/* 7 Days Columns */}
-        {daysOfWeek.map((day, idx) => {
-          const isToday = isSameDay(day, today);
-          const dayName = format(day, 'EEE');
-          const dayNum = format(day, 'dd');
+        {/* Scrollable Matrix */}
+        <div className="overflow-x-auto min-w-full">
+          <table className="w-full border-collapse text-left table-fixed min-w-[700px]">
+            <thead>
+              <tr className="border-b border-[#E6D8F1]/60 bg-white">
+                {/* Time slot header */}
+                <th className="w-[120px] p-3 text-xs font-bold text-gray-500 uppercase tracking-wider sticky left-0 bg-white z-20 border-r border-[#E6D8F1]/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)]">
+                  Time Slot
+                </th>
+                {/* Therapist Column Headers */}
+                {therapists.map((therapist) => {
+                  const tName =
+                    therapist.user?.name || therapist.name || 'Therapist';
+                  const dept =
+                    therapist.department?.name ||
+                    therapist.departmentName ||
+                    therapist.designation ||
+                    'Clinical Staff';
 
-          return (
-            <div
-              key={idx}
-              className={`h-14 px-2 flex flex-col items-center justify-center border-r last:border-r-0 border-[#E6D8F1]/40 transition-colors select-none ${
-                isToday ? 'bg-purple-50/80 font-bold' : ''
-              }`}
-            >
-              <span
-                className={`text-[11px] uppercase tracking-wider ${
-                  isToday ? 'text-purple-600 font-bold' : 'text-gray-500'
-                }`}
-              >
-                {dayName}
-              </span>
-              <span
-                className={`text-base font-quicksand font-bold ${
-                  isToday ? 'text-purple-700' : 'text-ink'
-                }`}
-              >
-                {dayNum}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Grid Canvas */}
-      <div className="relative overflow-x-auto min-h-[580px]">
-        {isLoading ? (
-          <div className="p-8 text-center text-sm text-gray-500 animate-pulse">
-            Loading appointments calendar...
-          </div>
-        ) : (
-          <div className="grid grid-cols-[64px_repeat(7,1fr)] min-w-[700px]">
-            {/* Left Hour Gutter */}
-            <div className="border-r border-[#E6D8F1]/40 bg-[#F5EFFA]/20 select-none">
-              {HOURS.map((hour) => (
-                <div
-                  key={hour}
-                  style={{ height: `${HOUR_HEIGHT}px` }}
-                  className="relative text-[11px] text-gray-400 font-medium pr-2 text-right pt-1 border-b border-[#E6D8F1]/20"
-                >
-                  {String(hour).padStart(2, '0')}:00
-                </div>
-              ))}
-            </div>
-
-            {/* 7 Day Columns */}
-            {daysOfWeek.map((day, dayIdx) => {
-              const isToday = isSameDay(day, today);
-              const isSunday = day.getDay() === 0;
-              const dayAppointments = getAppointmentsForDay(day);
-
-              return (
-                <div
-                  key={dayIdx}
-                  className={`relative border-r last:border-r-0 border-[#E6D8F1]/40 min-h-[${
-                    HOURS.length * HOUR_HEIGHT
-                  }px] ${isToday ? 'bg-purple-50/20' : ''}`}
-                >
-                  {/* Horizontal Hour Grid Lines */}
-                  {HOURS.map((hour) => (
-                    <div
-                      key={hour}
-                      style={{ height: `${HOUR_HEIGHT}px` }}
-                      className="border-b border-[#E6D8F1]/20 pointer-events-none"
-                    />
-                  ))}
-
-                  {/* Empty Sunday message */}
-                  {isSunday && dayAppointments.length === 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-                      <p className="text-xs text-gray-400 italic">
-                        No sessions. A little room to rest.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Current-Time Line across today's column */}
-                  {isToday && nowTopPx >= 0 && (
-                    <div
-                      style={{ top: `${nowTopPx}px` }}
-                      className="absolute left-0 right-0 z-20 flex items-center pointer-events-none"
+                  return (
+                    <th
+                      key={therapist.id}
+                      className="p-3 text-left border-r last:border-r-0 border-[#E6D8F1]/40 min-w-[190px] bg-white"
                     >
-                      <div className="w-full h-[2px] bg-teal-500 shadow-sm" />
-                      <div className="absolute -left-1.5 w-3 h-3 rounded-full bg-teal-500" />
-                      <span className="absolute -left-12 -top-2.5 bg-teal-700 text-white text-[10px] font-bold px-1 rounded">
-                        {nowTimeStr}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Appointments Blocks */}
-                  {dayAppointments.map((app) => {
-                    const start = new Date(app.startsAt || app.startTime || '');
-                    const end = new Date(app.endsAt || app.endTime || '');
-
-                    const startHours = start.getHours() + start.getMinutes() / 60;
-                    const durationHours = Math.max(0.5, (end.getTime() - start.getTime()) / (1000 * 60 * 60));
-
-                    const topPx = Math.max(0, (startHours - 9) * HOUR_HEIGHT);
-                    const heightPx = Math.max(48, durationHours * HOUR_HEIGHT - 4);
-
-                    const isCancelled = app.status === AppointmentStatus.CANCELLED;
-                    const clientName = app.client?.name || app.clientName || 'Client';
-                    const therapistFirst = (app.therapist?.user?.name || app.therapistName || 'Staff').split(' ')[0];
-                    const deptName = app.department?.code || (app.departmentName ? app.departmentName.split(' ')[0] : 'ST');
-                    const timeRange = `${format(start, 'HH:mm')} - ${format(end, 'HH:mm')}`;
-
-                    // Department colors
-                    const isSpeech = deptName.toLowerCase().includes('speech') || deptName === 'ST';
-
-                    let blockColors = isSpeech
-                      ? 'bg-purple-100/90 border-purple-300 text-purple-900 hover:bg-purple-200'
-                      : 'bg-teal-50 border-teal-300 text-teal-900 hover:bg-teal-100';
-
-                    if (isCancelled) {
-                      blockColors = 'bg-danger-bg/80 border-danger/30 text-danger hover:bg-danger-bg';
-                    }
-
-                    return (
-                      <div
-                        key={app.id}
-                        onClick={() => onSelectAppointment(app)}
-                        style={{
-                          top: `${topPx}px`,
-                          height: `${heightPx}px`,
-                        }}
-                        className={`absolute left-1 right-1 z-10 p-2 rounded-btn border text-left cursor-pointer transition-all shadow-xs overflow-hidden flex flex-col justify-between ${blockColors}`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between gap-1">
-                            <span
-                              className={`font-bold text-xs truncate ${
-                                isCancelled ? 'line-through text-danger' : ''
-                              }`}
-                            >
-                              {clientName}
-                            </span>
-                            {app.isConflict && (
-                              <span title="Holiday / conflict notice" className="shrink-0">
-                                <AlertTriangle className="w-3 h-3 text-warning" />
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="text-[11px] opacity-80 truncate">
-                            {isCancelled ? (
-                              <span className="font-semibold text-danger">Cancelled</span>
-                            ) : (
-                              <span>{deptName} · {therapistFirst}</span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="text-[10px] font-semibold opacity-70 mt-1 whitespace-nowrap">
-                          {timeRange}
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={tName} size="sm" />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-ink truncate">{tName}</p>
+                          <p className="text-[11px] text-gray-400 font-medium truncate">{dept}</p>
                         </div>
                       </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {CLINIC_SCHEDULE_SLOTS.map((slot) => (
+                <tr
+                  key={slot.id}
+                  className="border-b border-[#E6D8F1]/40 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+                >
+                  {/* Left Column: Time */}
+                  <td className="p-3 text-xs font-semibold text-gray-600 sticky left-0 bg-white z-10 border-r border-[#E6D8F1]/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)] align-top">
+                    <div className="flex items-center gap-1.5 text-purple-900 font-bold">
+                      <Clock className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                      <span className="whitespace-nowrap">{slot.label}</span>
+                    </div>
+                  </td>
+
+                  {/* Therapist Cells for this slot */}
+                  {therapists.map((therapist) => {
+                    // Find appointments for this therapist in this slot on currentDate
+                    const cellApps = appointments.filter((app) => {
+                      const appTherapistId = app.therapistId || (app.therapist as any)?.id;
+                      if (appTherapistId !== therapist.id) return false;
+                      const dateStr = app.startsAt || app.startTime;
+                      if (!dateStr) return false;
+                      const appDate = new Date(dateStr);
+                      if (!isSameDay(appDate, currentDate)) return false;
+
+                      const appMins = getAppMins(app);
+                      return matchesSlot(appMins, slot);
+                    });
+
+                    return (
+                      <td
+                        key={therapist.id}
+                        className="p-2 border-r last:border-r-0 border-[#E6D8F1]/40 align-top min-h-[72px] relative group"
+                      >
+                        {cellApps.length > 0 ? (
+                          <div className="space-y-1.5">
+                            {cellApps.map((app) => {
+                              const cName =
+                                app.client?.name || app.clientName || 'Client';
+                              const cCode = app.clientCode || app.client?.clientCode;
+                              const room = app.roomName || 'Room 1';
+
+                              return (
+                                <div
+                                  key={app.id}
+                                  onClick={() => onSelectAppointment(app)}
+                                  className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${getCardStyle(
+                                    app.status,
+                                  )}`}
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <span className="font-bold truncate">{cName}</span>
+                                    {cCode && (
+                                      <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold">
+                                        {cCode}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1">
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="w-2.5 h-2.5 text-purple-600" />
+                                      <span className="truncate">{room}</span>
+                                    </span>
+                                    <span className="capitalize text-[10px] font-semibold text-purple-700">
+                                      {app.status.toLowerCase()}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="h-full min-h-[56px] rounded-btn border border-dashed border-transparent group-hover:border-purple-200 group-hover:bg-purple-50/20 flex items-center justify-center transition-colors">
+                            {onBookSlot && (
+                              <button
+                                type="button"
+                                onClick={() => onBookSlot(slot, therapist.id, currentDate)}
+                                className="opacity-0 group-hover:opacity-100 text-[11px] font-semibold text-purple-700 flex items-center gap-1 px-2 py-1 rounded bg-white border border-purple-200 shadow-xs hover:bg-purple-50 transition-opacity"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>Book</span>
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
                     );
                   })}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 2. THERAPIST VIEW: Week Columns on Top, Time on Left
+  // ─────────────────────────────────────────────────────────────
+  return (
+    <div className="bg-white border border-[#E6D8F1]/60 rounded-card shadow-sm overflow-hidden flex flex-col">
+      {/* Top Header Banner */}
+      <div className="px-5 py-3 border-b border-[#E6D8F1]/60 bg-purple-50/40 flex items-center justify-between text-xs font-semibold text-purple-900">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-teal-600" />
+          <span>My Weekly Schedule (Mon – Sat)</span>
+        </div>
+        <span className="text-gray-500 font-normal">
+          45-min clinical slots · 1:15–2:00 PM lunch hidden
+        </span>
       </div>
 
-      {/* Footer Text */}
-      <div className="px-5 py-3 border-t border-[#E6D8F1]/40 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-gray-500 font-medium">
-        <span>Cancelled sessions remain visible. Select a session to see details or reschedule.</span>
-        <span className="font-semibold text-purple-800">All times in IST</span>
+      <div className="overflow-x-auto min-w-full">
+        <table className="w-full border-collapse text-left table-fixed min-w-[700px]">
+          <thead>
+            <tr className="border-b border-[#E6D8F1]/60 bg-white">
+              {/* Time header */}
+              <th className="w-[120px] p-3 text-xs font-bold text-gray-500 uppercase tracking-wider sticky left-0 bg-white z-20 border-r border-[#E6D8F1]/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)]">
+                Time Slot
+              </th>
+              {/* Days Columns */}
+              {weekDays.map((day, idx) => {
+                const isCurrentToday = isSameDay(day, today);
+                return (
+                  <th
+                    key={idx}
+                    className={`p-3 text-center border-r last:border-r-0 border-[#E6D8F1]/40 min-w-[150px] ${
+                      isCurrentToday ? 'bg-purple-50/80 font-bold' : 'bg-white'
+                    }`}
+                  >
+                    <div className="text-[11px] uppercase tracking-wider text-gray-500">
+                      {format(day, 'EEE')}
+                    </div>
+                    <div
+                      className={`text-sm font-quicksand font-bold ${
+                        isCurrentToday ? 'text-purple-700' : 'text-ink'
+                      }`}
+                    >
+                      {format(day, 'dd MMM')}
+                    </div>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {CLINIC_SCHEDULE_SLOTS.map((slot) => (
+              <tr
+                key={slot.id}
+                className="border-b border-[#E6D8F1]/40 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+              >
+                {/* Time Slot Label */}
+                <td className="p-3 text-xs font-semibold text-gray-600 sticky left-0 bg-white z-10 border-r border-[#E6D8F1]/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)] align-top">
+                  <div className="flex items-center gap-1.5 text-purple-900 font-bold">
+                    <Clock className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span className="whitespace-nowrap">{slot.label}</span>
+                  </div>
+                </td>
+
+                {/* Day Cells */}
+                {weekDays.map((day, idx) => {
+                  const dayApps = appointments.filter((app) => {
+                    const dateStr = app.startsAt || app.startTime;
+                    if (!dateStr) return false;
+                    const appDate = new Date(dateStr);
+                    if (!isSameDay(appDate, day)) return false;
+
+                    const appMins = getAppMins(app);
+                    return matchesSlot(appMins, slot);
+                  });
+
+                  return (
+                    <td
+                      key={idx}
+                      className="p-2 border-r last:border-r-0 border-[#E6D8F1]/40 align-top min-h-[72px] relative group"
+                    >
+                      {dayApps.length > 0 ? (
+                        <div className="space-y-1.5">
+                          {dayApps.map((app) => {
+                            const cName =
+                              app.client?.name || app.clientName || 'Client';
+                            const cCode = app.clientCode || app.client?.clientCode;
+                            const room = app.roomName || 'Room 1';
+
+                            return (
+                              <div
+                                key={app.id}
+                                onClick={() => onSelectAppointment(app)}
+                                className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${getCardStyle(
+                                  app.status,
+                                )}`}
+                              >
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className="font-bold truncate">{cName}</span>
+                                  {cCode && (
+                                    <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold">
+                                      {cCode}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1">
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="w-2.5 h-2.5 text-purple-600" />
+                                    <span className="truncate">{room}</span>
+                                  </span>
+                                  <span className="capitalize text-[10px] font-semibold text-purple-700">
+                                    {app.status.toLowerCase()}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="h-full min-h-[56px] rounded-btn border border-dashed border-transparent group-hover:border-purple-200 group-hover:bg-purple-50/20 flex items-center justify-center transition-colors">
+                          {onBookSlot && (
+                            <button
+                              type="button"
+                              onClick={() => onBookSlot(slot, undefined, day)}
+                              className="opacity-0 group-hover:opacity-100 text-[11px] font-semibold text-purple-700 flex items-center gap-1 px-2 py-1 rounded bg-white border border-purple-200 shadow-xs hover:bg-purple-50 transition-opacity"
+                            >
+                              <Plus className="w-3 h-3" />
+                              <span>Book</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

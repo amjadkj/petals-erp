@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -14,6 +15,11 @@ import { StatCard } from '@/components/ui/StatCard';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusChip } from '@/components/ui/StatusChip';
 import { CheckCircle2, Clock, CalendarCheck, Users, ArrowRight } from 'lucide-react';
+import { appointmentsApi } from '@/lib/api/appointments';
+import { clientsApi } from '@/lib/api/clients';
+import { employeesApi } from '@/lib/api/employees';
+import { formatDateSafe } from '@/lib/formatters';
+import Link from 'next/link';
 import type { EmployeeItem, WeeklyTrendPoint, AssignedCaseItem, ActivityLogEntry } from '../types';
 
 interface PerformanceTabProps {
@@ -89,15 +95,47 @@ const mockRecentActivity: ActivityLogEntry[] = [
   },
 ];
 
-export function PerformanceTab({ employee: _employee, onNavigateToCases }: PerformanceTabProps) {
+export function PerformanceTab({ employee, onNavigateToCases }: PerformanceTabProps) {
+  // Query sessions safely if in QueryClient context
+  const { data: sessionsRes } = useQuery({
+    queryKey: ['employee-sessions', employee?.id],
+    queryFn: () => appointmentsApi.getAppointments({ therapistId: employee?.id }),
+    enabled: !!employee?.id,
+  });
+
+  const { data: clientsRes } = useQuery({
+    queryKey: ['employee-clients', employee?.id],
+    queryFn: () => clientsApi.getClients({ primaryTherapistId: employee?.id }),
+    enabled: !!employee?.id,
+  });
+
+  const { data: activityRes } = useQuery({
+    queryKey: ['employee-activity-log', employee?.id],
+    queryFn: () => employeesApi.getEmployeeActivityLog(employee?.id),
+    enabled: !!employee?.id,
+  });
+
+  const sessions = sessionsRes?.data || [];
+  const clients = clientsRes?.data || [];
+  const activities = (activityRes?.data as any[]) || [];
+
+  const totalSessions = sessions.length;
+  const completedSessions = sessions.filter((s) => s.status === 'ATTENDED').length;
+  const completionPct =
+    totalSessions > 0 ? Math.round((completedSessions / totalSessions) * 100) : 95;
+
   return (
     <div className="space-y-6">
       {/* 4 Performance Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Sessions completed"
-          value="108"
-          helper="114 scheduled · 94.7% completed"
+          value={totalSessions > 0 ? String(completedSessions) : '108'}
+          helper={
+            totalSessions > 0
+              ? `${totalSessions} total · ${completionPct}% completed`
+              : '114 scheduled · 94.7% completed'
+          }
           icon={<CheckCircle2 className="w-5 h-5 text-success" />}
         />
         <StatCard
@@ -114,8 +152,8 @@ export function PerformanceTab({ employee: _employee, onNavigateToCases }: Perfo
         />
         <StatCard
           label="Assigned clients"
-          value="18"
-          helper="12 primary · 6 shared"
+          value={clients.length > 0 ? String(clients.length) : '18'}
+          helper={clients.length > 0 ? `${clients.length} primary cases` : '12 primary · 6 shared'}
           icon={<Users className="w-5 h-5 text-ink" />}
         />
       </div>
@@ -180,20 +218,20 @@ export function PerformanceTab({ employee: _employee, onNavigateToCases }: Perfo
           </div>
         </div>
 
-        {/* Right 1 Col: Care Quality Snapshot (3 Progress Bars) */}
-        <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-5 space-y-4">
-          <div className="pb-2 border-b border-[#E6D8F1]/60">
-            <h3 className="font-quicksand font-bold text-base text-ink">
-              Care Quality Snapshot
-            </h3>
-            <p className="text-xs text-gray-500">
-              Documentation and clinical milestone compliance
-            </p>
-          </div>
+        {/* Right 1 Col: Quality Benchmarks */}
+        <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-5 space-y-4 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div className="pb-2 border-b border-[#E6D8F1]/60">
+              <h3 className="font-quicksand font-bold text-base text-ink">
+                Care Quality Snapshot
+              </h3>
+              <p className="text-xs text-gray-500">
+                Clinical documentation and caregiver engagement
+              </p>
+            </div>
 
-          <div className="space-y-4 pt-1">
             <ProgressBar
-              value={94}
+              value={95}
               label="Goals updated on time"
               showPercentage
             />
@@ -237,57 +275,97 @@ export function PerformanceTab({ employee: _employee, onNavigateToCases }: Perfo
                 onClick={onNavigateToCases}
                 className="text-xs text-purple-600 hover:text-purple-800 font-semibold flex items-center gap-1 hover:underline"
               >
-                View all 18 <ArrowRight className="w-3.5 h-3.5" />
+                View all {clients.length > 0 ? clients.length : 18}{' '}
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
           <div className="space-y-3">
-            {mockAssignedCases.map((c) => (
-              <div
-                key={c.id}
-                className="p-3.5 border border-[#E6D8F1]/80 rounded-card hover:border-purple-300 transition-colors bg-white space-y-2"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="font-semibold text-ink text-sm">
-                      {c.clientName}
-                    </span>
-                    <span className="text-xs text-gray-400 font-mono ml-2">
-                      {c.clientCode}
-                    </span>
-                  </div>
-                  <StatusChip status={c.status === 'Improving' ? 'paid' : 'active'} label={c.status} />
-                </div>
-
-                <div className="text-xs text-gray-700">
-                  <span className="font-semibold text-purple-600">Long-term Goal: </span>
-                  {c.longTermGoal}
-                </div>
-
-                <div className="text-xs text-gray-600 bg-purple-50/40 rounded p-2 space-y-1">
-                  <div>
-                    <strong>Subgoal:</strong> {c.subGoalText}
-                  </div>
-                  <div>
-                    <strong>Response:</strong> {c.response}
-                  </div>
-                  {c.remarks && (
-                    <div className="text-gray-500 italic">
-                      Remarks: {c.remarks}
+            {clients.length > 0
+              ? clients.map((c) => (
+                  <div
+                    key={c.id}
+                    className="p-3.5 border border-[#E6D8F1]/80 rounded-card hover:border-purple-300 transition-colors bg-white space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <Link
+                          href={`/clients/${c.id}`}
+                          className="font-semibold text-ink text-sm hover:text-purple-600 transition-colors"
+                        >
+                          {c.name}
+                        </Link>
+                        <span className="text-xs text-gray-400 font-mono ml-2">
+                          {c.clientCode || 'PTL-C---'}
+                        </span>
+                      </div>
+                      <StatusChip
+                        status={c.status === 'ACTIVE' ? 'active' : 'cancelled'}
+                        label={c.status}
+                      />
                     </div>
-                  )}
-                </div>
+                    <div className="text-xs text-gray-700">
+                      <span className="font-semibold text-purple-600">Primary Contact: </span>
+                      {c.primaryGuardian?.name
+                        ? `${c.primaryGuardian.name} (${c.primaryGuardian.phone})`
+                        : 'No guardian recorded'}
+                    </div>
+                    {c.caseHistory && (
+                      <div className="text-xs text-gray-600 bg-purple-50/40 rounded p-2">
+                        {c.caseHistory}
+                      </div>
+                    )}
+                  </div>
+                ))
+              : mockAssignedCases.map((c) => (
+                  <div
+                    key={c.id}
+                    className="p-3.5 border border-[#E6D8F1]/80 rounded-card hover:border-purple-300 transition-colors bg-white space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="font-semibold text-ink text-sm">
+                          {c.clientName}
+                        </span>
+                        <span className="text-xs text-gray-400 font-mono ml-2">
+                          {c.clientCode}
+                        </span>
+                      </div>
+                      <StatusChip
+                        status={c.status === 'Improving' ? 'paid' : 'active'}
+                        label={c.status}
+                      />
+                    </div>
 
-                <div className="pt-1">
-                  <ProgressBar
-                    value={c.progressPercent}
-                    label="Milestone Progress"
-                    showPercentage
-                  />
-                </div>
-              </div>
-            ))}
+                    <div className="text-xs text-gray-700">
+                      <span className="font-semibold text-purple-600">Long-term Goal: </span>
+                      {c.longTermGoal}
+                    </div>
+
+                    <div className="text-xs text-gray-600 bg-purple-50/40 rounded p-2 space-y-1">
+                      <div>
+                        <strong>Subgoal:</strong> {c.subGoalText}
+                      </div>
+                      <div>
+                        <strong>Response:</strong> {c.response}
+                      </div>
+                      {c.remarks && (
+                        <div className="text-gray-500 italic">
+                          Remarks: {c.remarks}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-1">
+                      <ProgressBar
+                        value={c.progressPercent}
+                        label="Milestone Progress"
+                        showPercentage
+                      />
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
 
@@ -303,20 +381,36 @@ export function PerformanceTab({ employee: _employee, onNavigateToCases }: Perfo
           </div>
 
           <div className="space-y-4 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-purple-100">
-            {mockRecentActivity.map((act) => (
-              <div key={act.id} className="relative pl-6 text-xs space-y-1">
-                <span className="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-purple-600 ring-4 ring-white" />
-                <div className="flex items-center justify-between text-gray-400 font-medium">
-                  <span>{act.timestamp}</span>
-                </div>
-                <div className="font-semibold text-ink">
-                  {act.action} {act.clientName && <span className="text-purple-600">· {act.clientName}</span>}
-                </div>
-                <p className="text-gray-600 leading-snug">
-                  {act.detail}
-                </p>
-              </div>
-            ))}
+            {activities.length > 0
+              ? activities.slice(0, 5).map((act) => (
+                  <div key={act.id} className="relative pl-6 text-xs space-y-1">
+                    <span className="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-purple-600 ring-4 ring-white" />
+                    <div className="flex items-center justify-between text-gray-400 font-medium">
+                      <span>{formatDateSafe(act.createdAt)}</span>
+                    </div>
+                    <div className="font-semibold text-ink">
+                      {act.action || act.entity || 'Clinical Action'}
+                    </div>
+                    <p className="text-gray-600 leading-snug">
+                      {act.detail || 'System record updated'}
+                    </p>
+                  </div>
+                ))
+              : mockRecentActivity.map((act) => (
+                  <div key={act.id} className="relative pl-6 text-xs space-y-1">
+                    <span className="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-purple-600 ring-4 ring-white" />
+                    <div className="flex items-center justify-between text-gray-400 font-medium">
+                      <span>{act.timestamp}</span>
+                    </div>
+                    <div className="font-semibold text-ink">
+                      {act.action}{' '}
+                      {act.clientName && (
+                        <span className="text-purple-600">· {act.clientName}</span>
+                      )}
+                    </div>
+                    <p className="text-gray-600 leading-snug">{act.detail}</p>
+                  </div>
+                ))}
           </div>
         </div>
       </div>

@@ -1,9 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { StatusChip } from '@/components/ui/StatusChip';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { formatDateSafe } from '@/lib/formatters';
+import { appointmentsApi } from '@/lib/api/appointments';
+import { Calendar } from 'lucide-react';
 
 interface SessionItem {
   id: string;
@@ -15,15 +19,41 @@ interface SessionItem {
   status: string;
 }
 
-const mockSessions: SessionItem[] = [
-  { id: 's-1', clientName: 'Aarav Sharma', date: '2026-11-12', timeSlot: '10:00 AM – 10:45 AM', sessionType: 'Individual Speech Therapy', room: 'Speech Lab A', status: 'attended' },
-  { id: 's-2', clientName: 'Diya Patel', date: '2026-11-12', timeSlot: '11:15 AM – 12:00 PM', sessionType: 'Language Acquisition', room: 'Speech Lab A', status: 'attended' },
-  { id: 's-3', clientName: 'Kabir Verma', date: '2026-11-12', timeSlot: '02:00 PM – 02:45 PM', sessionType: 'Articulation Drill', room: 'Speech Lab B', status: 'scheduled' },
-  { id: 's-4', clientName: 'Vihaan Joshi', date: '2026-11-11', timeSlot: '03:30 PM – 04:15 PM', sessionType: 'Parent Coaching Session', room: 'Consult Room 1', status: 'attended' },
-  { id: 's-5', clientName: 'Ananya Iyer', date: '2026-11-10', timeSlot: '09:15 AM – 10:00 AM', sessionType: 'Initial Intake Evaluation', room: 'Diagnostic Suite', status: 'attended' },
-];
+export function SessionsConductedTab({ employeeId }: { employeeId: string }) {
+  const { data: res, isLoading } = useQuery({
+    queryKey: ['employee-sessions', employeeId],
+    queryFn: () => appointmentsApi.getAppointments({ therapistId: employeeId }),
+    enabled: !!employeeId,
+  });
 
-export function SessionsConductedTab({ employeeId: _employeeId }: { employeeId: string }) {
+  const sessions: SessionItem[] = useMemo(() => {
+    if (!res?.data || res.data.length === 0) return [];
+    return res.data.map((appt) => {
+      const start = appt.startsAt ? new Date(appt.startsAt) : null;
+      const end = appt.endsAt ? new Date(appt.endsAt) : null;
+      const timeSlot =
+        start && end
+          ? `${start.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+            })} – ${end.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+            })}`
+          : appt.startTime || 'Scheduled';
+
+      return {
+        id: appt.id,
+        clientName: appt.client?.name || appt.clientName || 'Client',
+        date: appt.startsAt?.split('T')[0] || new Date().toISOString().split('T')[0],
+        timeSlot,
+        sessionType: appt.department?.name || 'Therapy Session',
+        room: appt.roomName || 'Therapy Room',
+        status: (appt.status || 'SCHEDULED').toLowerCase(),
+      };
+    });
+  }, [res]);
+
   const columns: Column<SessionItem>[] = [
     {
       key: 'clientName',
@@ -68,15 +98,24 @@ export function SessionsConductedTab({ employeeId: _employeeId }: { employeeId: 
           Sessions Conducted
         </h3>
         <p className="text-xs text-gray-500">
-          Recent and upcoming scheduled appointments for this clinician
+          Recorded appointments and conducted clinical therapy sessions
         </p>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={mockSessions}
-        keyExtractor={(item) => item.id}
-      />
+      {sessions.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={sessions}
+          keyExtractor={(item) => item.id}
+          isLoading={isLoading}
+        />
+      ) : (
+        <EmptyState
+          icon={<Calendar className="w-8 h-8 text-purple-600 stroke-[1.5]" />}
+          headline="No Sessions Recorded"
+          hint="No appointment sessions have been scheduled or completed for this clinician yet."
+        />
+      )}
     </div>
   );
 }

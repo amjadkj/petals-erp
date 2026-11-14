@@ -56,26 +56,17 @@ export function NewScheduleModal({
 
   // Available plans for selected client
   const clientPlans = useMemo(() => {
-    const matched = treatmentPlans.filter((p) => p.clientId === selectedClientId);
-    if (matched.length > 0) return matched;
-    // Fallback dummy plan if none matched
-    return [
-      {
-        id: 'plan-default-1',
-        clientId: selectedClientId,
-        departmentName: 'Speech Therapy',
-        therapistName: 'Dr. Ananya Sharma',
-        durationMinutes: 45,
-      },
-    ];
+    return treatmentPlans.filter((p) => p.clientId === selectedClientId);
   }, [treatmentPlans, selectedClientId]);
 
   React.useEffect(() => {
-    if (clientPlans.length > 0 && !selectedPlanId) {
+    if (clientPlans.length > 0) {
       setSelectedPlanId(clientPlans[0].id);
       setDurationMinutes(String(clientPlans[0].durationMinutes || 45));
+    } else {
+      setSelectedPlanId('');
     }
-  }, [clientPlans, selectedPlanId]);
+  }, [clientPlans]);
 
   const handleToggleDay = (key: string) => {
     setSelectedDays((prev) =>
@@ -166,7 +157,7 @@ export function NewScheduleModal({
             type="button"
             variant="primary"
             onClick={handleSubmit}
-            disabled={selectedDays.length === 0 || isSubmitting}
+            disabled={!selectedPlanId || selectedDays.length === 0 || isSubmitting}
             className="h-10 px-5 text-xs md:text-sm font-semibold"
           >
             {isSubmitting ? 'Generating...' : 'Create schedule'}
@@ -178,6 +169,12 @@ export function NewScheduleModal({
         {conflictError && (
           <div className="p-3 bg-danger-bg text-danger text-xs rounded-btn border border-danger/30 font-medium leading-relaxed">
             {conflictError}
+          </div>
+        )}
+
+        {clientPlans.length === 0 && (
+          <div className="p-3 bg-amber-50 text-amber-800 text-xs rounded-btn border border-amber-200 font-medium leading-relaxed">
+            No active treatment plan found for this client. Please create a treatment plan first before setting up recurring schedules.
           </div>
         )}
 

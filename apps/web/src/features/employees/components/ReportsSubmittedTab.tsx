@@ -1,65 +1,75 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { StatusChip } from '@/components/ui/StatusChip';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { formatDateSafe } from '@/lib/formatters';
-import type { EmployeeReportItem } from '../types';
+import { fetcher } from '@/lib/api/fetcher';
+import { FileText } from 'lucide-react';
+import type { ApiResponse } from '@petals/types';
 
 interface ReportsSubmittedTabProps {
   employeeId: string;
 }
 
-const mockReports: EmployeeReportItem[] = [
-  { id: 'rep-1', title: 'Comprehensive Speech Assessment', clientName: 'Aarav Sharma', dueOn: '2026-11-05', submittedOn: '2026-11-04', isOnTime: true, status: 'Reviewed' },
-  { id: 'rep-2', title: 'Mid-term Language Evaluation', clientName: 'Diya Patel', dueOn: '2026-11-02', submittedOn: '2026-11-02', isOnTime: true, status: 'Reviewed' },
-  { id: 'rep-3', title: 'Articulation Progress Summary', clientName: 'Kabir Verma', dueOn: '2026-10-25', submittedOn: '2026-10-24', isOnTime: true, status: 'Shared with parent' },
-  { id: 'rep-4', title: 'Sensory Communication Report', clientName: 'Vihaan Joshi', dueOn: '2026-10-18', submittedOn: '2026-10-19', isOnTime: false, status: 'Reviewed' },
-];
+interface ReportRow {
+  id: string;
+  title: string;
+  clientName: string;
+  type?: string;
+  status: string;
+  createdAt: string;
+}
 
-export function ReportsSubmittedTab({ employeeId: _employeeId }: ReportsSubmittedTabProps) {
-  const columns: Column<EmployeeReportItem>[] = [
+export function ReportsSubmittedTab({ employeeId }: ReportsSubmittedTabProps) {
+  const { data: res, isLoading } = useQuery({
+    queryKey: ['employee-reports', employeeId],
+    queryFn: () =>
+      fetcher<ApiResponse<ReportRow[]>>(`/reports?authorId=${employeeId}`).catch(
+        () => ({ data: [] } as any),
+      ),
+    enabled: !!employeeId,
+  });
+
+  const reports = useMemo(() => {
+    if (!res?.data || !Array.isArray(res.data) || res.data.length === 0) return [];
+    return res.data;
+  }, [res]);
+
+  const columns: Column<ReportRow>[] = [
     {
       key: 'title',
       header: 'Report Title',
       isTitle: true,
       render: (row) => (
         <div>
-          <span className="font-semibold text-ink">{row.title}</span>
-          <span className="block text-xs text-gray-500">Client: {row.clientName}</span>
+          <span className="font-semibold text-ink">{row.title || 'Clinical Report'}</span>
+          <span className="block text-xs text-gray-500">
+            {row.clientName ? `Client: ${row.clientName}` : row.type || 'Evaluation'}
+          </span>
         </div>
       ),
     },
     {
-      key: 'dueOn',
-      header: 'Due Date',
+      key: 'createdAt',
+      header: 'Created On',
       isSecondary: true,
-      render: (row) => <span className="text-gray-600 text-sm">{formatDateSafe(row.dueOn)}</span>,
-    },
-    {
-      key: 'submittedOn',
-      header: 'Submitted On',
-      isSecondary: true,
-      render: (row) => <span className="text-gray-700 text-sm">{formatDateSafe(row.submittedOn)}</span>,
-    },
-    {
-      key: 'isOnTime',
-      header: 'Timeliness',
       render: (row) => (
-        <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-semibold ${
-            row.isOnTime ? 'bg-success-bg text-success' : 'bg-warning-bg text-warning'
-          }`}
-        >
-          {row.isOnTime ? 'On Time' : 'Delayed'}
-        </span>
+        <span className="text-gray-700 text-sm">{formatDateSafe(row.createdAt)}</span>
       ),
     },
     {
       key: 'status',
       header: 'Status',
       isStatus: true,
-      render: (row) => <StatusChip status="paid" label={row.status} />,
+      render: (row) => (
+        <StatusChip
+          status={row.status === 'PUBLISHED' || row.status === 'REVIEWED' ? 'paid' : 'active'}
+          label={row.status || 'Draft'}
+        />
+      ),
     },
   ];
 
@@ -67,18 +77,27 @@ export function ReportsSubmittedTab({ employeeId: _employeeId }: ReportsSubmitte
     <div className="bg-white border border-[#E6D8F1]/60 rounded-card p-5 space-y-3">
       <div className="pb-2 border-b border-[#E6D8F1]/50">
         <h3 className="font-quicksand font-bold text-lg text-purple-600">
-          Clinical Reports Submitted
+          Reports Submitted
         </h3>
         <p className="text-xs text-gray-500">
-          Evaluations, assessments, and quarterly progress summaries
+          Formal assessment summaries, progress evaluations, and discharge reports
         </p>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={mockReports}
-        keyExtractor={(item) => item.id}
-      />
+      {reports.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={reports}
+          keyExtractor={(item) => item.id}
+          isLoading={isLoading}
+        />
+      ) : (
+        <EmptyState
+          icon={<FileText className="w-8 h-8 text-purple-600 stroke-[1.5]" />}
+          headline="No Reports Filed"
+          hint="No clinical reports or diagnostic evaluations have been filed by this author yet."
+        />
+      )}
     </div>
   );
 }

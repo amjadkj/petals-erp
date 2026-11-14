@@ -2,10 +2,24 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Drawer, Button, StatusChip, useToast } from '@/components/ui';
 import { ExtendedAppointment, appointmentsApi } from '@/lib/api/appointments';
+import { clientsApi } from '@/lib/api/clients';
 import { AppointmentStatus, RoleKey } from '@petals/types';
-import { Calendar, Clock, MapPin, User, CheckCircle2, XCircle, RotateCcw, AlertCircle, ArrowUpRight } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  AlertCircle,
+  ArrowUpRight,
+  Target,
+  FileText,
+} from 'lucide-react';
 import { format } from 'date-fns';
 
 interface SessionDetailDrawerProps {
@@ -30,14 +44,65 @@ export function SessionDetailDrawer({
   const { showToast } = useToast();
   const [isUpdating, setIsUpdating] = React.useState(false);
 
+  // Fetch client goals (Long-Term Goal)
+  const { data: goalsData, isLoading: isLoadingGoals } = useQuery({
+    queryKey: ['appointment-client-goals', appointment?.clientId],
+    queryFn: async () => {
+      if (!appointment?.clientId) return [];
+      const res = await clientsApi.getGoals(appointment.clientId);
+      return res?.data ?? [];
+    },
+    enabled: !!appointment?.clientId && isOpen,
+  });
+
+  const activeLtGoal = React.useMemo(() => {
+    if (!goalsData || goalsData.length === 0) return null;
+    return goalsData.find((g) => g.term === 'LONG') || goalsData[0];
+  }, [goalsData]);
+
+  // Fetch previous attended sessions for remarks
+  const { data: pastAppointments, isLoading: isLoadingPast } = useQuery({
+    queryKey: ['appointment-client-past', appointment?.clientId],
+    queryFn: async () => {
+      if (!appointment?.clientId) return [];
+      const res = await appointmentsApi.getAppointments({
+        clientId: appointment.clientId,
+        status: AppointmentStatus.ATTENDED,
+      });
+      const list = (res as any)?.data ?? res ?? [];
+      return Array.isArray(list) ? list : [];
+    },
+    enabled: !!appointment?.clientId && isOpen,
+  });
+
+  const previousRemark = React.useMemo(() => {
+    if (!pastAppointments || pastAppointments.length === 0) return null;
+    const currentStart = new Date(
+      appointment?.startsAt || appointment?.startTime || Date.now(),
+    ).getTime();
+    const sorted = [...pastAppointments]
+      .filter((a) => {
+        const t = new Date(a.startsAt || a.startTime || 0).getTime();
+        return t < currentStart && (a.notes || (a as any).remarks);
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.startsAt || b.startTime || 0).getTime() -
+          new Date(a.startsAt || a.startTime || 0).getTime(),
+      );
+    return sorted[0]?.notes || (sorted[0] as any)?.remarks || null;
+  }, [pastAppointments, appointment]);
+
   if (!appointment) return null;
 
   const isParent = role === RoleKey.PARENT;
   const isStaff = role !== RoleKey.PARENT;
 
   const clientName = appointment.client?.name || appointment.clientName || 'Client';
-  const therapistName = appointment.therapist?.user?.name || appointment.therapistName || 'Assigned Therapist';
-  const deptName = appointment.department?.name || appointment.departmentName || 'Therapy Department';
+  const therapistName =
+    appointment.therapist?.user?.name || appointment.therapistName || 'Assigned Therapist';
+  const deptName =
+    appointment.department?.name || appointment.departmentName || 'Therapy Department';
 
   const startDate = new Date(appointment.startsAt || appointment.startTime || '');
   const endDate = new Date(appointment.endsAt || appointment.endTime || '');
@@ -69,7 +134,7 @@ export function SessionDetailDrawer({
       isOpen={isOpen}
       onClose={onClose}
       title="Appointment Details"
-      width="max-w-[420px]"
+      width="max-w-[440px]"
       footer={
         isStaff && appointment.status !== AppointmentStatus.CANCELLED ? (
           <div className="flex flex-col gap-2 w-full">
@@ -131,14 +196,16 @@ export function SessionDetailDrawer({
           <StatusChip status={appointment.status} />
         </div>
 
-        {/* Cancellation Reason if applicable */}
+        {/* Cancellation Notice */}
         {appointment.status === AppointmentStatus.CANCELLED && (
           <div className="p-3.5 bg-danger-bg/60 rounded-card border border-danger/30 text-xs space-y-1">
             <span className="font-bold text-danger uppercase tracking-wider text-[10px]">
               Cancellation Notice
             </span>
             <p className="text-gray-800">
-              {appointment.cancelReason || appointment.cancellationReason || 'Cancelled by clinic administration.'}
+              {appointment.cancelReason ||
+                appointment.cancellationReason ||
+                'Cancelled by clinic administration.'}
             </p>
           </div>
         )}
@@ -198,9 +265,46 @@ export function SessionDetailDrawer({
           </div>
         </div>
 
-        {/* Clinical Notes / Prep */}
+        {/* Long-Term Goal set by therapist */}
+        <div className="space-y-1.5 pt-3 border-t border-[#E6D8F1]/40">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-800 uppercase tracking-wider">
+            <Target className="w-3.5 h-3.5 text-purple-600" />
+            <span>Active Long-Term Goal</span>
+          </div>
+          {isLoadingGoals ? (
+            <div className="h-14 bg-gray-100 rounded-btn animate-pulse" />
+          ) : activeLtGoal ? (
+            <div className="p-3 bg-purple-50/50 rounded-btn border border-purple-100 text-xs text-ink space-y-1">
+              <div className="font-semibold text-purple-900">
+                {activeLtGoal.domain || 'Primary Clinical Goal'}
+              </div>
+              <p className="text-gray-700 leading-relaxed">{activeLtGoal.description}</p>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 italic">No long-term goal set yet for this client.</p>
+          )}
+        </div>
+
+        {/* Remark from Previous Session */}
+        <div className="space-y-1.5 pt-3 border-t border-[#E6D8F1]/40">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-teal-800 uppercase tracking-wider">
+            <FileText className="w-3.5 h-3.5 text-teal-600" />
+            <span>Remark from Previous Session</span>
+          </div>
+          {isLoadingPast ? (
+            <div className="h-14 bg-gray-100 rounded-btn animate-pulse" />
+          ) : previousRemark ? (
+            <div className="p-3 bg-teal-50/50 rounded-btn border border-teal-100 text-xs text-teal-950 leading-relaxed italic">
+              "{previousRemark}"
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 italic">No previous session remarks recorded.</p>
+          )}
+        </div>
+
+        {/* Session Prep Notes */}
         {appointment.notes && (
-          <div className="space-y-1 pt-2 border-t border-[#E6D8F1]/40">
+          <div className="space-y-1 pt-3 border-t border-[#E6D8F1]/40">
             <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
               Session Prep Notes
             </span>

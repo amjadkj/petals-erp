@@ -1,6 +1,8 @@
-/** Read the x-csrf-token from document.cookie */
+/** Read the csrfToken or x-csrf-token from document.cookie */
 export function getCsrfToken(): string | null {
   if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]+)/);
+  const match =
+    document.cookie.match(/(?:^|;\s*)csrfToken=([^;]+)/) ||
+    document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : null;
 }

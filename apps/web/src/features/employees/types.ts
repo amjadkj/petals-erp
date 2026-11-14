@@ -4,6 +4,7 @@ export interface EmployeeItem extends UserSummary {
   employeeCode: string;
   designation: string;
   department: string;
+  departmentId?: string | null;
   branchName: string;
   joiningDate?: string | null;
   salary?: number | null; // Masked / visible only with EMPLOYEE_SALARY:view

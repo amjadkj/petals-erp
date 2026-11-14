@@ -45,14 +45,20 @@ export function EditClientModal({
 
     setIsSubmitting(true);
     try {
+      const combinedCaseHistory = [
+        caseHistory.trim(),
+        bloodGroup ? `Blood Group: ${bloodGroup}` : null,
+        allergies.trim() ? `Allergies: ${allergies.trim()}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n');
+
       await clientsApi.updateClient(client.id, {
         name: name.trim(),
         dob: dob ? new Date(dob).toISOString() : client.dob,
         gender,
-        bloodGroup,
         status,
-        allergies: allergies.trim() || undefined,
-        caseHistory: caseHistory.trim() || undefined,
+        caseHistory: combinedCaseHistory || undefined,
       });
 
       showToast('Client details updated successfully!', 'success');

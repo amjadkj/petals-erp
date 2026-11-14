@@ -46,8 +46,9 @@ export function LeadsView() {
     queryFn: () => leadsApi.getLeads(),
   });
 
-  // Local fallback leads matching the mockup exactly
-  const initialMockLeads: LeadItem[] = useMemo(() => [
+  // Local fallback leads
+  const initialMockLeads: LeadItem[] = [];
+  const _unusedLeads = [
     {
       id: 'lead-1',
       branchId: 'b1',
@@ -141,16 +142,17 @@ export function LeadsView() {
       updatedAt: '2026-11-02T15:00:00Z',
       closedDate: '2026-11-02',
     },
-  ], []);
+  ];
+  void _unusedLeads;
 
-  const [localLeads, setLocalLeads] = useState<LeadItem[]>(initialMockLeads);
+  const [localLeads, setLocalLeads] = useState<LeadItem[]>([]);
 
   // Sync when API data loads
   const allLeads: LeadItem[] = useMemo(() => {
     if (leadsResponse?.data && leadsResponse.data.length > 0) {
       return leadsResponse.data.map((l) => ({
         ...l,
-        ownerName: 'Nikhil Kumar',
+        ownerName: (l as any).owner?.user?.name || (l as any).ownerName || 'Staff Member',
       }));
     }
     return localLeads;

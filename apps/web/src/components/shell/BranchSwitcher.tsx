@@ -15,8 +15,13 @@ export function BranchSwitcher() {
     branchesApi
       .getBranches()
       .then((res) => {
-        if (res?.data) {
+        if (res?.data && res.data.length > 0) {
           setBranches(res.data);
+          const current = usePermissionsStore.getState().selectedBranchId;
+          const exists = res.data.some((b) => b.id === current);
+          if (!exists) {
+            setSelectedBranchId(res.data[0].id);
+          }
         }
       })
       .catch(() => {
@@ -32,20 +37,10 @@ export function BranchSwitcher() {
             timezone: 'Asia/Kolkata',
             isActive: true,
           },
-          {
-            id: 'b-kadavantra',
-            name: 'Kadavanthra',
-            code: 'KD',
-            city: 'Kochi',
-            address: 'Kadavanthra, Kochi',
-            phone: '+91 9876543211',
-            timezone: 'Asia/Kolkata',
-            isActive: true,
-          },
         ]);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [setSelectedBranchId]);
 
   const isDirector = roleKey === RoleKey.DIRECTOR;
 
@@ -78,7 +73,6 @@ export function BranchSwitcher() {
         aria-label="Select branch"
         className="h-10 pl-9 pr-8 text-xs md:text-sm font-medium bg-white text-ink rounded-btn border border-[#D9D4DE] hover:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-colors appearance-none cursor-pointer"
       >
-        {isDirector && <option value="ALL">All Branches</option>}
         {branches.map((b) => (
           <option key={b.id} value={b.id}>
             {b.name}

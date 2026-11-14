@@ -35,9 +35,9 @@ export function AddAssessmentModal({
     setIsSubmitting(true);
     try {
       await clientsApi.createAssessment(clientId, {
-        tool: tool.trim(),
-        assessedAt: new Date(assessedAt).toISOString(),
-        observations: observations.trim() || undefined,
+        tool: tool.trim() || undefined,
+        assessedOn: new Date(assessedAt).toISOString(),
+        observation: observations.trim() || undefined,
         summary: summary.trim() || undefined,
         scores: {
           Receptive: Number(scoreReceptive) || 0,

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { format, startOfWeek, endOfWeek, addDays, isSameDay } from 'date-fns';
+import { startOfDay, endOfDay, startOfWeek, endOfWeek } from 'date-fns';
 import { useSearchParams } from 'next/navigation';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { usePermissions } from '@/lib/permissions/usePermissions';
@@ -14,14 +14,12 @@ import { clientsApi } from '@/lib/api/clients';
 import { AppointmentsHero } from './AppointmentsHero';
 import { AppointmentsToolbar } from './AppointmentsToolbar';
 import { CalendarSurface } from './CalendarSurface';
-import { MobileAgendaView } from './MobileAgendaView';
 import { SessionDetailDrawer } from './SessionDetailDrawer';
 import { NewAppointmentModal } from './NewAppointmentModal';
 import { RescheduleModal } from './RescheduleModal';
 import { CancelAppointmentModal } from './CancelAppointmentModal';
-import { CalendarViewMode, AppointmentFiltersState, INITIAL_APPOINTMENT_FILTERS } from './types';
-import { RoleKey, AppointmentStatus } from '@petals/types';
-import { Plus } from 'lucide-react';
+import { AppointmentFiltersState, INITIAL_APPOINTMENT_FILTERS, ScheduleSlot } from './types';
+import { RoleKey } from '@petals/types';
 
 export function AppointmentsView() {
   usePageTitle('Appointments');
@@ -29,10 +27,10 @@ export function AppointmentsView() {
   const queryClient = useQueryClient();
   const { myRole } = usePermissions();
   const role = myRole || RoleKey.DIRECTOR;
+  const isDirectorOrManager = role === RoleKey.DIRECTOR || role === RoleKey.MANAGER;
   const { selectedBranchId } = usePermissionsStore();
 
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<CalendarViewMode>('week');
   const [filters, setFilters] = useState<AppointmentFiltersState>(INITIAL_APPOINTMENT_FILTERS);
 
   const [selectedAppointment, setSelectedAppointment] = useState<ExtendedAppointment | null>(null);
@@ -49,15 +47,24 @@ export function AppointmentsView() {
     }
   }, [searchParams]);
 
-  // Load therapists
-  const { data: therapistsData } = useQuery({
-    queryKey: ['therapists'],
+  // Load employees (therapists)
+  const { data: allEmployeesData } = useQuery({
+    queryKey: ['employees', selectedBranchId],
     queryFn: async () => {
-      const res = await employeesApi.getEmployees();
+      const res = await employeesApi.getEmployees(selectedBranchId ? { branchId: selectedBranchId } : {});
       return res?.data ?? [];
     },
     staleTime: 5 * 60 * 1000,
   });
+
+  // Filter active therapists
+  const therapistsList = React.useMemo(() => {
+    if (!allEmployeesData || !Array.isArray(allEmployeesData)) return [];
+    return allEmployeesData.filter((emp: any) => {
+      const roleStr = (emp.user?.role?.key || emp.roleKey || emp.designation || '').toUpperCase();
+      return roleStr.includes('THERAPIST') || emp.isClinicalStaff;
+    });
+  }, [allEmployeesData]);
 
   // Load departments
   const { data: departmentsData } = useQuery({
@@ -79,18 +86,24 @@ export function AppointmentsView() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Calculate current week date window
-  const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
-
-  const fromIso = weekStart.toISOString();
-  const toIso = weekEnd.toISOString();
+  // Calculate date window based on role:
+  // Director / Manager: single day of currentDate
+  // Therapist: whole week of currentDate
+  const { fromIso, toIso } = React.useMemo(() => {
+    if (isDirectorOrManager) {
+      const start = startOfDay(currentDate);
+      const end = endOfDay(currentDate);
+      return { fromIso: start.toISOString(), toIso: end.toISOString() };
+    }
+    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
+    return { fromIso: weekStart.toISOString(), toIso: weekEnd.toISOString() };
+  }, [currentDate, isDirectorOrManager]);
 
   // Load appointments
   const {
     data: appointmentsData,
     isLoading,
-    isError,
     refetch,
   } = useQuery({
     queryKey: ['appointments', selectedBranchId, fromIso, toIso, filters],
@@ -114,187 +127,122 @@ export function AppointmentsView() {
       }
 
       const res = await appointmentsApi.getAppointments(params);
-      return (res as any)?.data ?? res ?? [];
+      const list = (res as any)?.data ?? res ?? [];
+      return Array.isArray(list) ? list : [];
     },
   });
 
-  // Fallback demo appointments if backend has none in current window
-  const demoAppointments: ExtendedAppointment[] = React.useMemo(() => {
-    const monday = startOfWeek(currentDate, { weekStartsOn: 1 });
-
-    const makeSlot = (
-      id: string,
-      dayOffset: number,
-      startHour: number,
-      durationMin: number,
-      clientName: string,
-      clientCode: string,
-      therapistName: string,
-      deptName: string,
-      status: AppointmentStatus = AppointmentStatus.SCHEDULED,
-    ): ExtendedAppointment => {
-      const start = addDays(monday, dayOffset);
-      start.setHours(startHour, 0, 0, 0);
-      const end = new Date(start.getTime() + durationMin * 60 * 1000);
-
-      return {
-        id,
-        branchId: 'b1',
-        clientId: `c-${id}`,
-        clientName,
-        clientCode,
-        therapistId: `t-${id}`,
-        therapistName,
-        departmentName: deptName,
-        roomName: 'Therapy Room 1',
-        startsAt: start.toISOString(),
-        endsAt: end.toISOString(),
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
-        status,
-      };
-    };
-
-    return [
-      makeSlot('demo-1', 0, 9, 45, 'Aadhya Nair', 'PN-001', 'Dr. Ananya Sharma', 'Speech Therapy', AppointmentStatus.ATTENDED),
-      makeSlot('demo-2', 0, 11, 45, 'Vihaan Sharma', 'PN-004', 'Rajesh Menon', 'Occupational Therapy', AppointmentStatus.ATTENDED),
-      makeSlot('demo-3', 1, 10, 45, 'Arjun Das', 'PN-012', 'Dr. Ananya Sharma', 'Speech Therapy', AppointmentStatus.SCHEDULED),
-      makeSlot('demo-4', 2, 14, 45, 'Diya Patel', 'PN-018', 'Kavitha Sundaram', 'Behavioural Therapy', AppointmentStatus.SCHEDULED),
-      makeSlot('demo-5', 3, 10, 45, 'Kabir Verma', 'PN-022', 'Dr. Ananya Sharma', 'Speech Therapy', AppointmentStatus.CANCELLED),
-      makeSlot('demo-6', 4, 15, 45, 'Aadhya Nair', 'PN-001', 'Rajesh Menon', 'Occupational Therapy', AppointmentStatus.SCHEDULED),
-    ];
-  }, [currentDate]);
-
-  const appointments = (appointmentsData && appointmentsData.length > 0)
-    ? appointmentsData
-    : demoAppointments;
+  // Real appointments without any mock fallbacks
+  const activeAppointments: ExtendedAppointment[] = appointmentsData ?? [];
 
   const handleSelectAppointment = (app: ExtendedAppointment) => {
     setSelectedAppointment(app);
     setIsDrawerOpen(true);
   };
 
+  const handleBookSlot = (slot: ScheduleSlot, therapistId?: string, dayDate?: Date) => {
+    if (dayDate) setCurrentDate(dayDate);
+    setIsNewModalOpen(true);
+  };
+
   const handleOpenReschedule = (app: ExtendedAppointment) => {
+    setIsDrawerOpen(false);
     setAppointmentToModify(app);
     setIsRescheduleOpen(true);
-    setIsDrawerOpen(false);
   };
 
   const handleOpenCancel = (app: ExtendedAppointment) => {
+    setIsDrawerOpen(false);
     setAppointmentToModify(app);
     setIsCancelOpen(true);
-    setIsDrawerOpen(false);
   };
 
-  const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['appointments'] });
+  const handleFilterChange = (updates: Partial<AppointmentFiltersState>) => {
+    setFilters((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleSuccessMutation = () => {
     refetch();
+    queryClient.invalidateQueries({ queryKey: ['appointments'] });
   };
 
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  // Format therapists for select controls
+  const therapistSelectOptions = therapistsList.map((t: any) => ({
+    id: t.id,
+    name: t.user?.name || t.name || 'Therapist',
+  }));
+
+  const departmentSelectOptions = (departmentsData || []).map((d: any) => ({
+    id: d.id,
+    name: d.name,
+  }));
 
   return (
-    <div className="space-y-6 pb-16 md:pb-6 relative">
-      {/* Hero Section */}
-      <AppointmentsHero
-        onNewAppointment={() => setIsNewModalOpen(true)}
-      />
+    <div className="space-y-5 animate-fade-in">
+      <AppointmentsHero onNewAppointment={() => setIsNewModalOpen(true)} />
 
-      {/* Toolbar */}
       <AppointmentsToolbar
         currentDate={currentDate}
         onDateChange={setCurrentDate}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
         filters={filters}
-        onFilterChange={(updates) => setFilters((prev) => ({ ...prev, ...updates }))}
-        therapists={therapistsData || []}
-        departments={departmentsData || []}
+        onFilterChange={handleFilterChange}
+        therapists={therapistSelectOptions}
+        departments={departmentSelectOptions}
         role={role}
       />
 
-      {isError && (
-        <div className="p-3.5 bg-danger-bg text-danger border border-danger/30 rounded-card flex items-center justify-between text-xs md:text-sm">
-          <span>Failed to load appointments from server. Showing local schedule cache.</span>
-          <button
-            type="button"
-            onClick={() => refetch()}
-            className="underline font-semibold hover:text-danger/80"
-          >
-            Retry
-          </button>
-        </div>
-      )}
+      <CalendarSurface
+        currentDate={currentDate}
+        appointments={activeAppointments}
+        onSelectAppointment={handleSelectAppointment}
+        onBookSlot={handleBookSlot}
+        isLoading={isLoading}
+        role={role}
+        therapists={
+          (filters.therapistId !== 'ALL'
+            ? therapistsList.filter((t: any) => t.id === filters.therapistId)
+            : therapistsList
+          ).map((t: any) => ({
+            id: t.id,
+            name: t.user?.name || t.name,
+            designation: t.designation ?? undefined,
+            departmentName: t.department?.name || t.departmentName,
+            user: t.user,
+          }))
+        }
+      />
 
-      {/* Desktop Calendar Surface (>= 768px) */}
-      <div className="hidden md:block">
-        <CalendarSurface
-          currentDate={currentDate}
-          appointments={appointments}
-          onSelectAppointment={handleSelectAppointment}
-          isLoading={isLoading}
-        />
-      </div>
-
-      {/* Mobile Agenda View (< 768px) */}
-      <div className="md:hidden">
-        <MobileAgendaView
-          currentDate={currentDate}
-          onSelectDate={setCurrentDate}
-          daysOfWeek={daysOfWeek}
-          appointments={appointments}
-          onSelectAppointment={handleSelectAppointment}
-        />
-      </div>
-
-      {/* Floating Action Button on Mobile */}
-      <div className="fixed bottom-20 right-5 z-40 md:hidden">
-        <button
-          type="button"
-          onClick={() => setIsNewModalOpen(true)}
-          className="w-14 h-14 rounded-full bg-purple-600 text-white shadow-xl flex items-center justify-center hover:bg-purple-800 active:scale-95 transition-transform"
-          aria-label="New appointment"
-        >
-          <Plus className="w-6 h-6" />
-        </button>
-      </div>
-
-      {/* Appointment Detail Drawer */}
       <SessionDetailDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         appointment={selectedAppointment}
         onReschedule={handleOpenReschedule}
         onCancel={handleOpenCancel}
-        onRefresh={handleRefresh}
+        onRefresh={handleSuccessMutation}
         role={role}
       />
 
-      {/* New Appointment Modal */}
       <NewAppointmentModal
         isOpen={isNewModalOpen}
         onClose={() => setIsNewModalOpen(false)}
-        onSuccess={handleRefresh}
+        onSuccess={handleSuccessMutation}
         clients={clientsData || []}
-        therapists={therapistsData || []}
-        departments={departmentsData || []}
-        prefilledClientId={searchParams?.get('clientId') || undefined}
+        therapists={therapistSelectOptions}
+        departments={departmentSelectOptions}
       />
 
-      {/* Reschedule Modal */}
       <RescheduleModal
         isOpen={isRescheduleOpen}
         onClose={() => setIsRescheduleOpen(false)}
         appointment={appointmentToModify}
-        onSuccess={handleRefresh}
+        onSuccess={handleSuccessMutation}
       />
 
-      {/* Cancel Modal */}
       <CancelAppointmentModal
         isOpen={isCancelOpen}
         onClose={() => setIsCancelOpen(false)}
         appointment={appointmentToModify}
-        onSuccess={handleRefresh}
+        onSuccess={handleSuccessMutation}
       />
     </div>
   );

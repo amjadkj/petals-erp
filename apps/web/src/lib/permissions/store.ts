@@ -8,10 +8,10 @@ export type PermissionsMap = Partial<Record<AppModule, ModulePermissionMap>>;
 interface PermissionsState {
   permissions: PermissionsMap;
   roleKey: RoleKey | null;
-  selectedBranchId: string | 'ALL';
+  selectedBranchId: string;
   sidebarExpanded: boolean;
   isLoading: boolean;
-  setSelectedBranchId: (branchId: string | 'ALL') => void;
+  setSelectedBranchId: (branchId: string) => void;
   setSidebarExpanded: (expanded: boolean) => void;
   toggleSidebar: () => void;
   loadPermissions: () => Promise<void>;
@@ -21,9 +21,11 @@ interface PermissionsState {
 const STORAGE_KEY_BRANCH = 'petals.selectedBranchId';
 const STORAGE_KEY_SIDEBAR = 'petals.sidebar';
 
-function getInitialBranch(): string | 'ALL' {
-  if (typeof window === 'undefined') return 'ALL';
-  return (localStorage.getItem(STORAGE_KEY_BRANCH) as string | 'ALL') || 'ALL';
+function getInitialBranch(): string {
+  if (typeof window === 'undefined') return '';
+  const stored = localStorage.getItem(STORAGE_KEY_BRANCH);
+  if (stored && stored !== 'ALL') return stored;
+  return '';
 }
 
 function getInitialSidebar(): boolean {
@@ -68,16 +70,19 @@ export const usePermissionsStore = create<PermissionsState>((set) => ({
     try {
       const res = await accessApi.getMyPermissions();
       if (res?.data) {
+        const raw = res.data as any;
+        const perms = raw.permissions || raw.modules || {};
         set({
-          permissions: res.data.modules,
-          roleKey: (res.data.roleKey as RoleKey) ?? null,
+          permissions: perms,
+          roleKey: (raw.roleKey as RoleKey) ?? null,
         });
-        if (res.data.roleKey) {
-          session.setRoleKey(res.data.roleKey);
+        if (raw.roleKey) {
+          session.setRoleKey(raw.roleKey);
         }
       }
     } catch {
       // Default to empty permissions if error
+      set({ permissions: {} });
     } finally {
       set({ isLoading: false });
     }
@@ -87,7 +92,7 @@ export const usePermissionsStore = create<PermissionsState>((set) => ({
     set({
       permissions: {},
       roleKey: null,
-      selectedBranchId: 'ALL',
+      selectedBranchId: '',
       isLoading: false,
     });
   },
