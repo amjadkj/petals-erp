@@ -222,7 +222,13 @@ export function CalendarSurface({
                             })}
                           </div>
                         ) : (
-                          <div className="h-full min-h-[56px] rounded-btn border border-dashed border-transparent group-hover:border-purple-200 group-hover:bg-purple-50/20 flex items-center justify-center transition-colors">
+                          <div
+                            className={`h-full min-h-[56px] rounded-btn border border-dashed border-transparent ${
+                              onBookSlot
+                                ? 'group-hover:border-purple-200 group-hover:bg-purple-50/20'
+                                : ''
+                            } flex items-center justify-center transition-colors`}
+                          >
                             {onBookSlot && (
                               <button
                                 type="button"
@@ -365,7 +371,13 @@ export function CalendarSurface({
                           })}
                         </div>
                       ) : (
-                        <div className="h-full min-h-[56px] rounded-btn border border-dashed border-transparent group-hover:border-purple-200 group-hover:bg-purple-50/20 flex items-center justify-center transition-colors">
+                        <div
+                          className={`h-full min-h-[56px] rounded-btn border border-dashed border-transparent ${
+                            onBookSlot
+                              ? 'group-hover:border-purple-200 group-hover:bg-purple-50/20'
+                              : ''
+                          } flex items-center justify-center transition-colors`}
+                        >
                           {onBookSlot && (
                             <button
                               type="button"

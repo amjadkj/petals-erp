@@ -56,7 +56,10 @@ export function UserMenu({
   };
 
   const defaultTrigger = (
-    <div className="flex items-center gap-2 p-1.5 rounded-btn hover:bg-purple-50 transition-colors select-none">
+    <div
+      suppressHydrationWarning
+      className="flex items-center gap-2 p-1.5 rounded-btn hover:bg-purple-50 transition-colors select-none"
+    >
       <Avatar name={name} size="sm" />
       <div className="hidden lg:flex flex-col text-left">
         <span className="text-xs font-semibold text-ink leading-tight">{name}</span>

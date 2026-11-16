@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { BranchSwitcher } from './BranchSwitcher';
 import { GlobalSearch } from './GlobalSearch';
@@ -10,6 +10,7 @@ import { MobileDrawer } from './MobileDrawer';
 import { Menu, Search, Building2, X } from 'lucide-react';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { Avatar } from '@/components/ui/Avatar';
 import { branchesApi } from '@/lib/api/branches';
 import { BranchDto, RoleKey } from '@petals/types';
 import { session } from '@/lib/auth/session';
@@ -20,7 +21,15 @@ export function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileBranchOpen, setMobileBranchOpen] = useState(false);
   const [branches, setBranches] = useState<BranchDto[]>([]);
+  const [userName, setUserName] = useState<string>('Staff');
   const { selectedBranchId, setSelectedBranchId, roleKey } = usePermissionsStore();
+
+  useEffect(() => {
+    const name = session.getUserName();
+    if (name) {
+      setUserName(name);
+    }
+  }, []);
 
   const handleCloseDrawer = useCallback(() => {
     setDrawerOpen(false);
@@ -106,13 +115,11 @@ export function Header() {
 
           {/* User Menu avatar */}
           <UserMenu
-            name="Priya Nair"
+            name={userName}
             role={roleKey ? roleKey.toLowerCase() : 'Director'}
             customTrigger={
               <div className="p-1 rounded-full cursor-pointer hover:ring-2 hover:ring-purple-200">
-                <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-xs flex items-center justify-center">
-                  PN
-                </div>
+                <Avatar name={userName} size="sm" />
               </div>
             }
           />
@@ -123,7 +130,7 @@ export function Header() {
           <NotificationsPopover />
           <div className="h-6 w-px bg-[#E6D8F1]/60" />
           <UserMenu
-            name={session.getUserName() || 'Staff'}
+            name={userName}
             role={roleKey ? roleKey.toLowerCase() : 'Director'}
           />
         </div>

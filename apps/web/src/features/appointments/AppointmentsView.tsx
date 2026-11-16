@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { startOfDay, endOfDay, startOfWeek, endOfWeek } from 'date-fns';
+import { startOfDay, endOfDay, startOfWeek, endOfWeek, format } from 'date-fns';
 import { useSearchParams } from 'next/navigation';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { usePermissions } from '@/lib/permissions/usePermissions';
@@ -19,15 +19,16 @@ import { NewAppointmentModal } from './NewAppointmentModal';
 import { RescheduleModal } from './RescheduleModal';
 import { CancelAppointmentModal } from './CancelAppointmentModal';
 import { AppointmentFiltersState, INITIAL_APPOINTMENT_FILTERS, ScheduleSlot } from './types';
-import { RoleKey } from '@petals/types';
+import { RoleKey, AppModule, PermissionAction } from '@petals/types';
 
 export function AppointmentsView() {
   usePageTitle('Appointments');
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const { myRole } = usePermissions();
+  const { myRole, can } = usePermissions();
   const role = myRole || RoleKey.DIRECTOR;
   const isDirectorOrManager = role === RoleKey.DIRECTOR || role === RoleKey.MANAGER;
+  const canCreate = can(AppModule.APPOINTMENTS, PermissionAction.CREATE);
   const { selectedBranchId } = usePermissionsStore();
 
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -39,13 +40,18 @@ export function AppointmentsView() {
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [appointmentToModify, setAppointmentToModify] = useState<ExtendedAppointment | null>(null);
+  const [prefilledSlot, setPrefilledSlot] = useState<{
+    time?: string;
+    therapistId?: string;
+    date?: string;
+  } | null>(null);
 
   // Check URL query parameters (e.g. ?clientId=xyz&openNew=true)
   useEffect(() => {
-    if (searchParams?.get('openNew') === 'true') {
+    if (canCreate && searchParams?.get('openNew') === 'true') {
       setIsNewModalOpen(true);
     }
-  }, [searchParams]);
+  }, [searchParams, canCreate]);
 
   // Load employees (therapists)
   const { data: allEmployeesData } = useQuery({
@@ -141,7 +147,13 @@ export function AppointmentsView() {
   };
 
   const handleBookSlot = (slot: ScheduleSlot, therapistId?: string, dayDate?: Date) => {
+    if (!canCreate) return;
     if (dayDate) setCurrentDate(dayDate);
+    setPrefilledSlot({
+      time: slot.startTime,
+      therapistId,
+      date: dayDate ? format(dayDate, 'yyyy-MM-dd') : undefined,
+    });
     setIsNewModalOpen(true);
   };
 
@@ -179,7 +191,12 @@ export function AppointmentsView() {
 
   return (
     <div className="space-y-5 animate-fade-in">
-      <AppointmentsHero onNewAppointment={() => setIsNewModalOpen(true)} />
+      <AppointmentsHero
+        onNewAppointment={() => {
+          setPrefilledSlot(null);
+          setIsNewModalOpen(true);
+        }}
+      />
 
       <AppointmentsToolbar
         currentDate={currentDate}
@@ -195,7 +212,7 @@ export function AppointmentsView() {
         currentDate={currentDate}
         appointments={activeAppointments}
         onSelectAppointment={handleSelectAppointment}
-        onBookSlot={handleBookSlot}
+        onBookSlot={canCreate ? handleBookSlot : undefined}
         isLoading={isLoading}
         role={role}
         therapists={
@@ -222,14 +239,21 @@ export function AppointmentsView() {
         role={role}
       />
 
-      <NewAppointmentModal
-        isOpen={isNewModalOpen}
-        onClose={() => setIsNewModalOpen(false)}
-        onSuccess={handleSuccessMutation}
-        clients={clientsData || []}
-        therapists={therapistSelectOptions}
-        departments={departmentSelectOptions}
-      />
+      {canCreate && (
+        <NewAppointmentModal
+          isOpen={isNewModalOpen}
+          onClose={() => {
+            setIsNewModalOpen(false);
+            setPrefilledSlot(null);
+          }}
+          onSuccess={handleSuccessMutation}
+          clients={clientsData || []}
+          therapists={therapistSelectOptions}
+          prefilledTherapistId={prefilledSlot?.therapistId}
+          prefilledTime={prefilledSlot?.time}
+          prefilledDate={prefilledSlot?.date}
+        />
+      )}
 
       <RescheduleModal
         isOpen={isRescheduleOpen}

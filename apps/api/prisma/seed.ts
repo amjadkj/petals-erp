@@ -62,7 +62,7 @@ const ROLE_PERMISSIONS_CONFIG: Record<RoleKey, RoleSeedConfig> = {
   [RoleKey.THERAPIST]: {
     modules: {
       [AppModule.DASHBOARD]: { enabled: true, actions: [PermissionAction.VIEW] },
-      [AppModule.APPOINTMENTS]: { enabled: true, actions: [PermissionAction.CREATE, PermissionAction.UPDATE, PermissionAction.VIEW] },
+      [AppModule.APPOINTMENTS]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.CLIENTS]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.PROFILE_OVERVIEW]: { enabled: true, actions: [PermissionAction.VIEW] },
       [AppModule.PROFILE_PAYMENT_PLAN]: { enabled: true, actions: [PermissionAction.CREATE, PermissionAction.UPDATE, PermissionAction.VIEW] },

@@ -42,6 +42,7 @@ export function Avatar({
 
   return (
     <div
+      suppressHydrationWarning
       aria-label={safeName || 'Avatar'}
       className={cn(
         'rounded-full flex items-center justify-center font-medium select-none shrink-0',

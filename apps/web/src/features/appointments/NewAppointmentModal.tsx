@@ -6,6 +6,7 @@ import { Modal, Input, Select, DatePicker, Button, useToast } from '@/components
 import { appointmentsApi } from '@/lib/api/appointments';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { Repeat } from 'lucide-react';
+import { CLINIC_SCHEDULE_SLOTS } from './types';
 
 interface NewAppointmentModalProps {
   isOpen: boolean;
@@ -13,14 +14,15 @@ interface NewAppointmentModalProps {
   onSuccess: () => void;
   clients: Array<{ id: string; name: string; clientCode?: string }>;
   therapists: Array<{ id: string; name: string; departmentId?: string | null }>;
-  departments: Array<{ id: string; name: string }>;
+  departments?: Array<{ id: string; name: string }>;
   prefilledClientId?: string;
+  prefilledTherapistId?: string;
+  prefilledTime?: string;
+  prefilledDate?: string;
 }
 
-const TIME_SLOTS = [
-  '08:30', '09:15', '10:00', '10:45', '11:30', '12:30',
-  '14:00', '14:45', '15:30', '16:30',
-];
+const TIME_SLOTS = CLINIC_SCHEDULE_SLOTS.map((s) => s.startTime);
+const DEFAULT_DURATION_MINUTES = 45;
 
 export function NewAppointmentModal({
   isOpen,
@@ -30,29 +32,55 @@ export function NewAppointmentModal({
   therapists = [],
   departments = [],
   prefilledClientId,
+  prefilledTherapistId,
+  prefilledTime,
+  prefilledDate,
 }: NewAppointmentModalProps) {
   const { showToast } = useToast();
   const { selectedBranchId } = usePermissionsStore();
 
   const [clientId, setClientId] = useState(prefilledClientId || clients[0]?.id || '');
-  const [departmentId, setDepartmentId] = useState(departments[0]?.id || '');
-  const [therapistId, setTherapistId] = useState(therapists[0]?.id || '');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState('10:00');
-  const [durationMinutes, setDurationMinutes] = useState('45');
-  const [roomId, setRoomId] = useState('r1');
+  const [therapistId, setTherapistId] = useState(prefilledTherapistId || therapists[0]?.id || '');
+  const [date, setDate] = useState(prefilledDate || new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState(prefilledTime || '10:00');
   const [clientSearch, setClientSearch] = useState('');
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
-    if (prefilledClientId) setClientId(prefilledClientId);
-    else if (clients.length > 0 && !clientId) setClientId(clients[0].id);
+    if (isOpen) {
+      if (prefilledClientId) setClientId(prefilledClientId);
+      else if (clients.length > 0 && !clientId) setClientId(clients[0].id);
 
-    if (departments.length > 0 && !departmentId) setDepartmentId(departments[0].id);
-    if (therapists.length > 0 && !therapistId) setTherapistId(therapists[0].id);
-    setConflictError(null);
-  }, [prefilledClientId, clients, departments, therapists, isOpen]);
+      if (prefilledTherapistId) {
+        setTherapistId(prefilledTherapistId);
+      } else if (therapists.length > 0 && !therapistId) {
+        setTherapistId(therapists[0].id);
+      }
+
+      if (prefilledTime) {
+        setStartTime(prefilledTime);
+      } else if (!startTime) {
+        setStartTime('10:00');
+      }
+
+      if (prefilledDate) {
+        setDate(prefilledDate);
+      } else if (!date) {
+        setDate(new Date().toISOString().split('T')[0]);
+      }
+
+      setConflictError(null);
+    }
+  }, [
+    isOpen,
+    prefilledClientId,
+    prefilledTherapistId,
+    prefilledTime,
+    prefilledDate,
+    clients,
+    therapists,
+  ]);
 
   const filteredClients = clients.filter(
     (c) =>
@@ -72,7 +100,7 @@ export function NewAppointmentModal({
     const startsAtDate = new Date(date);
     startsAtDate.setHours(h, m, 0, 0);
 
-    const endsAtDate = new Date(startsAtDate.getTime() + Number(durationMinutes) * 60 * 1000);
+    const endsAtDate = new Date(startsAtDate.getTime() + DEFAULT_DURATION_MINUTES * 60 * 1000);
 
     const branchId =
       selectedBranchId && selectedBranchId !== 'ALL'
@@ -86,7 +114,6 @@ export function NewAppointmentModal({
         therapistId,
         startsAt: startsAtDate.toISOString(),
         endsAt: endsAtDate.toISOString(),
-        // roomId: roomId || undefined,
       });
 
       showToast('Appointment booked successfully!', 'success');
@@ -107,21 +134,14 @@ export function NewAppointmentModal({
   }));
 
   const therapistOptions = therapists.map((t) => ({ value: t.id, label: t.name }));
-  const deptOptions = departments.map((d) => ({ value: d.id, label: d.name }));
   const timeOptions = TIME_SLOTS.map((t) => ({ value: t, label: t }));
-
-  const roomOptions = [
-    { value: 'r1', label: 'Therapy Room 1 (Speech)' },
-    { value: 'r2', label: 'Therapy Room 2 (Sensory Gym)' },
-    { value: 'r3', label: 'Therapy Room 3 (OT Fine Motor)' },
-  ];
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       title="Create New Appointment"
-      maxWidth="max-w-[540px]"
+      maxWidth="max-w-[500px]"
       footer={
         <div className="flex items-center justify-between w-full">
           <Link
@@ -179,27 +199,17 @@ export function NewAppointmentModal({
           />
         </div>
 
-        {/* Department & Therapist */}
+        {/* Assigned Therapist */}
+        <Select
+          label="Assigned Therapist"
+          required
+          value={therapistId}
+          onChange={(e) => setTherapistId(e.target.value)}
+          options={therapistOptions}
+        />
+
+        {/* Date & Start Time */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          <Select
-            label="Department"
-            required
-            value={departmentId}
-            onChange={(e) => setDepartmentId(e.target.value)}
-            options={deptOptions}
-          />
-
-          <Select
-            label="Assigned Therapist"
-            required
-            value={therapistId}
-            onChange={(e) => setTherapistId(e.target.value)}
-            options={therapistOptions}
-          />
-        </div>
-
-        {/* Date, Start Time & Duration */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <DatePicker
             label="Date"
             required
@@ -214,27 +224,7 @@ export function NewAppointmentModal({
             onChange={(e) => setStartTime(e.target.value)}
             options={timeOptions}
           />
-
-          <Select
-            label="Duration"
-            required
-            value={durationMinutes}
-            onChange={(e) => setDurationMinutes(e.target.value)}
-            options={[
-              { value: '30', label: '30 min' },
-              { value: '45', label: '45 min' },
-              { value: '60', label: '60 min' },
-            ]}
-          />
         </div>
-
-        {/* Room Allocation */}
-        {/* <Select
-          label="Clinical Room"
-          value={roomId}
-          onChange={(e) => setRoomId(e.target.value)}
-          options={roomOptions}
-        /> */}
       </form>
     </Modal>
   );

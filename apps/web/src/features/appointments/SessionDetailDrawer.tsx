@@ -6,7 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Drawer, Button, StatusChip, useToast } from '@/components/ui';
 import { ExtendedAppointment, appointmentsApi } from '@/lib/api/appointments';
 import { clientsApi } from '@/lib/api/clients';
-import { AppointmentStatus, RoleKey } from '@petals/types';
+import { AppointmentStatus, RoleKey, AppModule, PermissionAction } from '@petals/types';
+import { usePermissions } from '@/lib/permissions/usePermissions';
 import {
   Calendar,
   Clock,
@@ -42,6 +43,8 @@ export function SessionDetailDrawer({
   role,
 }: SessionDetailDrawerProps) {
   const { showToast } = useToast();
+  const { can } = usePermissions();
+  const canUpdate = can(AppModule.APPOINTMENTS, PermissionAction.UPDATE);
   const [isUpdating, setIsUpdating] = React.useState(false);
 
   // Fetch client goals (Long-Term Goal)
@@ -136,7 +139,7 @@ export function SessionDetailDrawer({
       title="Appointment Details"
       width="max-w-[440px]"
       footer={
-        isStaff && appointment.status !== AppointmentStatus.CANCELLED ? (
+        canUpdate && appointment.status !== AppointmentStatus.CANCELLED ? (
           <div className="flex flex-col gap-2 w-full">
             <div className="grid grid-cols-2 gap-2">
               <Button
