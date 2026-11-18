@@ -23,7 +23,7 @@ export function AppointmentsToolbar({
   filters,
   onFilterChange,
   therapists = [],
-  departments = [],
+  // departments = [],
   role,
 }: AppointmentsToolbarProps) {
   const isDirectorOrManager = role === RoleKey.DIRECTOR || role === RoleKey.MANAGER;
@@ -56,10 +56,10 @@ export function AppointmentsToolbar({
     ...therapists.map((t) => ({ value: t.id, label: t.name })),
   ];
 
-  const deptOptions = [
-    { value: 'ALL', label: 'All departments' },
-    ...departments.map((d) => ({ value: d.id, label: d.name })),
-  ];
+  // const deptOptions = [
+  //   { value: 'ALL', label: 'All departments' },
+  //   ...departments.map((d) => ({ value: d.id, label: d.name })),
+  // ];
 
   const statusOptions = [
     { value: 'ALL', label: 'All statuses' },
@@ -142,14 +142,14 @@ export function AppointmentsToolbar({
         </div>
 
         {/* Department Filter */}
-        <div className="w-44">
+        {/* <div className="w-44">
           <Select
             value={filters.departmentId}
             onChange={(e) => onFilterChange({ departmentId: e.target.value })}
             options={deptOptions}
             className="h-8 text-xs"
           />
-        </div>
+        </div> */}
 
         {/* Status Filter */}
         <div className="w-36">

@@ -84,15 +84,9 @@ export class AuthGuard implements CanActivate {
 
     // 6. Check active branch (from 'x-branch-id' header or primary branch)
     const requestedBranch = request.headers['x-branch-id'] as string | undefined;
-    let activeBranchId: string | null = null;
-    if (requestedBranch && user.branchIds.includes(requestedBranch)) {
-      activeBranchId = requestedBranch;
-    } else {
-      activeBranchId = user.primaryBranchId || user.branchIds[0] || null;
-    }
+    let branchIds = user.branchIds;
 
     // For Director: Director has cross-branch access across all branches
-    let branchIds = user.branchIds;
     if (user.roleKey === RoleKey.DIRECTOR) {
       let allBranchIds = await this.cache.get<string[]>('active_branch_ids');
       if (!allBranchIds) {
@@ -104,9 +98,13 @@ export class AuthGuard implements CanActivate {
         await this.cache.set('active_branch_ids', allBranchIds, 300);
       }
       branchIds = allBranchIds;
-      if (!activeBranchId && branchIds.length > 0) {
-        activeBranchId = branchIds[0];
-      }
+    }
+
+    let activeBranchId: string | null = null;
+    if (requestedBranch && branchIds.includes(requestedBranch)) {
+      activeBranchId = requestedBranch;
+    } else {
+      activeBranchId = user.primaryBranchId || branchIds[0] || null;
     }
 
     // 7. Populate RequestContext via AsyncLocalStorage

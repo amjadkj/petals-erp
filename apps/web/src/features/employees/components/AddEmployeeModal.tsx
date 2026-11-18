@@ -8,8 +8,7 @@ import { Select } from '@/components/ui/Select';
 import { DatePicker } from '@/components/ui/DatePicker';
 import { useToast } from '@/components/ui/Toast';
 import { employeesApi } from '@/lib/api/employees';
-import { branchesApi } from '@/lib/api/branches';
-import { departmentsApi } from '@/lib/api/departments';
+import { useBranches, useDepartments } from '@/lib/api/masterData';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { BranchDto, DepartmentDto, RoleKey } from '@petals/types';
 import { Lock, Eye, EyeOff, Building2, AlertCircle } from 'lucide-react';
@@ -32,8 +31,9 @@ export function AddEmployeeModal({
 }: AddEmployeeModalProps) {
   const { showToast } = useToast();
   const selectedBranchId = usePermissionsStore((s) => s.selectedBranchId);
+  const { branches } = useBranches();
+  const { departments } = useDepartments();
 
-  const [branches, setBranches] = useState<BranchDto[]>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,41 +42,22 @@ export function AddEmployeeModal({
   const [mobile, setMobile] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [role, setRole] = useState<RoleKey>(RoleKey.THERAPIST);
-  const [departments, setDepartments] = useState<DepartmentDto[]>([]);
   const [departmentId, setDepartmentId] = useState('');
   const [joiningDate, setJoiningDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [salary, setSalary] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch branches and departments from the database
+  // Sync default department when loaded
   useEffect(() => {
-    let isMounted = true;
-    branchesApi
-      .getBranches()
-      .then((res) => {
-        if (isMounted && res?.data) {
-          setBranches(res.data);
-        }
-      })
-      .catch(() => {});
-
-    departmentsApi
-      .getDepartments()
-      .then((res) => {
-        if (isMounted && res?.data && res.data.length > 0) {
-          setDepartments(res.data);
-          setDepartmentId(res.data[0].id);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    if (departments.length > 0 && !departmentId) {
+      setDepartmentId(departments[0].id);
+    }
+  }, [departments, departmentId]);
 
   const activeBranch = branches.find((b) => b.id === selectedBranchId);
   const activeDept = departments.find((d) => d.id === departmentId);
+  const isTherapist = role === RoleKey.THERAPIST;
+  const isDirector = role === RoleKey.DIRECTOR;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,22 +79,24 @@ export function AddEmployeeModal({
       return;
     }
 
-    if (!selectedBranchId) {
+    if (!isDirector && !selectedBranchId) {
       showToast('Please select a specific branch from the header switcher first', 'error');
       return;
     }
 
     setIsSubmitting(true);
     try {
+      const resolvedBranchId = selectedBranchId || (isDirector && branches.length > 0 ? branches[0].id : undefined);
+
       const res = await employeesApi.createEmployee({
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password,
         phone: mobile.trim() || undefined,
         roleKey: role,
-        branchId: selectedBranchId,
-        departmentId: departmentId || undefined,
-        departmentName: activeDept?.name,
+        branchId: resolvedBranchId,
+        departmentId: isTherapist ? departmentId || undefined : undefined,
+        departmentName: isTherapist ? activeDept?.name : undefined,
         designation:
           role === RoleKey.THERAPIST
             ? `${activeDept?.name || 'Therapy'} Specialist`
@@ -132,16 +115,18 @@ export function AddEmployeeModal({
         phone: created?.user?.phone || mobile.trim() || null,
         roleKey: created?.user?.role?.key || role,
         isActive: true,
-        branchIds: [selectedBranchId],
+        branchIds: isDirector ? branches.map((b) => b.id) : (resolvedBranchId ? [resolvedBranchId] : []),
         employeeCode: created?.employeeCode || `PTL-E${Math.floor(100 + Math.random() * 900)}`,
         designation:
           created?.designation ||
           (role === RoleKey.THERAPIST
             ? `${activeDept?.name || 'Therapy'} Specialist`
-            : 'Manager'),
-        department: created?.department?.name || activeDept?.name || 'General',
-        departmentId: created?.department?.id || departmentId,
-        branchName: activeBranch?.name || 'Assigned Branch',
+            : role === RoleKey.MANAGER
+            ? 'Manager'
+            : 'Director'),
+        department: isTherapist ? (created?.department?.name || activeDept?.name || 'General') : 'Administration',
+        departmentId: isTherapist ? (created?.department?.id || departmentId) : null,
+        branchName: isDirector ? 'All Branches' : (activeBranch?.name || 'Assigned Branch'),
         joiningDate,
         salary: hasSalaryPermission && salary !== '' ? Number(salary) : null,
       };
@@ -165,7 +150,7 @@ export function AddEmployeeModal({
       maxWidth="max-w-[520px]"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {!selectedBranchId && (
+        {!isDirector && !selectedBranchId && (
           <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
             <span>Please select a specific branch in the top header switcher before creating an employee.</span>
@@ -230,7 +215,7 @@ export function AddEmployeeModal({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className={isTherapist ? "grid grid-cols-2 gap-3" : "space-y-3"}>
           <Select
             label="System Role"
             required
@@ -243,33 +228,41 @@ export function AddEmployeeModal({
             ]}
           />
 
-          <Select
-            label="Department"
-            required
-            value={departmentId}
-            onChange={(e) => setDepartmentId(e.target.value)}
-            options={
-              departments.length > 0
-                ? departments.map((d) => ({
-                    value: d.id,
-                    label: `${d.name} (${d.code})`,
-                  }))
-                : [{ value: '', label: 'Loading departments...' }]
-            }
-          />
+          {isTherapist && (
+            <Select
+              label="Department"
+              required
+              value={departmentId}
+              onChange={(e) => setDepartmentId(e.target.value)}
+              options={
+                departments.length > 0
+                  ? departments.map((d) => ({
+                      value: d.id,
+                      label: `${d.name} (${d.code})`,
+                    }))
+                  : [{ value: '', label: 'Loading departments...' }]
+              }
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Primary Branch"
             value={
-              activeBranch?.name ||
-              (selectedBranchId ? 'Selected Branch' : 'No branch selected in header')
+              isDirector
+                ? 'All Branches (Full Access)'
+                : activeBranch?.name ||
+                  (selectedBranchId ? 'Selected Branch' : 'No branch selected in header')
             }
             disabled
             readOnly
             className="bg-gray-100 text-gray-700 font-medium cursor-not-allowed"
-            helperText="Inherited from the active branch in header"
+            helperText={
+              isDirector
+                ? 'Directors have full access to all clinic branches'
+                : 'Inherited from the active branch in header'
+            }
             leadingIcon={<Building2 className="w-3.5 h-3.5 text-gray-400" />}
           />
 
@@ -306,7 +299,7 @@ export function AddEmployeeModal({
           <Button
             type="submit"
             variant="primary"
-            disabled={isSubmitting || !selectedBranchId}
+            disabled={isSubmitting || (!isDirector && !selectedBranchId)}
           >
             {isSubmitting ? 'Adding...' : 'Add Employee'}
           </Button>

@@ -21,8 +21,10 @@ import type {
 } from '@/features/communication';
 import { communicationApi } from '@/lib/api/communication';
 import { clientsApi } from '@/lib/api/clients';
-import { branchesApi } from '@/lib/api/branches';
+import { useBranches } from '@/lib/api/masterData';
 import type { ClientDto, BranchDto } from '@petals/types';
+import { ModuleGuard } from '@/components/auth/ModuleGuard';
+import { AppModule } from '@petals/types';
 
 export default function CommunicationPage() {
   usePageTitle('Communication');
@@ -32,7 +34,7 @@ export default function CommunicationPage() {
   const [messages, setMessages] = useState<CommunicationLogDto[]>([]);
   const [templates, setTemplates] = useState<CommunicationTemplateDto[]>([]);
   const [clients, setClients] = useState<ClientDto[]>([]);
-  const [branches, setBranches] = useState<BranchDto[]>([]);
+  const { branches } = useBranches();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
@@ -64,18 +66,11 @@ export default function CommunicationPage() {
   useEffect(() => {
     loadData();
 
-    // Fetch clients & branches for modal pickers
+    // Fetch clients for modal pickers
     clientsApi
       .getClients({ pageSize: '100' })
       .then((res) => {
         if (res && res.data) setClients(res.data);
-      })
-      .catch(() => {});
-
-    branchesApi
-      .getBranches()
-      .then((res) => {
-        if (res && res.data) setBranches(res.data);
       })
       .catch(() => {});
   }, [loadData]);
@@ -139,7 +134,8 @@ export default function CommunicationPage() {
   }, [messages]);
 
   return (
-    <div className="space-y-6">
+    <ModuleGuard module={AppModule.COMMUNICATION} moduleName="Communication">
+      <div className="space-y-6">
       {/* Hero */}
       <CommunicationHero
         onNewMessage={() => setIsNewMessageOpen(true)}
@@ -236,5 +232,6 @@ export default function CommunicationPage() {
         onSuccess={loadData}
       />
     </div>
+    </ModuleGuard>
   );
 }

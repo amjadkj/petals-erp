@@ -11,7 +11,7 @@ import { Menu, Search, Building2, X } from 'lucide-react';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { Avatar } from '@/components/ui/Avatar';
-import { branchesApi } from '@/lib/api/branches';
+import { useBranches } from '@/lib/api/masterData';
 import { BranchDto, RoleKey } from '@petals/types';
 import { session } from '@/lib/auth/session';
 
@@ -20,7 +20,7 @@ export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileBranchOpen, setMobileBranchOpen] = useState(false);
-  const [branches, setBranches] = useState<BranchDto[]>([]);
+  const { branches } = useBranches();
   const [userName, setUserName] = useState<string>('Staff');
   const { selectedBranchId, setSelectedBranchId, roleKey } = usePermissionsStore();
 
@@ -35,25 +35,7 @@ export function Header() {
     setDrawerOpen(false);
   }, []);
 
-  const handleOpenBranchSheet = async () => {
-    try {
-      const res = await branchesApi.getBranches();
-      if (res?.data) setBranches(res.data);
-    } catch {
-      // fallback
-      setBranches([
-        {
-          id: 'b-kaloor',
-          name: 'Kaloor Main',
-          code: 'KL',
-          city: 'Kochi',
-          address: 'Kaloor, Kochi',
-          phone: '+91 9876543210',
-          timezone: 'Asia/Kolkata',
-          isActive: true,
-        },
-      ]);
-    }
+  const handleOpenBranchSheet = () => {
     setMobileBranchOpen(true);
   };
 

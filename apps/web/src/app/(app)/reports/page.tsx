@@ -17,6 +17,8 @@ import { reportsApi } from '@/lib/api/reports';
 import { clientsApi } from '@/lib/api/clients';
 import { branchesApi } from '@/lib/api/branches';
 import type { ClientDto, UserSummary } from '@petals/types';
+import { ModuleGuard } from '@/components/auth/ModuleGuard';
+import { AppModule } from '@petals/types';
 import { isThisWeek } from 'date-fns';
 
 export default function ReportsPage() {
@@ -213,7 +215,8 @@ export default function ReportsPage() {
   }, [reports, isTherapist, isParent, activeTab, filters]);
 
   return (
-    <div className="space-y-6">
+    <ModuleGuard module={AppModule.REPORTS} moduleName="Reports">
+      <div className="space-y-6">
       {/* Hero section */}
       <ReportsHero
         roleKey={myRole}
@@ -294,5 +297,6 @@ export default function ReportsPage() {
         clients={clients}
       />
     </div>
+    </ModuleGuard>
   );
 }

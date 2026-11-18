@@ -9,7 +9,7 @@ import { DatePicker } from '@/components/ui/DatePicker';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useToast } from '@/components/ui/Toast';
 import { leadsApi } from '@/lib/api/leads';
-import { branchesApi } from '@/lib/api/branches';
+import { useBranches } from '@/lib/api/masterData';
 import { ApiError } from '@/lib/api/fetcher';
 import type { LeadItem } from '../types';
 import type { BranchDto } from '@petals/types';
@@ -28,6 +28,7 @@ export function ConvertToClientModal({
   onSuccess,
 }: ConvertToClientModalProps) {
   const { showToast } = useToast();
+  const { branches } = useBranches();
 
   const [childName, setChildName] = useState('');
   const [dob, setDob] = useState('');
@@ -39,7 +40,6 @@ export function ConvertToClientModal({
   const [caseHistoryDraft, setCaseHistoryDraft] = useState('');
   const [hasConsent, setHasConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [branches, setBranches] = useState<BranchDto[]>([]);
 
   // Fetch branches and populate from lead / convert preview
   useEffect(() => {
@@ -48,7 +48,7 @@ export function ConvertToClientModal({
       setDob(lead.childDob || '2021-06-15');
       setGuardianName(lead.parentName || '');
       setGuardianPhone(lead.phone || '');
-      setBranchId(lead.branchId || 'branch-1');
+      setBranchId(lead.branchId || (branches.length > 0 ? branches[0].id : 'branch-1'));
       setCaseHistoryDraft(lead.concerns ? `Initial enquiry intake: ${lead.concerns}` : '');
       setHasConsent(false);
 
@@ -64,20 +64,8 @@ export function ConvertToClientModal({
         .catch(() => {
           // Ignore error, already prefilled from lead item
         });
-
-      // Load branches
-      branchesApi.getBranches()
-        .then((res) => {
-          if (res?.data) setBranches(res.data);
-        })
-        .catch(() => {
-          setBranches([
-            { id: 'branch-1', name: 'Indiranagar (Main)', code: 'IND', city: 'Bengaluru' } as BranchDto,
-            { id: 'branch-2', name: 'Koramangala Branch', code: 'KOR', city: 'Bengaluru' } as BranchDto,
-          ]);
-        });
     }
-  }, [lead, isOpen]);
+  }, [lead, isOpen, branches]);
 
   if (!lead) return null;
 

@@ -1,50 +1,28 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { usePermissionsStore } from '@/lib/permissions/store';
-import { branchesApi } from '@/lib/api/branches';
+import { useBranches } from '@/lib/api/masterData';
 import { Building2, ChevronDown } from 'lucide-react';
-import { RoleKey, type BranchDto } from '@petals/types';
+import { RoleKey } from '@petals/types';
 
 export function BranchSwitcher() {
   const { selectedBranchId, setSelectedBranchId, roleKey } = usePermissionsStore();
-  const [branches, setBranches] = useState<BranchDto[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { branches, isLoading } = useBranches();
 
   useEffect(() => {
-    branchesApi
-      .getBranches()
-      .then((res) => {
-        if (res?.data && res.data.length > 0) {
-          setBranches(res.data);
-          const current = usePermissionsStore.getState().selectedBranchId;
-          const exists = res.data.some((b) => b.id === current);
-          if (!exists) {
-            setSelectedBranchId(res.data[0].id);
-          }
-        }
-      })
-      .catch(() => {
-        // Fallback / mock branch if offline
-        setBranches([
-          {
-            id: 'b-kaloor',
-            name: 'Kaloor Main',
-            code: 'KL',
-            city: 'Kochi',
-            address: 'Kaloor, Kochi',
-            phone: '+91 9876543210',
-            timezone: 'Asia/Kolkata',
-            isActive: true,
-          },
-        ]);
-      })
-      .finally(() => setLoading(false));
-  }, [setSelectedBranchId]);
+    if (branches.length > 0) {
+      const current = usePermissionsStore.getState().selectedBranchId;
+      const exists = branches.some((b) => b.id === current);
+      if (!exists) {
+        setSelectedBranchId(branches[0].id);
+      }
+    }
+  }, [branches, setSelectedBranchId]);
 
   const isDirector = roleKey === RoleKey.DIRECTOR;
 
-  if (loading) {
+  if (isLoading && branches.length === 0) {
     return (
       <div className="h-10 w-36 bg-gray-100 rounded-btn animate-pulse flex items-center px-3" />
     );

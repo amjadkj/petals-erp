@@ -63,28 +63,45 @@ export async function restoreSession(): Promise<boolean> {
     }
 
     try {
-      const meRes = await fetcher<any>('/auth/me', {}, { skipBranchId: true });
+      // Parallelize /auth/me and /access/me/permissions in one hop
+      const [meRes, permsRes] = await Promise.all([
+        fetcher<any>('/auth/me', {}, { skipBranchId: true }),
+        fetcher<any>('/access/me/permissions', {}, { skipBranchId: true }).catch(() => null),
+      ]);
+
       const me = meRes?.data ?? meRes;
       if (me?.id) {
         session.setUserId(me.id);
-        if (me.role?.key) session.setRoleKey(me.role.key);
+        const resolvedRole = me.roleKey || me.role?.key;
+        if (resolvedRole) session.setRoleKey(resolvedRole);
         if (me.name) session.setUserName(me.name);
         if (me.email) session.setUserEmail(me.email);
 
-        const bIds = me.branches?.map((b: any) => b.branch?.id || b.branchId).filter(Boolean) || [];
+        const bIds = me.branches?.map((b: any) => b.branch?.id || b.id || b.branchId).filter(Boolean) || [];
         session.setBranchIds(bIds);
 
         // Ensure selected branch is valid (never 'ALL')
         const currentBranch = usePermissionsStore.getState().selectedBranchId;
         if (!currentBranch || currentBranch === 'ALL' || (bIds.length > 0 && !bIds.includes(currentBranch))) {
-          const primary = me.branches?.find((b: any) => b.isPrimary)?.branch?.id || bIds[0] || '';
+          const primary = me.primaryBranch?.id || me.branches?.find((b: any) => b.isPrimary)?.branch?.id || bIds[0] || '';
           if (primary) {
             usePermissionsStore.getState().setSelectedBranchId(primary);
           }
         }
 
-        // Trigger permissions load in background
-        usePermissionsStore.getState().loadPermissions().catch(() => {});
+        // Hydrate permissions store directly if returned
+        if (permsRes?.data) {
+          const raw = permsRes.data as any;
+          const perms = raw.permissions || raw.modules || {};
+          usePermissionsStore.setState({
+            permissions: perms,
+            roleKey: resolvedRole || raw.roleKey || null,
+            isLoading: false,
+          });
+        } else {
+          // Fallback background trigger
+          usePermissionsStore.getState().loadPermissions().catch(() => {});
+        }
       }
       return true;
     } catch {
@@ -124,6 +141,9 @@ export async function fetcher<T>(
   };
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (csrf) headers['x-csrf-token'] = csrf;
+  if (!options.skipBranchId && selectedBranchId && selectedBranchId !== 'ALL') {
+    headers['x-branch-id'] = selectedBranchId;
+  }
 
   const makeRequest = () =>
     fetch(url, { ...init, headers, credentials: 'include' });

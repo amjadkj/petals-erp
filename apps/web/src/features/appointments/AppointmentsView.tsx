@@ -73,14 +73,14 @@ export function AppointmentsView() {
   }, [allEmployeesData]);
 
   // Load departments
-  const { data: departmentsData } = useQuery({
-    queryKey: ['departments'],
-    queryFn: async () => {
-      const res = await departmentsApi.getDepartments();
-      return res?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  // const { data: departmentsData } = useQuery({
+  //   queryKey: ['departments'],
+  //   queryFn: async () => {
+  //     const res = await departmentsApi.getDepartments();
+  //     return res?.data ?? [];
+  //   },
+  //   staleTime: 5 * 60 * 1000,
+  // });
 
   // Load clients for appointment booking modal
   const { data: clientsData } = useQuery({
@@ -184,10 +184,10 @@ export function AppointmentsView() {
     name: t.user?.name || t.name || 'Therapist',
   }));
 
-  const departmentSelectOptions = (departmentsData || []).map((d: any) => ({
-    id: d.id,
-    name: d.name,
-  }));
+  // const departmentSelectOptions = (departmentsData || []).map((d: any) => ({
+  //   id: d.id,
+  //   name: d.name,
+  // }));
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -204,7 +204,6 @@ export function AppointmentsView() {
         filters={filters}
         onFilterChange={handleFilterChange}
         therapists={therapistSelectOptions}
-        departments={departmentSelectOptions}
         role={role}
       />
 

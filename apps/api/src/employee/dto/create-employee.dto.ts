@@ -49,9 +49,10 @@ export class CreateEmployeeDto {
   @IsOptional()
   roleKey?: RoleKey;
 
-  @ValidateIf((o) => !o.userId)
+  @ValidateIf((o) => !o.userId && o.roleKey !== RoleKey.DIRECTOR)
   @IsUUID('4', { message: 'branchId must be a valid UUID' })
   @IsNotEmpty({ message: 'branchId is required when creating a new employee' })
+  @IsOptional()
   branchId?: string;
 
   @IsString()

@@ -102,51 +102,63 @@ export function OverviewTab({
           </div>
 
           <div className="space-y-3">
-            {guardians.map((g) => (
-              <div
-                key={g.id}
-                className="p-4 bg-purple-50/40 rounded-card border border-[#E6D8F1]/50 space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-purple-600" />
-                    <span className="font-bold text-sm text-ink">{g.name}</span>
-                    <span className="text-xs text-purple-800 bg-purple-100 px-2 py-0.5 rounded font-medium">
-                      {g.relation}
-                    </span>
-                  </div>
-                  {g.isPrimary && (
-                    <span className="text-[11px] font-semibold text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-chip">
-                      Primary Contact
-                    </span>
-                  )}
-                </div>
+            {guardians.map((g: any, index: number) => {
+              const guardianKey =
+                g.id ||
+                g.guardianId ||
+                g.guardian?.id ||
+                `${g.relation || 'guardian'}-${g.phone || g.name || index}`;
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 pt-1">
-                  <div className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-gray-400" />
-                    <span>{g.phone}</span>
-                  </div>
-                  {g.email && (
-                    <div className="flex items-center gap-1.5 truncate">
-                      <Mail className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="truncate">{g.email}</span>
+              const guardianName = g.name || g.guardian?.name || 'Guardian';
+              const guardianPhone = g.phone || g.guardian?.whatsappNo || g.guardian?.phone || 'N/A';
+              const guardianEmail = g.email || g.guardian?.user?.email || null;
+
+              return (
+                <div
+                  key={guardianKey}
+                  className="p-4 bg-purple-50/40 rounded-card border border-[#E6D8F1]/50 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-purple-600" />
+                      <span className="font-bold text-sm text-ink">{guardianName}</span>
+                      <span className="text-xs text-purple-800 bg-purple-100 px-2 py-0.5 rounded font-medium">
+                        {g.relation}
+                      </span>
                     </div>
-                  )}
-                </div>
+                    {g.isPrimary && (
+                      <span className="text-[11px] font-semibold text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-chip">
+                        Primary Contact
+                      </span>
+                    )}
+                  </div>
 
-                <div className="flex items-center gap-3 text-[11px] text-gray-500 pt-1 border-t border-[#E6D8F1]/30">
-                  <span className="flex items-center gap-1 text-success">
-                    <MessageCircle className="w-3 h-3" />
-                    <span>WhatsApp Opted In</span>
-                  </span>
-                  <span className="flex items-center gap-1 text-teal-700">
-                    <ShieldCheck className="w-3 h-3" />
-                    <span>Care Updates Consent</span>
-                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-gray-400" />
+                      <span>{guardianPhone}</span>
+                    </div>
+                    {guardianEmail && (
+                      <div className="flex items-center gap-1.5 truncate">
+                        <Mail className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="truncate">{guardianEmail}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 text-[11px] text-gray-500 pt-1 border-t border-[#E6D8F1]/30">
+                    <span className="flex items-center gap-1 text-success">
+                      <MessageCircle className="w-3 h-3" />
+                      <span>WhatsApp Opted In</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-teal-700">
+                      <ShieldCheck className="w-3 h-3" />
+                      <span>Care Updates Consent</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

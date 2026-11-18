@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { clientsApi } from '@/lib/api/clients';
-import { branchesApi } from '@/lib/api/branches';
-import { departmentsApi } from '@/lib/api/departments';
+import { useBranches, useDepartments } from '@/lib/api/masterData';
 import { employeesApi } from '@/lib/api/employees';
 import { ClientsHero } from './ClientsHero';
 import { ClientsStats } from './ClientsStats';
@@ -29,25 +28,9 @@ export function ClientsView() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Load branches
-  const { data: branchesData } = useQuery({
-    queryKey: ['branches'],
-    queryFn: async () => {
-      const res = await branchesApi.getBranches();
-      return res?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  // Load departments
-  const { data: departmentsData } = useQuery({
-    queryKey: ['departments'],
-    queryFn: async () => {
-      const res = await departmentsApi.getDepartments();
-      return res?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  // Load branches and departments from shared cache
+  const { branches: branchesData } = useBranches();
+  const { departments: departmentsData } = useDepartments();
 
   // Load therapists
   const { data: therapistsData } = useQuery({

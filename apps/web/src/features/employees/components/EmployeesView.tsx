@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { usePermissions } from '@/lib/permissions/usePermissions';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { employeesApi } from '@/lib/api/employees';
-import { departmentsApi } from '@/lib/api/departments';
+import { useDepartments } from '@/lib/api/masterData';
 import { AppModule, PermissionAction, RoleKey } from '@petals/types';
 
 import { EmployeesHero } from './EmployeesHero';
@@ -41,14 +41,8 @@ export function EmployeesView() {
     queryFn: () => employeesApi.getEmployees(),
   });
 
-  // Fetch departments
-  const { data: departmentsData } = useQuery({
-    queryKey: ['departments'],
-    queryFn: async () => {
-      const res = await departmentsApi.getDepartments();
-      return res?.data || [];
-    },
-  });
+  // Fetch departments from shared cache
+  const { departments: departmentsData } = useDepartments();
 
   const allEmployees: EmployeeItem[] = useMemo(() => {
     if (employeesResponse?.data && employeesResponse.data.length > 0) {

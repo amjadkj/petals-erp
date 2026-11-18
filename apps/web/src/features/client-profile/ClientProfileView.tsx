@@ -8,8 +8,7 @@ import { useParams } from 'next/navigation';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { usePermissions } from '@/lib/permissions/usePermissions';
 import { clientsApi, ClientProfileHeader } from '@/lib/api/clients';
-import { branchesApi } from '@/lib/api/branches';
-import { departmentsApi } from '@/lib/api/departments';
+import { useBranches, useDepartments } from '@/lib/api/masterData';
 import { employeesApi } from '@/lib/api/employees';
 import { ProfileHeader } from './ProfileHeader';
 import { OverviewTab } from './tabs/OverviewTab';
@@ -107,25 +106,9 @@ export function ClientProfileView() {
     enabled: !!clientId,
   });
 
-  // Fetch branches
-  const { data: branches } = useQuery({
-    queryKey: ['branches'],
-    queryFn: async () => {
-      const res = await branchesApi.getBranches();
-      return res?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  // Fetch departments
-  const { data: departments } = useQuery({
-    queryKey: ['departments'],
-    queryFn: async () => {
-      const res = await departmentsApi.getDepartments();
-      return res?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  // Fetch branches and departments from shared cache
+  const { branches } = useBranches();
+  const { departments } = useDepartments();
 
   // Fetch therapists
   const { data: therapists } = useQuery({

@@ -3,6 +3,8 @@
 import { use } from 'react';
 import { usePageTitle } from '@/lib/context/PageTitleContext';
 import { EmployeeDetailView } from '@/features/employees/components/EmployeeDetailView';
+import { ModuleGuard } from '@/components/auth/ModuleGuard';
+import { AppModule } from '@petals/types';
 
 export default function EmployeeDetailPage({
   params,
@@ -12,5 +14,9 @@ export default function EmployeeDetailPage({
   const { id } = use(params);
   usePageTitle('Employees');
 
-  return <EmployeeDetailView employeeId={id} />;
+  return (
+    <ModuleGuard module={AppModule.EMPLOYEES} moduleName="Employees">
+      <EmployeeDetailView employeeId={id} />
+    </ModuleGuard>
+  );
 }

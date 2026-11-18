@@ -29,7 +29,7 @@ export class EmployeeService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly accessService: AccessService,
-  ) {}
+  ) { }
 
   async create(dto: CreateEmployeeDto, canSetSalary: boolean) {
     if (dto.salary !== undefined && !canSetSalary) {
@@ -124,13 +124,6 @@ export class EmployeeService {
       throw new ConflictException(`User with email '${dto.email}' already exists`);
     }
 
-    const branch = await this.prisma.unscopedClient.branch.findUnique({
-      where: { id: dto.branchId },
-    });
-    if (!branch) {
-      throw new NotFoundException(`Branch with ID '${dto.branchId}' not found`);
-    }
-
     const targetRoleKey = dto.roleKey || RoleKey.THERAPIST;
     const role = await this.prisma.unscopedClient.role.findUnique({
       where: { key: targetRoleKey },
@@ -140,6 +133,31 @@ export class EmployeeService {
     }
     if (role.key === RoleKey.PARENT) {
       throw new BadRequestException('Cannot create an employee profile for a parent user');
+    }
+
+    // If Director, branchId can be optional or default to primary branch; fetch all active branches
+    let branch = null;
+    let allActiveBranches: { id: string }[] = [];
+    if (role.key === RoleKey.DIRECTOR) {
+      allActiveBranches = await this.prisma.unscopedClient.branch.findMany({
+        where: { isActive: true },
+        select: { id: true },
+      });
+      if (dto.branchId) {
+        branch = await this.prisma.unscopedClient.branch.findUnique({
+          where: { id: dto.branchId },
+        });
+      }
+    } else {
+      if (!dto.branchId) {
+        throw new BadRequestException('Branch ID is required for non-director employees');
+      }
+      branch = await this.prisma.unscopedClient.branch.findUnique({
+        where: { id: dto.branchId },
+      });
+      if (!branch) {
+        throw new NotFoundException(`Branch with ID '${dto.branchId}' not found`);
+      }
     }
 
     let deptId = dto.departmentId;
@@ -197,13 +215,26 @@ export class EmployeeService {
         },
       });
 
-      await tx.userBranch.create({
-        data: {
-          userId: newUser.id,
-          branchId: dto.branchId!,
-          isPrimary: true,
-        },
-      });
+      if (role.key === RoleKey.DIRECTOR && allActiveBranches.length > 0) {
+        const primaryBranchId = dto.branchId || allActiveBranches[0].id;
+        for (const b of allActiveBranches) {
+          await tx.userBranch.create({
+            data: {
+              userId: newUser.id,
+              branchId: b.id,
+              isPrimary: b.id === primaryBranchId,
+            },
+          });
+        }
+      } else if (dto.branchId) {
+        await tx.userBranch.create({
+          data: {
+            userId: newUser.id,
+            branchId: dto.branchId,
+            isPrimary: true,
+          },
+        });
+      }
 
       return tx.employee.create({
         data: {

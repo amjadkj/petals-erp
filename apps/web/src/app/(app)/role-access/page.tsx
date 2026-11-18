@@ -17,9 +17,7 @@ import type {
 } from '@/features/role-access';
 import { accessApi } from '@/lib/api/access';
 import { branchesApi } from '@/lib/api/branches';
-import { ShieldAlert, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui';
+import { AccessRestricted } from '@/components/ui';
 
 export default function RoleAccessPage() {
   const { myRole } = usePermissions();
@@ -57,25 +55,10 @@ export default function RoleAccessPage() {
   // Director-only guard
   if (myRole && myRole !== RoleKey.DIRECTOR) {
     return (
-      <div className="max-w-xl mx-auto mt-12 p-8 bg-white border border-[#E6D8F1]/60 rounded-card text-center space-y-4 shadow-sm">
-        <div className="w-12 h-12 rounded-full bg-danger-bg text-danger mx-auto flex items-center justify-center">
-          <ShieldAlert className="w-6 h-6" />
-        </div>
-        <h2 className="font-quicksand font-bold text-2xl text-ink">
-          Director Access Required
-        </h2>
-        <p className="text-sm text-gray-500">
-          The Permission Manager and Branch Governance module is restricted strictly to clinic Directors.
-        </p>
-        <div className="pt-2">
-          <Link href="/dashboard">
-            <Button variant="outline" className="flex items-center gap-2 mx-auto">
-              <ArrowLeft className="w-4 h-4" />
-              <span>Return to Dashboard</span>
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <AccessRestricted
+        title="Director Access Required"
+        description="The Permission Manager and Branch Governance module is restricted strictly to clinic Directors."
+      />
     );
   }
 

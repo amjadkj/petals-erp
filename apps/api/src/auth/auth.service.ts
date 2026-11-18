@@ -545,8 +545,27 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const primaryBranch = user.branches.find((b) => b.isPrimary)?.branch || user.branches[0]?.branch || null;
-    const branchIds = user.branches.map((b) => b.branch.id);
+    let branches = user.branches.map((b) => b.branch);
+    let branchIds = branches.map((b) => b.id);
+    let primaryBranch = user.branches.find((b) => b.isPrimary)?.branch || user.branches[0]?.branch || null;
+
+    // For Director: Provide universal access across all active clinic branches
+    if (user.role.key === RoleKey.DIRECTOR) {
+      const allActiveBranches = await this.prisma.unscopedClient.branch.findMany({
+        where: { isActive: true },
+        select: {
+          id: true,
+          name: true,
+          code: true,
+          city: true,
+        },
+      });
+      branches = allActiveBranches;
+      branchIds = allActiveBranches.map((b) => b.id);
+      if (!primaryBranch && allActiveBranches.length > 0) {
+        primaryBranch = allActiveBranches[0];
+      }
+    }
 
     return {
       id: user.id,
@@ -557,7 +576,7 @@ export class AuthService {
       roleName: user.role.name,
       twoFactorEnabled: user.twoFactorEnabled,
       primaryBranch,
-      branches: user.branches.map((b) => b.branch),
+      branches,
       branchIds,
     };
   }

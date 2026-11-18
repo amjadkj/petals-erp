@@ -7,8 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { useToast } from '@/components/ui/Toast';
 import { employeesApi } from '@/lib/api/employees';
-import { departmentsApi } from '@/lib/api/departments';
-import { branchesApi } from '@/lib/api/branches';
+import { useBranches, useDepartments } from '@/lib/api/masterData';
 import { BranchDto, DepartmentDto } from '@petals/types';
 import type { EmployeeItem } from '../types';
 
@@ -28,9 +27,9 @@ export function EditEmployeeModal({
   onSuccess,
 }: EditEmployeeModalProps) {
   const { showToast } = useToast();
+  const { departments } = useDepartments();
+  const { branches } = useBranches();
 
-  const [departments, setDepartments] = useState<DepartmentDto[]>([]);
-  const [branches, setBranches] = useState<BranchDto[]>([]);
   const [designation, setDesignation] = useState(employee.designation);
   const [departmentId, setDepartmentId] = useState(employee.departmentId || '');
   const [branchId, setBranchId] = useState(employee.branchIds?.[0] || '');
@@ -43,53 +42,23 @@ export function EditEmployeeModal({
   // Sync state whenever employee changes or modal opens
   useEffect(() => {
     setDesignation(employee.designation);
-    setDepartmentId(employee.departmentId || '');
-    setBranchId(employee.branchIds?.[0] || '');
+    const resolvedDeptId =
+      employee.departmentId ||
+      departments.find((d) => d.name.toLowerCase() === (employee.department || '').toLowerCase())?.id ||
+      (departments.length > 0 ? departments[0].id : '');
+    setDepartmentId(resolvedDeptId);
+
+    const resolvedBranchId =
+      employee.branchIds?.[0] ||
+      branches.find((b) => b.name.toLowerCase() === (employee.branchName || '').toLowerCase())?.id ||
+      (branches.length > 0 ? branches[0].id : '');
+    setBranchId(resolvedBranchId);
+
     setPhone(employee.phone || '');
     setQualifications(employee.qualifications || '');
     setEmergencyContact(employee.emergencyContact || '');
     setPhoneError('');
-  }, [employee, isOpen]);
-
-  // Load departments and branches from database
-  useEffect(() => {
-    let isMounted = true;
-    departmentsApi
-      .getDepartments()
-      .then((res) => {
-        if (isMounted && res?.data && res.data.length > 0) {
-          setDepartments(res.data);
-          if (!employee.departmentId) {
-            const match = res.data.find(
-              (d) => d.name.toLowerCase() === (employee.department || '').toLowerCase(),
-            );
-            if (match) setDepartmentId(match.id);
-            else setDepartmentId(res.data[0].id);
-          }
-        }
-      })
-      .catch(() => {});
-
-    branchesApi
-      .getBranches()
-      .then((res) => {
-        if (isMounted && res?.data && res.data.length > 0) {
-          setBranches(res.data);
-          if (!employee.branchIds?.[0]) {
-            const match = res.data.find(
-              (b) => b.name.toLowerCase() === (employee.branchName || '').toLowerCase(),
-            );
-            if (match) setBranchId(match.id);
-            else setBranchId(res.data[0].id);
-          }
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, [employee.departmentId, employee.department, employee.branchIds, employee.branchName]);
+  }, [employee, isOpen, departments, branches]);
 
   const activeDept = departments.find((d) => d.id === departmentId);
   const activeBranch = branches.find((b) => b.id === branchId);
