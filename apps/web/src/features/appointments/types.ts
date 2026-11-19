@@ -41,4 +41,5 @@ export const CLINIC_SCHEDULE_SLOTS: ScheduleSlot[] = [
   { id: 'slot-8', label: '02:45 PM', startTime: '14:45', endTime: '15:30', startMinutes: 14 * 60 + 45, endMinutes: 15 * 60 + 30 },
   { id: 'slot-9', label: '03:30 PM', startTime: '15:30', endTime: '16:15', startMinutes: 15 * 60 + 30, endMinutes: 16 * 60 + 15 },
   { id: 'slot-10', label: '04:30 PM', startTime: '16:30', endTime: '17:15', startMinutes: 16 * 60 + 30, endMinutes: 17 * 60 + 15 },
+  { id: 'slot-11', label: '05:15 PM', startTime: '17:15', endTime: '18:00', startMinutes: 17 * 60 + 15, endMinutes: 18 * 60 },
 ];

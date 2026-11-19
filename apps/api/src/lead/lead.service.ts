@@ -53,27 +53,42 @@ export class LeadService {
       throw new NotFoundException(`Branch "${dto.branchId}" not found`);
     }
 
-    if (dto.ownerId) {
-      const owner = await this.prisma.unscopedClient.employee.findUnique({
-        where: { id: dto.ownerId },
-      });
-      if (!owner) {
-        throw new NotFoundException(`Owner employee "${dto.ownerId}" not found`);
+    const resolvedName = (dto.childName || dto.name || '').trim();
+    const resolvedContact = (dto.phone || dto.contact || '').trim();
+    const resolvedConcern = (dto.concerns || dto.concern || '').trim() || null;
+
+    let resolvedChildAge = dto.childAge;
+    if (resolvedChildAge === undefined && dto.childDob) {
+      const birthDate = new Date(dto.childDob);
+      if (!isNaN(birthDate.getTime())) {
+        const diff = Date.now() - birthDate.getTime();
+        const ageDate = new Date(diff);
+        resolvedChildAge = Math.abs(ageDate.getUTCFullYear() - 1970);
       }
+    }
+
+    const intakeParts: string[] = [];
+    if (dto.parentName?.trim()) intakeParts.push(`Parent: ${dto.parentName.trim()}`);
+    if (dto.email?.trim()) intakeParts.push(`Email: ${dto.email.trim()}`);
+    if (dto.childDob?.trim()) intakeParts.push(`DOB: ${dto.childDob.trim()}`);
+    let resolvedNotes = dto.notes?.trim() || null;
+    if (intakeParts.length > 0) {
+      const intakeHeader = `[Intake] ${intakeParts.join(' | ')}`;
+      resolvedNotes = resolvedNotes ? `${intakeHeader}\n${resolvedNotes}` : intakeHeader;
     }
 
     return this.prisma.unscopedClient.lead.create({
       data: {
         branchId: dto.branchId,
-        name: dto.name,
-        contact: dto.contact,
-        childAge: dto.childAge,
-        concern: dto.concern,
+        name: resolvedName,
+        contact: resolvedContact,
+        childAge: resolvedChildAge,
+        concern: resolvedConcern,
         source: dto.source,
-        ownerId: dto.ownerId,
+        ownerId: undefined,
         stage: dto.stage ?? LeadStage.NEW,
         nextFollowUp: dto.nextFollowUp ? new Date(dto.nextFollowUp) : null,
-        notes: dto.notes,
+        notes: resolvedNotes,
       },
       include: {
         branch: { select: { id: true, name: true, code: true } },
@@ -368,9 +383,24 @@ export class LeadService {
       throw new ConflictException('Lead has already been converted');
     }
 
-    // Prefill estimated dob if childAge is known
+    let guardianName: string | null = null;
+    let guardianEmail: string | null = null;
     let dob: string | null = null;
-    if (lead.childAge !== null && lead.childAge !== undefined && lead.childAge >= 0) {
+
+    if (lead.notes) {
+      const intakeMatch = lead.notes.match(/\[Intake\]([^\n]+)/);
+      if (intakeMatch) {
+        const parentMatch = intakeMatch[1].match(/Parent:\s*([^|]+)/);
+        if (parentMatch) guardianName = parentMatch[1].trim();
+        const emailMatch = intakeMatch[1].match(/Email:\s*([^|]+)/);
+        if (emailMatch) guardianEmail = emailMatch[1].trim();
+        const dobMatch = intakeMatch[1].match(/DOB:\s*([^|]+)/);
+        if (dobMatch) dob = dobMatch[1].trim();
+      }
+    }
+
+    // Prefill estimated dob if childAge is known and dob wasn't extracted from intake
+    if (!dob && lead.childAge !== null && lead.childAge !== undefined && lead.childAge >= 0) {
       const currentYear = new Date().getFullYear();
       const birthYear = currentYear - lead.childAge;
       dob = `${birthYear}-01-01`;
@@ -399,10 +429,10 @@ export class LeadService {
       dob,
       gender: null,
       caseHistory: caseHistoryParts.join('\n'),
-      guardianName: null,
+      guardianName,
       guardianPhone: lead.contact,
       guardianWhatsApp: lead.contact,
-      guardianEmail: null,
+      guardianEmail,
       guardianRelation: 'Parent',
     };
   }
@@ -461,7 +491,7 @@ export class LeadService {
           branchId: lead.branchId,
           leadId: lead.id,
           clientCode,
-          name: dto.name,
+          name: (dto.name || dto.childName || '').trim(),
           dob: new Date(dto.dob),
           gender: dto.gender,
           caseHistory: dto.caseHistory,

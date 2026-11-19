@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -7,6 +8,7 @@ import {
   IsUUID,
   Max,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LeadStage } from '@petals/types';
@@ -16,13 +18,35 @@ export class CreateLeadDto {
   @IsNotEmpty()
   branchId!: string;
 
+  @ValidateIf((o) => !o.childName)
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  name?: string;
 
+  @IsOptional()
+  @IsString()
+  childName?: string;
+
+  @IsOptional()
+  @IsString()
+  childDob?: string;
+
+  @ValidateIf((o) => !o.phone)
   @IsString()
   @IsNotEmpty()
-  contact!: string;
+  contact?: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  parentName?: string;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
   @IsOptional()
   @Type(() => Number)
@@ -37,11 +61,11 @@ export class CreateLeadDto {
 
   @IsOptional()
   @IsString()
-  source?: string;
+  concerns?: string;
 
   @IsOptional()
-  @IsUUID()
-  ownerId?: string;
+  @IsString()
+  source?: string;
 
   @IsOptional()
   @IsString()

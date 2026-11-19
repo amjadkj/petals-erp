@@ -165,10 +165,10 @@ export function LeadsView() {
       if (ownerFilter !== 'ALL' && lead.ownerName !== ownerFilter) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchChild = lead.childName.toLowerCase().includes(q);
+        const matchChild = (lead.childName || lead.name || '').toLowerCase().includes(q);
         const matchParent = lead.parentName?.toLowerCase().includes(q);
-        const matchPhone = lead.phone?.toLowerCase().includes(q);
-        const matchConcern = lead.concerns?.toLowerCase().includes(q);
+        const matchPhone = (lead.phone || lead.contact || '').toLowerCase().includes(q);
+        const matchConcern = (lead.concerns || lead.concern || '').toLowerCase().includes(q);
         if (!matchChild && !matchParent && !matchPhone && !matchConcern) return false;
       }
       return true;
@@ -180,6 +180,15 @@ export function LeadsView() {
     // If target is CONVERTED, must trigger convert modal instead
     if (targetStage === LeadStage.CONVERTED) {
       handleTriggerConvert(lead);
+      return;
+    }
+
+    // If target is ASSESSMENT_SCHEDULED, redirect to Appointments module to book the slot
+    if (targetStage === LeadStage.ASSESSMENT_SCHEDULED) {
+      const leadName = lead.childName || lead.name || 'Child';
+      router.push(
+        `/appointments?action=assessment&leadId=${encodeURIComponent(lead.id)}&leadName=${encodeURIComponent(leadName)}&branchId=${encodeURIComponent(lead.branchId)}`
+      );
       return;
     }
 
@@ -223,6 +232,27 @@ export function LeadsView() {
     } catch {
       setLocalLeads((prev) =>
         prev.map((l) => (l.id === leadId ? { ...l, notes: note, followUpDate: nextDate, isOverdue: false } : l)),
+      );
+    }
+  };
+
+  const handleAddNote = async (leadId: string, newNote: string) => {
+    try {
+      const existing = selectedLead?.notes ? `${selectedLead.notes}\n${newNote}` : newNote;
+      await leadsApi.updateLead(leadId, {
+        notes: existing,
+      });
+      setLocalLeads((prev) =>
+        prev.map((l) => (l.id === leadId ? { ...l, notes: existing } : l)),
+      );
+      if (selectedLead && selectedLead.id === leadId) {
+        setSelectedLead({ ...selectedLead, notes: existing });
+      }
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+    } catch {
+      const existing = selectedLead?.notes ? `${selectedLead.notes}\n${newNote}` : newNote;
+      setLocalLeads((prev) =>
+        prev.map((l) => (l.id === leadId ? { ...l, notes: existing } : l)),
       );
     }
   };
@@ -320,6 +350,7 @@ export function LeadsView() {
           setIsLostOpen(true);
         }}
         onLogFollowUp={handleLogFollowUp}
+        onAddNote={handleAddNote}
       />
 
       {/* New Lead Modal */}

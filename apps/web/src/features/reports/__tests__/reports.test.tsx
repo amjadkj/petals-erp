@@ -29,7 +29,7 @@ describe('Reports Feature Components', () => {
     );
     expect(screen.getByText('Clinical Reports')).toBeInTheDocument();
     expect(screen.getByText('Check Overdue')).toBeInTheDocument();
-    expect(screen.getByText('+ New report')).toBeInTheDocument();
+    expect(screen.getByText(/New report/i)).toBeInTheDocument();
 
     // Therapist
     rerender(

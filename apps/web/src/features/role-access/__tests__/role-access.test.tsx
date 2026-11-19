@@ -4,7 +4,22 @@ import { describe, it, expect, vi } from 'vitest';
 import { RoleCardsPanel } from '../components/RoleCardsPanel';
 import { PermissionMatrixTable } from '../components/PermissionMatrixTable';
 import { BranchCard } from '../components/BranchCard';
+import { UserOverridesPanel } from '../components/UserOverridesPanel';
+import { accessApi, normalizeRoleDetail } from '@/lib/api/access';
 import { RoleKey, AppModule, PermissionAction } from '@petals/types';
+
+vi.mock('@/lib/api/access', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/api/access')>();
+  return {
+    ...actual,
+    accessApi: {
+      ...actual.accessApi,
+      getOverrides: vi.fn(),
+      setOverrides: vi.fn(),
+      clearOverride: vi.fn(),
+    },
+  };
+});
 import type { RoleDetailDto, BranchWithStatsDto } from '../types';
 
 describe('Role Access Components', () => {
@@ -250,6 +265,97 @@ describe('Role Access Components', () => {
 
     fireEvent.click(screen.getByText('Manage'));
     expect(onManage).toHaveBeenCalledWith(mockBranch);
+  });
+
+  it('renders UserOverridesPanel and correctly loads overrides when backend returns object with { user, overrides }', async () => {
+    vi.mocked(accessApi.getOverrides).mockResolvedValueOnce({
+      data: {
+        user: { id: 'u-1', name: 'John Therapist', email: 'john@petals.com' },
+        overrides: [
+          {
+            id: 'ov-1',
+            userId: 'u-1',
+            module: AppModule.APPOINTMENTS,
+            action: PermissionAction.CREATE,
+            allowed: true,
+            createdAt: '2026-11-20T00:00:00Z',
+          },
+        ],
+      },
+    } as any);
+
+    const mockUsers = [
+      {
+        id: 'u-1',
+        name: 'John Therapist',
+        email: 'john@petals.com',
+        roleKey: RoleKey.THERAPIST,
+        isActive: true,
+      },
+    ];
+
+    render(<UserOverridesPanel users={mockUsers as any} roles={[mockManagerRole]} />);
+
+    // Select user from dropdown
+    const select = screen.getByRole('combobox');
+    fireEvent.change(select, { target: { value: 'u-1' } });
+
+    // Should not throw "overrides.find is not a function"
+    await screen.findByText(/1 active override\(s\)/i);
+    expect(screen.getByText('John Therapist')).toBeInTheDocument();
+  });
+
+  it('reflects module toggle states and fires onUpdateModule when toggled', async () => {
+    const onUpdateModule = vi.fn().mockResolvedValue(undefined);
+    const onUpdatePermission = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <PermissionMatrixTable
+        role={mockManagerRole}
+        onUpdateModule={onUpdateModule}
+        onUpdatePermission={onUpdatePermission}
+      />,
+    );
+
+    // Appointments is enabled in mockManagerRole, Financial PnL is disabled
+    const allSwitches = screen.getAllByRole('switch');
+    const appointmentsSwitch = allSwitches.find((s) => s.id === 'mod-toggle-APPOINTMENTS');
+    const financialPnlSwitch = allSwitches.find((s) => s.id === 'mod-toggle-FINANCIAL_PNL');
+
+    expect(appointmentsSwitch).toBeDefined();
+    expect(appointmentsSwitch).toHaveAttribute('aria-checked', 'true');
+
+    expect(financialPnlSwitch).toBeDefined();
+    expect(financialPnlSwitch).toHaveAttribute('aria-checked', 'false');
+
+    // Click to toggle Appointments OFF
+    fireEvent.click(appointmentsSwitch!);
+    expect(onUpdateModule).toHaveBeenCalledWith(AppModule.APPOINTMENTS, false);
+  });
+
+  it('normalizeRoleDetail converts raw Prisma arrays into mapped dictionaries', () => {
+    const rawRoleFromDb = {
+      id: 'role-123',
+      key: RoleKey.THERAPIST,
+      name: 'Therapist',
+      description: 'Clinical specialist',
+      isSystem: true,
+      modules: [
+        { roleId: 'role-123', module: AppModule.CLIENTS, enabled: true },
+        { roleId: 'role-123', module: AppModule.FINANCIAL_PNL, enabled: false },
+      ],
+      permissions: [
+        { roleId: 'role-123', module: AppModule.CLIENTS, action: PermissionAction.VIEW, allowed: true },
+        { roleId: 'role-123', module: AppModule.CLIENTS, action: PermissionAction.DELETE, allowed: false },
+      ],
+    };
+
+    const normalized = normalizeRoleDetail(rawRoleFromDb);
+
+    expect(normalized.modules[AppModule.CLIENTS]).toEqual({ enabled: true });
+    expect(normalized.modules[AppModule.FINANCIAL_PNL]).toEqual({ enabled: false });
+    expect(normalized.permissions[AppModule.CLIENTS][PermissionAction.VIEW]).toBe(true);
+    expect(normalized.permissions[AppModule.CLIENTS][PermissionAction.DELETE]).toBe(false);
   });
 });
 

@@ -246,6 +246,34 @@ export class AccessService {
 
   // ──────────────────────── Director Endpoints ────────────────────────
 
+  private formatRoleDetail(role: any) {
+    const modules: Record<string, { enabled: boolean }> = {};
+    for (const m of role.modules || []) {
+      modules[m.module] = { enabled: m.enabled };
+    }
+
+    const permissions: Record<string, Record<string, boolean>> = {};
+    for (const p of role.permissions || []) {
+      if (!permissions[p.module]) {
+        permissions[p.module] = {};
+      }
+      permissions[p.module][p.action] = p.allowed;
+    }
+
+    return {
+      id: role.id,
+      key: role.key,
+      name: role.name,
+      description: role.description,
+      isSystem: role.isSystem,
+      userCount: role._count?.users ?? 0,
+      modules,
+      permissions,
+      rawModules: role.modules,
+      rawPermissions: role.permissions,
+    };
+  }
+
   /**
    * List all roles with modules and action permissions.
    */
@@ -254,11 +282,14 @@ export class AccessService {
       include: {
         modules: true,
         permissions: true,
+        _count: {
+          select: { users: true },
+        },
       },
       orderBy: { key: 'asc' },
     });
 
-    return roles;
+    return roles.map((r) => this.formatRoleDetail(r));
   }
 
   /**
@@ -270,6 +301,9 @@ export class AccessService {
       include: {
         modules: true,
         permissions: true,
+        _count: {
+          select: { users: true },
+        },
       },
     });
 
@@ -277,7 +311,7 @@ export class AccessService {
       throw new NotFoundException(`Role ${roleKey} not found`);
     }
 
-    return role;
+    return this.formatRoleDetail(role);
   }
 
   /**

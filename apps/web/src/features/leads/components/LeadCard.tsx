@@ -43,10 +43,10 @@ export function LeadCard({ lead, onClick, onMoveStage }: LeadCardProps) {
         <div className="flex items-start justify-between gap-2">
           <div>
             <h4 className="font-quicksand font-bold text-base text-ink group-hover:text-purple-600 transition-colors">
-              {lead.childName}
+              {lead.childName || lead.name || 'Unnamed Lead'}
             </h4>
             <div className="text-xs text-gray-500 font-medium">
-              {computeAge(lead.childDob)}
+              {lead.childDob ? computeAge(lead.childDob) : (lead.childAge ? `${lead.childAge} yrs` : '')}
             </div>
           </div>
 
@@ -89,9 +89,9 @@ export function LeadCard({ lead, onClick, onMoveStage }: LeadCardProps) {
         </div>
 
         {/* Concern */}
-        {lead.concerns && (
+        {(lead.concerns || lead.concern) && (
           <div className="text-xs text-gray-700 bg-purple-50/60 rounded px-2 py-1 font-medium line-clamp-2">
-            {lead.concerns}
+            {lead.concerns || lead.concern}
           </div>
         )}
 

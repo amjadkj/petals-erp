@@ -42,12 +42,6 @@ export const ALL_NAV_ITEMS: NavItem[] = [
     module: AppModule.CLIENTS,
   },
   {
-    label: 'Schedule planning',
-    href: '/schedule-planning',
-    icon: CalendarClock,
-    module: AppModule.SCHEDULE_PLANNING,
-  },
-  {
     label: 'Financial',
     href: '/financial',
     icon: Wallet,

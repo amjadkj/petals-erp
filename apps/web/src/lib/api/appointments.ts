@@ -1,13 +1,17 @@
 import { fetcher } from './fetcher';
-import type { ApiResponse, AppointmentDto, AppointmentStatus } from '@petals/types';
+import type { ApiResponse, AppointmentDto, AppointmentStatus, AppointmentType } from '@petals/types';
 
 export interface ExtendedAppointment extends Partial<AppointmentDto> {
   id: string;
   branchId: string;
-  clientId: string;
+  clientId?: string;
   clientName?: string;
   clientCode?: string;
   client?: { name: string; clientCode?: string };
+  leadId?: string;
+  leadName?: string;
+  lead?: { id: string; name: string };
+  type?: AppointmentType;
   therapistId: string;
   therapistName?: string;
   therapist?: { user?: { name: string; email?: string }; designation?: string };
@@ -35,7 +39,9 @@ export const appointmentsApi = {
 
   createAppointment: (dto: {
     branchId: string;
-    clientId: string;
+    clientId?: string;
+    leadId?: string;
+    type?: AppointmentType;
     therapistId: string;
     startsAt: string;
     endsAt: string;

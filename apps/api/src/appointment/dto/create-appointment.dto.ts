@@ -1,14 +1,26 @@
-import { IsDateString, IsOptional, IsUUID } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsUUID, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { AppointmentType } from '@petals/types';
 
 export class CreateAppointmentDto {
   @ApiProperty({ description: 'Branch ID' })
   @IsUUID('4')
   branchId!: string;
 
-  @ApiProperty({ description: 'Client ID' })
+  @ApiPropertyOptional({ description: 'Client ID (required if leadId not provided)' })
+  @ValidateIf((o) => !o.leadId)
   @IsUUID('4')
-  clientId!: string;
+  clientId?: string;
+
+  @ApiPropertyOptional({ description: 'Lead ID (required if clientId not provided)' })
+  @IsOptional()
+  @IsUUID('4')
+  leadId?: string;
+
+  @ApiPropertyOptional({ description: 'Appointment type', enum: AppointmentType, default: AppointmentType.REGULAR })
+  @IsOptional()
+  @IsEnum(AppointmentType)
+  type?: AppointmentType = AppointmentType.REGULAR;
 
   @ApiProperty({ description: 'Therapist employee ID' })
   @IsUUID('4')

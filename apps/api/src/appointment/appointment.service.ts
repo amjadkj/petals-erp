@@ -9,6 +9,8 @@ import {
 import {
   RoleKey,
   AppointmentStatus,
+  AppointmentType,
+  LeadStage,
   LeaveStatus,
 } from '@petals/types';
 import { PrismaService } from '../common/prisma';
@@ -45,7 +47,7 @@ export class AppointmentService {
    */
   async checkConflicts(
     therapistId: string,
-    clientId: string,
+    clientId: string | null | undefined,
     startsAt: Date,
     endsAt: Date,
     excludeAppointmentId?: string,
@@ -70,17 +72,19 @@ export class AppointmentService {
       throw new ConflictException('Therapist is already booked for this time slot');
     }
 
-    // 2. Client conflict check
-    const clientConflict = await this.prisma.unscopedClient.appointment.findFirst({
-      where: {
-        clientId,
-        ...timeOverlapWhere,
-      },
-      select: { id: true, startsAt: true, endsAt: true },
-    });
+    // 2. Client conflict check (only if clientId is provided)
+    if (clientId) {
+      const clientConflict = await this.prisma.unscopedClient.appointment.findFirst({
+        where: {
+          clientId,
+          ...timeOverlapWhere,
+        },
+        select: { id: true, startsAt: true, endsAt: true },
+      });
 
-    if (clientConflict) {
-      throw new ConflictException('Client already has an appointment booked for this time slot');
+      if (clientConflict) {
+        throw new ConflictException('Client already has an appointment booked for this time slot');
+      }
     }
   }
 
@@ -151,6 +155,9 @@ export class AppointmentService {
         branchId: true,
         clientId: true,
         client: { select: { id: true, name: true } },
+        leadId: true,
+        lead: { select: { id: true, name: true } },
+        type: true,
         therapistId: true,
         therapist: {
           select: {
@@ -208,7 +215,10 @@ export class AppointmentService {
         id: appt.id,
         branchId: appt.branchId,
         clientId: appt.clientId,
-        clientName: appt.client?.name || '',
+        clientName: appt.client?.name || appt.lead?.name || '',
+        leadId: appt.leadId,
+        leadName: appt.lead?.name || null,
+        type: appt.type,
         therapistId: appt.therapistId,
         therapistName: appt.therapist?.user?.name || '',
         departmentCode: appt.therapist?.department?.code || '',
@@ -266,6 +276,9 @@ export class AppointmentService {
           id: true,
           clientId: true,
           client: { select: { name: true } },
+          leadId: true,
+          lead: { select: { name: true } },
+          type: true,
           therapistId: true,
           therapist: {
             select: {
@@ -287,7 +300,10 @@ export class AppointmentService {
         return {
           id: a.id,
           clientId: a.clientId,
-          clientDisplayName: a.client?.name || '',
+          clientDisplayName: a.client?.name || a.lead?.name || '',
+          leadId: a.leadId,
+          leadName: a.lead?.name || null,
+          type: a.type,
           departmentCode: a.therapist?.department?.code || '',
           therapistFirstName,
           therapistId: a.therapistId,
@@ -376,6 +392,8 @@ export class AppointmentService {
       data: {
         branchId: dto.branchId,
         clientId: dto.clientId,
+        leadId: dto.leadId,
+        type: dto.type ?? (dto.leadId ? AppointmentType.ASSESSMENT : AppointmentType.REGULAR),
         therapistId: dto.therapistId,
         startsAt,
         endsAt,
@@ -384,6 +402,7 @@ export class AppointmentService {
       },
       include: {
         client: { select: { id: true, name: true } },
+        lead: { select: { id: true, name: true } },
         therapist: {
           select: {
             id: true,
@@ -393,6 +412,28 @@ export class AppointmentService {
         },
       },
     });
+
+    // If booked for a lead or marked as assessment with leadId, automatically transition lead stage
+    if (dto.leadId) {
+      const lead = await this.prisma.unscopedClient.lead.findUnique({
+        where: { id: dto.leadId },
+      });
+      if (lead) {
+        const dateFormatted = startsAt.toISOString().slice(0, 10);
+        const timeFormatted = startsAt.toTimeString().slice(0, 5);
+        const noteEntry = `[Assessment Scheduled] Assessment booked with ${appt.therapist?.user?.name || 'therapist'} for ${dateFormatted} at ${timeFormatted}`;
+        const updatedNotes = lead.notes ? `${lead.notes}\n${noteEntry}` : noteEntry;
+
+        await this.prisma.unscopedClient.lead.update({
+          where: { id: dto.leadId },
+          data: {
+            stage: LeadStage.ASSESSMENT_SCHEDULED,
+            nextFollowUp: startsAt,
+            notes: updatedNotes,
+          },
+        });
+      }
+    }
 
     // Invalidate daily schedule cache
     await this.invalidateDailyCache(dto.branchId, startsAt);

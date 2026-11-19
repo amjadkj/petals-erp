@@ -44,6 +44,10 @@ describe('AppointmentService', () => {
       branch: {
         findMany: jest.fn(),
       },
+      lead: {
+        findUnique: jest.fn(),
+        update: jest.fn(),
+      },
     },
   };
 
@@ -250,6 +254,55 @@ describe('AppointmentService', () => {
       // Invalidation of both 2026-03-10 and 2026-03-12
       expect(cache.del).toHaveBeenCalledWith('schedule:b1:2026-03-10');
       expect(cache.del).toHaveBeenCalledWith('schedule:b1:2026-03-12');
+    });
+  });
+
+  describe('createAppointment with Lead (Assessment)', () => {
+    it('creates assessment appointment and transitions lead to ASSESSMENT_SCHEDULED', async () => {
+      prisma.unscopedClient.appointment.findFirst.mockResolvedValue(null); // No conflicts
+      prisma.unscopedClient.appointment.create.mockResolvedValue({
+        id: 'app-assess-1',
+        branchId: 'b1',
+        leadId: 'lead-1',
+        type: 'ASSESSMENT',
+        therapistId: 't1',
+        startsAt: new Date('2026-03-15T10:00:00Z'),
+        endsAt: new Date('2026-03-15T10:45:00Z'),
+        therapist: { user: { name: 'Dr. Neha' } },
+      });
+      prisma.unscopedClient.lead.findUnique.mockResolvedValue({
+        id: 'lead-1',
+        name: 'Aarav Sharma',
+        stage: 'CONTACTED',
+        notes: '[Intake] Mother requested morning',
+      });
+      prisma.unscopedClient.lead.update.mockResolvedValue({
+        id: 'lead-1',
+        stage: 'ASSESSMENT_SCHEDULED',
+      });
+
+      const result = await service.createAppointment(
+        {
+          branchId: 'b1',
+          leadId: 'lead-1',
+          therapistId: 't1',
+          startsAt: '2026-03-15T10:00:00.000Z',
+          endsAt: '2026-03-15T10:45:00.000Z',
+        },
+        'u-dir',
+        RoleKey.DIRECTOR,
+      );
+
+      expect(result.id).toBe('app-assess-1');
+      expect(prisma.unscopedClient.lead.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'lead-1' },
+          data: expect.objectContaining({
+            stage: 'ASSESSMENT_SCHEDULED',
+          }),
+        }),
+      );
+      expect(cache.del).toHaveBeenCalledWith('schedule:b1:2026-03-15');
     });
   });
 });

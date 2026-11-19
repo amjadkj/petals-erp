@@ -67,7 +67,7 @@ export function ReportsHero({
             className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            <span>+ New report</span>
+            <span>New report</span>
           </Button>
         )}
 

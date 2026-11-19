@@ -26,8 +26,11 @@ export function LeadsList({ leads, onRowClick, isLoading = false }: LeadsListPro
       isTitle: true,
       render: (row) => (
         <div>
-          <span className="font-semibold text-ink">{row.childName}</span>
-          <span className="block text-xs text-gray-500">{row.parentName} · {row.phone}</span>
+          <span className="font-semibold text-ink">{row.childName || row.name || 'Unnamed'}</span>
+          <span className="block text-xs text-gray-500">
+            {row.parentName ? `${row.parentName} · ` : ''}
+            {row.phone || row.contact || ''}
+          </span>
         </div>
       ),
     },
@@ -35,7 +38,11 @@ export function LeadsList({ leads, onRowClick, isLoading = false }: LeadsListPro
       key: 'age',
       header: 'Age',
       isSecondary: true,
-      render: (row) => <span className="text-gray-600 text-sm">{computeAge(row.childDob)}</span>,
+      render: (row) => (
+        <span className="text-gray-600 text-sm">
+          {row.childDob ? computeAge(row.childDob) : (row.childAge ? `${row.childAge} yrs` : '—')}
+        </span>
+      ),
     },
     {
       key: 'concerns',
@@ -43,7 +50,7 @@ export function LeadsList({ leads, onRowClick, isLoading = false }: LeadsListPro
       isSecondary: true,
       render: (row) => (
         <span className="text-gray-700 text-sm font-medium line-clamp-1">
-          {row.concerns || '—'}
+          {row.concerns || row.concern || '—'}
         </span>
       ),
     },

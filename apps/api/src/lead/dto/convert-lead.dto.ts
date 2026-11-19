@@ -5,12 +5,18 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateIf,
 } from 'class-validator';
 
 export class ConvertLeadDto {
+  @ValidateIf((o) => !o.childName)
   @IsString()
   @IsNotEmpty()
   name!: string;
+
+  @IsOptional()
+  @IsString()
+  childName?: string;
 
   @IsDateString()
   @IsNotEmpty()

@@ -259,5 +259,64 @@ describe('AccessService', () => {
       expect(mockAuditService.log).toHaveBeenCalled();
     });
   });
+
+  describe('Role Detail Formatting', () => {
+    it('listRolesWithPermissions formats modules and permissions arrays into dictionary maps', async () => {
+      mockPrisma.unscopedClient.role.findMany.mockResolvedValue([
+        {
+          id: 'role-mgr-id',
+          key: RoleKey.MANAGER,
+          name: 'Manager',
+          description: 'Front office admin',
+          isSystem: true,
+          _count: { users: 3 },
+          modules: [
+            { roleId: 'role-mgr-id', module: AppModule.APPOINTMENTS, enabled: true },
+            { roleId: 'role-mgr-id', module: AppModule.FINANCIAL_PNL, enabled: false },
+          ],
+          permissions: [
+            { roleId: 'role-mgr-id', module: AppModule.APPOINTMENTS, action: PermissionAction.VIEW, allowed: true },
+            { roleId: 'role-mgr-id', module: AppModule.APPOINTMENTS, action: PermissionAction.CREATE, allowed: true },
+          ],
+        },
+      ]);
+
+      const result = await service.listRolesWithPermissions();
+
+      expect(result).toHaveLength(1);
+      const mgr = result[0];
+      expect(mgr.id).toBe('role-mgr-id');
+      expect(mgr.key).toBe(RoleKey.MANAGER);
+      expect(mgr.userCount).toBe(3);
+      expect(mgr.modules[AppModule.APPOINTMENTS]).toEqual({ enabled: true });
+      expect(mgr.modules[AppModule.FINANCIAL_PNL]).toEqual({ enabled: false });
+      expect(mgr.permissions[AppModule.APPOINTMENTS][PermissionAction.VIEW]).toBe(true);
+      expect(mgr.permissions[AppModule.APPOINTMENTS][PermissionAction.CREATE]).toBe(true);
+    });
+
+    it('getRolePermissions returns mapped role for roleKey', async () => {
+      mockPrisma.unscopedClient.role.findUnique.mockResolvedValue({
+        id: 'role-therapist-id',
+        key: RoleKey.THERAPIST,
+        name: 'Therapist',
+        description: 'Clinical specialist',
+        isSystem: true,
+        _count: { users: 5 },
+        modules: [
+          { roleId: 'role-therapist-id', module: AppModule.CLIENTS, enabled: true },
+        ],
+        permissions: [
+          { roleId: 'role-therapist-id', module: AppModule.CLIENTS, action: PermissionAction.VIEW, allowed: true },
+        ],
+      });
+
+      const result = await service.getRolePermissions(RoleKey.THERAPIST);
+
+      expect(result.id).toBe('role-therapist-id');
+      expect(result.userCount).toBe(5);
+      expect(result.modules[AppModule.CLIENTS]).toEqual({ enabled: true });
+      expect(result.permissions[AppModule.CLIENTS][PermissionAction.VIEW]).toBe(true);
+    });
+  });
 });
 

@@ -16,6 +16,7 @@ import { AppointmentsToolbar } from './AppointmentsToolbar';
 import { CalendarSurface } from './CalendarSurface';
 import { SessionDetailDrawer } from './SessionDetailDrawer';
 import { NewAppointmentModal } from './NewAppointmentModal';
+import { NewScheduleModal } from '@/features/schedule-planning/NewScheduleModal';
 import { RescheduleModal } from './RescheduleModal';
 import { CancelAppointmentModal } from './CancelAppointmentModal';
 import { AppointmentFiltersState, INITIAL_APPOINTMENT_FILTERS, ScheduleSlot } from './types';
@@ -31,12 +32,23 @@ export function AppointmentsView() {
   const canCreate = can(AppModule.APPOINTMENTS, PermissionAction.CREATE);
   const { selectedBranchId } = usePermissionsStore();
 
+  const actionParam = searchParams?.get('action');
+  const leadIdParam = searchParams?.get('leadId') || undefined;
+  const leadNameParam = searchParams?.get('leadName') || undefined;
+  const isAssessmentAction = actionParam === 'assessment';
+  const isScheduleAction = actionParam === 'schedule-planning';
+
+  const [assessmentLead, setAssessmentLead] = useState<{ id: string; name: string } | null>(() =>
+    leadIdParam && leadNameParam ? { id: leadIdParam, name: leadNameParam } : null,
+  );
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [filters, setFilters] = useState<AppointmentFiltersState>(INITIAL_APPOINTMENT_FILTERS);
 
   const [selectedAppointment, setSelectedAppointment] = useState<ExtendedAppointment | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [appointmentToModify, setAppointmentToModify] = useState<ExtendedAppointment | null>(null);
@@ -46,12 +58,21 @@ export function AppointmentsView() {
     date?: string;
   } | null>(null);
 
-  // Check URL query parameters (e.g. ?clientId=xyz&openNew=true)
+  // Sync assessmentLead from URL
   useEffect(() => {
-    if (canCreate && searchParams?.get('openNew') === 'true') {
-      setIsNewModalOpen(true);
+    if (leadIdParam && leadNameParam) {
+      setAssessmentLead({ id: leadIdParam, name: leadNameParam });
     }
-  }, [searchParams, canCreate]);
+  }, [leadIdParam, leadNameParam]);
+
+  // Check URL query parameters (e.g. ?clientId=xyz&openNew=true or ?action=assessment or ?action=schedule-planning)
+  useEffect(() => {
+    if (canCreate && (searchParams?.get('openNew') === 'true' || isAssessmentAction)) {
+      setIsNewModalOpen(true);
+    } else if (canCreate && isScheduleAction) {
+      setIsScheduleModalOpen(true);
+    }
+  }, [searchParams, canCreate, isAssessmentAction, isScheduleAction]);
 
   // Load employees (therapists)
   const { data: allEmployeesData } = useQuery({
@@ -196,7 +217,35 @@ export function AppointmentsView() {
           setPrefilledSlot(null);
           setIsNewModalOpen(true);
         }}
+        onSchedulePlanning={() => setIsScheduleModalOpen(true)}
       />
+
+      {assessmentLead && (
+        <div className="bg-purple-50 border border-purple-200 rounded-card p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-purple-900 shadow-xs animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse shrink-0" />
+            <span>
+              Scheduling Initial Clinical Assessment for <strong>{assessmentLead.name}</strong>. Select an open therapist slot on the schedule grid below or open the booking form.
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsNewModalOpen(true)}
+              className="px-3 py-1.5 rounded-btn bg-purple-600 text-white font-semibold text-xs hover:bg-purple-700 transition-colors shadow-xs"
+            >
+              Open Booking Form
+            </button>
+            <button
+              type="button"
+              onClick={() => setAssessmentLead(null)}
+              className="text-gray-500 hover:text-danger font-medium text-xs ml-1"
+            >
+              ✕ Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       <AppointmentsToolbar
         currentDate={currentDate}
@@ -245,12 +294,34 @@ export function AppointmentsView() {
             setIsNewModalOpen(false);
             setPrefilledSlot(null);
           }}
-          onSuccess={handleSuccessMutation}
+          onSuccess={() => {
+            handleSuccessMutation();
+            queryClient.invalidateQueries({ queryKey: ['leads'] });
+            setAssessmentLead(null);
+          }}
           clients={clientsData || []}
           therapists={therapistSelectOptions}
           prefilledTherapistId={prefilledSlot?.therapistId}
           prefilledTime={prefilledSlot?.time}
           prefilledDate={prefilledSlot?.date}
+          assessmentLead={assessmentLead || undefined}
+          onClearAssessmentLead={() => setAssessmentLead(null)}
+          onOpenSchedulePlanning={() => {
+            setIsNewModalOpen(false);
+            setIsScheduleModalOpen(true);
+          }}
+        />
+      )}
+
+      {canCreate && (
+        <NewScheduleModal
+          isOpen={isScheduleModalOpen}
+          onClose={() => setIsScheduleModalOpen(false)}
+          onSuccess={() => {
+            handleSuccessMutation();
+            queryClient.invalidateQueries({ queryKey: ['schedules'] });
+          }}
+          clients={clientsData || []}
         />
       )}
 

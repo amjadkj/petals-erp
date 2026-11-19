@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/Select';
 import { DatePicker } from '@/components/ui/DatePicker';
 import { useToast } from '@/components/ui/Toast';
 import { leadsApi } from '@/lib/api/leads';
+import { useBranches } from '@/lib/api/masterData';
 import { usePermissionsStore } from '@/lib/permissions/store';
 import { LeadStage, type LeadDto } from '@petals/types';
 
@@ -15,16 +16,15 @@ interface NewLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (lead: LeadDto) => void;
-  owners?: string[];
 }
 
 export function NewLeadModal({
   isOpen,
   onClose,
   onSuccess,
-  owners = ['Nikhil Kumar', 'Priya Nair', 'Anita Sen'],
 }: NewLeadModalProps) {
   const { showToast } = useToast();
+  const { branches } = useBranches();
   const selectedBranchId = usePermissionsStore((s) => s.selectedBranchId);
 
   const [childName, setChildName] = useState('');
@@ -34,7 +34,6 @@ export function NewLeadModal({
   const [email, setEmail] = useState('');
   const [concern, setConcern] = useState('');
   const [source, setSource] = useState('Website');
-  const [owner, setOwner] = useState(owners[0] || 'Nikhil Kumar');
   const [followUpDate, setFollowUpDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 2);
@@ -50,18 +49,27 @@ export function NewLeadModal({
       return;
     }
 
+    const effectiveBranchId =
+      selectedBranchId && selectedBranchId !== 'ALL'
+        ? selectedBranchId
+        : branches[0]?.id || 'branch-1';
+
     setIsSubmitting(true);
     try {
-      const payload: Partial<LeadDto> = {
+      const payload: any = {
+        name: childName.trim(),
         childName: childName.trim(),
         childDob: childDob || undefined,
         parentName: parentName.trim(),
+        contact: phone.trim(),
         phone: phone.trim(),
         email: email.trim() || undefined,
+        concern: concern.trim() || undefined,
         concerns: concern.trim() || undefined,
         source,
+        nextFollowUp: followUpDate ? new Date(followUpDate).toISOString() : undefined,
         notes: notes.trim() || undefined,
-        branchId: selectedBranchId !== 'ALL' ? selectedBranchId : 'branch-1',
+        branchId: effectiveBranchId,
         stage: LeadStage.NEW,
       };
 
@@ -70,27 +78,10 @@ export function NewLeadModal({
       onSuccess(res.data || (payload as LeadDto));
       handleReset();
       onClose();
-    } catch {
-      // Mock fallback if offline/mock backend
-      const fallbackLead: LeadDto = {
-        id: `lead-${Date.now()}`,
-        childName: childName.trim(),
-        childDob: childDob || undefined,
-        parentName: parentName.trim(),
-        phone: phone.trim(),
-        email: email.trim() || undefined,
-        concerns: concern.trim() || undefined,
-        source,
-        notes: notes.trim() || undefined,
-        branchId: selectedBranchId !== 'ALL' ? selectedBranchId : 'branch-1',
-        stage: LeadStage.NEW,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      showToast(`Lead created for ${childName}`, 'success');
-      onSuccess(fallbackLead);
-      handleReset();
-      onClose();
+    } catch (err: any) {
+      const msg = err?.body?.message || err?.message || 'Failed to create lead';
+      const displayMsg = Array.isArray(msg) ? msg.join(', ') : String(msg);
+      showToast(displayMsg, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -181,24 +172,12 @@ export function NewLeadModal({
             ]}
           />
 
-          <Select
-            label="Assigned Owner"
-            value={owner}
-            onChange={(e) => setOwner(e.target.value)}
-          >
-            {owners.map((o) => (
-              <option key={o} value={o}>
-                {o}
-              </option>
-            ))}
-          </Select>
+          <DatePicker
+            label="Next Follow-up Date"
+            value={followUpDate}
+            onChange={(e) => setFollowUpDate(e.target.value)}
+          />
         </div>
-
-        <DatePicker
-          label="Next Follow-up Date"
-          value={followUpDate}
-          onChange={(e) => setFollowUpDate(e.target.value)}
-        />
 
         <Input
           label="Initial Intake Notes"

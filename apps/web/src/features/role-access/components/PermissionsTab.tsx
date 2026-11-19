@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RoleKey, AppModule, PermissionAction } from '@petals/types';
 import type {
   PermissionsSubTab,
@@ -31,10 +31,17 @@ export function PermissionsTab({
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
+  // Local state for optimistic updates
+  const [rolesState, setRolesState] = useState<RoleDetailDto[]>(roles);
+
+  useEffect(() => {
+    setRolesState(roles);
+  }, [roles]);
+
   // Active role object
   const activeRole =
-    roles.find((r) => r.key === selectedRoleKey) ||
-    roles[0] || {
+    rolesState.find((r) => r.key === selectedRoleKey) ||
+    rolesState[0] || {
       id: 'default',
       key: selectedRoleKey,
       name: selectedRoleKey,
@@ -46,6 +53,20 @@ export function PermissionsTab({
 
   // Optimistic update for module toggle
   const handleUpdateModule = async (module: AppModule, enabled: boolean) => {
+    // 1. Optimistic state flip
+    setRolesState((prev) =>
+      prev.map((r) => {
+        if (r.key !== activeRole.key) return r;
+        return {
+          ...r,
+          modules: {
+            ...r.modules,
+            [module]: { enabled },
+          },
+        };
+      }),
+    );
+
     try {
       setIsSaving(true);
       await accessApi.updateRoleModules(activeRole.key, { [module]: enabled });
@@ -59,17 +80,66 @@ export function PermissionsTab({
     }
   };
 
-  // Optimistic update for permission action toggle
+  // Optimistic update for single permission action toggle
   const handleUpdatePermission = async (
     module: AppModule,
     action: PermissionAction,
     allowed: boolean,
   ) => {
+    // 1. Optimistic state flip
+    setRolesState((prev) =>
+      prev.map((r) => {
+        if (r.key !== activeRole.key) return r;
+        const currentModPerms = r.permissions[module] || ({} as Record<PermissionAction, boolean>);
+        return {
+          ...r,
+          permissions: {
+            ...r.permissions,
+            [module]: {
+              ...currentModPerms,
+              [action]: allowed,
+            },
+          },
+        };
+      }),
+    );
+
     try {
       setIsSaving(true);
       await accessApi.updateRolePermissions(activeRole.key, {
         [module]: { [action]: allowed },
       });
+      setLastSavedAt(new Date());
+      await onRefreshRoles();
+    } catch {
+      await onRefreshRoles();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Batch update for multiple permission action toggles
+  const handleUpdatePermissionsBatch = async (
+    items: Array<{ module: AppModule; action: PermissionAction; allowed: boolean }>,
+  ) => {
+    // 1. Optimistic state flip
+    setRolesState((prev) =>
+      prev.map((r) => {
+        if (r.key !== activeRole.key) return r;
+        const newPerms = { ...r.permissions };
+        for (const item of items) {
+          newPerms[item.module] = {
+            ...(newPerms[item.module] || {}),
+            [item.action]: item.allowed,
+          };
+        }
+        return { ...r, permissions: newPerms };
+      }),
+    );
+
+    try {
+      setIsSaving(true);
+      await accessApi.updateRolePermissions(activeRole.key, items);
       setLastSavedAt(new Date());
       await onRefreshRoles();
     } catch {
@@ -96,7 +166,7 @@ export function PermissionsTab({
         onSubTabChange={setSubTab}
         selectedRoleKey={selectedRoleKey}
         onSelectRole={setSelectedRoleKey}
-        roles={roles}
+        roles={rolesState}
       />
 
       {/* Right Area */}
@@ -108,6 +178,7 @@ export function PermissionsTab({
               role={activeRole}
               onUpdateModule={handleUpdateModule}
               onUpdatePermission={handleUpdatePermission}
+              onUpdatePermissionsBatch={handleUpdatePermissionsBatch}
               onResetRole={() => onRefreshRoles()}
               isSaving={isSaving}
               lastSavedAt={lastSavedAt}
@@ -124,7 +195,7 @@ export function PermissionsTab({
           </div>
         </div>
       ) : (
-        <UserOverridesPanel users={users} roles={roles} />
+        <UserOverridesPanel users={users} roles={rolesState} />
       )}
     </div>
   );

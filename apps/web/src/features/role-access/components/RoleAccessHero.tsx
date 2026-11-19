@@ -73,7 +73,7 @@ export function RoleAccessHero({
                 className="flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                <span>+ Create branch</span>
+                <span>Create branch</span>
               </Button>
             )
           )}

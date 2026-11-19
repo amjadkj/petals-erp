@@ -18,6 +18,11 @@ export enum AppointmentStatus {
   NO_SHOW = 'NO_SHOW',
 }
 
+export enum AppointmentType {
+  REGULAR = 'REGULAR',
+  ASSESSMENT = 'ASSESSMENT',
+}
+
 export enum PlanStatus {
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
@@ -243,8 +248,11 @@ export interface ClientDto {
 export interface AppointmentDto {
   id: string;
   branchId: string;
-  clientId: string;
+  clientId?: string | null;
   clientName?: string;
+  leadId?: string | null;
+  leadName?: string | null;
+  type?: AppointmentType;
   therapistId: string;
   therapistName?: string;
   roomId?: string | null;
@@ -282,15 +290,21 @@ export interface PaymentDto {
 export interface LeadDto {
   id: string;
   branchId: string;
-  parentName: string;
-  childName: string;
+  name?: string;
+  contact?: string;
+  childAge?: number | null;
+  concern?: string | null;
+  parentName?: string;
+  childName?: string;
   childDob?: string | null;
-  phone: string;
+  phone?: string;
   email?: string | null;
   stage: LeadStage;
   source?: string | null;
   concerns?: string | null;
   notes?: string | null;
+  ownerId?: string | null;
+  nextFollowUp?: string | null;
   createdAt: string;
   updatedAt: string;
 }

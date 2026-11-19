@@ -31,6 +31,7 @@ export function UserOverridesPanel({
 
   const selectedUser = users.find((u) => u.id === selectedUserId);
   const userRole = roles.find((r) => r.key === selectedUser?.roleKey);
+  const safeOverrides = Array.isArray(overrides) ? overrides : [];
 
   const filteredUsers = users.filter((u) => {
     if (u.roleKey === RoleKey.DIRECTOR) return false;
@@ -42,7 +43,13 @@ export function UserOverridesPanel({
     try {
       setIsLoading(true);
       const res = await accessApi.getOverrides(userId);
-      setOverrides(res.data ?? []);
+      const raw = (res as any)?.data ?? res;
+      const list = Array.isArray(raw?.overrides)
+        ? raw.overrides
+        : Array.isArray(raw)
+        ? raw
+        : [];
+      setOverrides(list);
     } catch {
       setOverrides([]);
     } finally {
@@ -165,7 +172,7 @@ export function UserOverridesPanel({
                   {selectedUser.name}
                 </span>
                 <span className="text-xs text-gray-500">
-                  Base Role: <strong>{selectedUser.roleKey}</strong> • {overrides.length} active override(s)
+                  Base Role: <strong>{selectedUser.roleKey}</strong> • {safeOverrides.length} active override(s)
                 </span>
               </div>
             </div>
@@ -210,7 +217,7 @@ export function UserOverridesPanel({
                         }
 
                         // Check if overridden
-                        const override = overrides.find(
+                        const override = safeOverrides.find(
                           (o) => o.module === row.module && o.action === col.action,
                         );
                         const hasOverride = Boolean(override);

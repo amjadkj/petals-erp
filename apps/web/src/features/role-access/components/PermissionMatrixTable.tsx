@@ -22,6 +22,9 @@ interface PermissionMatrixTableProps {
     action: PermissionAction,
     allowed: boolean,
   ) => Promise<void>;
+  onUpdatePermissionsBatch?: (
+    items: Array<{ module: AppModule; action: PermissionAction; allowed: boolean }>,
+  ) => Promise<void>;
   onResetRole?: () => void;
   isSaving?: boolean;
   lastSavedAt?: Date | null;
@@ -31,6 +34,7 @@ export function PermissionMatrixTable({
   role,
   onUpdateModule,
   onUpdatePermission,
+  onUpdatePermissionsBatch,
   onResetRole,
   isSaving = false,
   lastSavedAt,
@@ -72,6 +76,17 @@ export function PermissionMatrixTable({
       setInlineNotice(
         `${rowDef?.label ?? module}: View is off, so Create, Update, ViewAll and Delete are cleared.`,
       );
+
+      if (onUpdatePermissionsBatch) {
+        await onUpdatePermissionsBatch([
+          { module, action: PermissionAction.VIEW, allowed: false },
+          { module, action: PermissionAction.CREATE, allowed: false },
+          { module, action: PermissionAction.UPDATE, allowed: false },
+          { module, action: PermissionAction.VIEW_ALL, allowed: false },
+          { module, action: PermissionAction.DELETE, allowed: false },
+        ]);
+        return;
+      }
 
       // Disable View and clear all other actions
       await onUpdatePermission(module, PermissionAction.VIEW, false);

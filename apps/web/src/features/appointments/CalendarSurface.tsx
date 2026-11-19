@@ -187,8 +187,9 @@ export function CalendarSurface({
                         {cellApps.length > 0 ? (
                           <div className="space-y-1.5">
                             {cellApps.map((app) => {
+                              const isAssessment = app.type === 'ASSESSMENT';
                               const cName =
-                                app.client?.name || app.clientName || 'Client';
+                                app.client?.name || app.clientName || app.lead?.name || app.leadName || 'Client';
                               const cCode = app.clientCode || app.client?.clientCode;
                               const room = app.roomName || 'Room 1';
 
@@ -196,16 +197,24 @@ export function CalendarSurface({
                                 <div
                                   key={app.id}
                                   onClick={() => onSelectAppointment(app)}
-                                  className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${getCardStyle(
-                                    app.status,
-                                  )}`}
+                                  className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${
+                                    isAssessment
+                                      ? 'border-purple-300 bg-purple-50/50 hover:bg-purple-50/80 text-purple-950'
+                                      : getCardStyle(app.status)
+                                  }`}
                                 >
                                   <div className="flex items-center justify-between gap-1">
                                     <span className="font-bold truncate">{cName}</span>
-                                    {cCode && (
-                                      <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold">
-                                        {cCode}
+                                    {isAssessment ? (
+                                      <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-purple-200/80 text-purple-800 border border-purple-300 shrink-0">
+                                        Assessment
                                       </span>
+                                    ) : (
+                                      cCode && (
+                                        <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold shrink-0">
+                                          {cCode}
+                                        </span>
+                                      )
                                     )}
                                   </div>
                                   <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1">
@@ -336,8 +345,9 @@ export function CalendarSurface({
                       {dayApps.length > 0 ? (
                         <div className="space-y-1.5">
                           {dayApps.map((app) => {
+                            const isAssessment = app.type === 'ASSESSMENT';
                             const cName =
-                              app.client?.name || app.clientName || 'Client';
+                              app.client?.name || app.clientName || app.lead?.name || app.leadName || 'Client';
                             const cCode = app.clientCode || app.client?.clientCode;
                             const room = app.roomName || 'Room 1';
 
@@ -345,16 +355,24 @@ export function CalendarSurface({
                               <div
                                 key={app.id}
                                 onClick={() => onSelectAppointment(app)}
-                                className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${getCardStyle(
-                                  app.status,
-                                )}`}
+                                className={`p-2 rounded-btn border text-xs cursor-pointer transition-all shadow-xs ${
+                                  isAssessment
+                                    ? 'border-purple-300 bg-purple-50/50 hover:bg-purple-50/80 text-purple-950'
+                                    : getCardStyle(app.status)
+                                }`}
                               >
                                 <div className="flex items-center justify-between gap-1">
                                   <span className="font-bold truncate">{cName}</span>
-                                  {cCode && (
-                                    <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold">
-                                      {cCode}
+                                  {isAssessment ? (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-purple-200/80 text-purple-800 border border-purple-300 shrink-0">
+                                      Assessment
                                     </span>
+                                  ) : (
+                                    cCode && (
+                                      <span className="text-[10px] px-1 py-0.2 rounded bg-white/80 font-mono font-semibold shrink-0">
+                                        {cCode}
+                                      </span>
+                                    )
                                   )}
                                 </div>
                                 <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1">

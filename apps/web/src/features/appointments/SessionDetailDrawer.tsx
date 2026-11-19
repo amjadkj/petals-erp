@@ -100,8 +100,14 @@ export function SessionDetailDrawer({
 
   const isParent = role === RoleKey.PARENT;
   const isStaff = role !== RoleKey.PARENT;
+  const isAssessment = appointment.type === 'ASSESSMENT';
 
-  const clientName = appointment.client?.name || appointment.clientName || 'Client';
+  const clientName =
+    appointment.client?.name ||
+    appointment.clientName ||
+    appointment.lead?.name ||
+    appointment.leadName ||
+    'Client';
   const therapistName =
     appointment.therapist?.user?.name || appointment.therapistName || 'Assigned Therapist';
   const deptName =
@@ -193,9 +199,16 @@ export function SessionDetailDrawer({
       <div className="space-y-5">
         {/* Status Chip Banner */}
         <div className="flex items-center justify-between p-3 bg-purple-50/50 rounded-card border border-[#E6D8F1]/60">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Current Status
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Current Status
+            </span>
+            {isAssessment && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-200 text-purple-800 border border-purple-300">
+                Assessment
+              </span>
+            )}
+          </div>
           <StatusChip status={appointment.status} />
         </div>
 
@@ -213,28 +226,42 @@ export function SessionDetailDrawer({
           </div>
         )}
 
-        {/* Client Record link */}
+        {/* Client or Lead Record link */}
         <div className="space-y-1">
           <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-            Client
+            {appointment.leadId ? 'Enquiry Lead' : 'Client'}
           </span>
           <div className="flex items-center justify-between p-3 bg-white border border-[#E6D8F1]/60 rounded-card">
             <div>
               <div className="font-bold text-sm text-ink">{clientName}</div>
-              {appointment.clientCode && (
+              {appointment.clientCode ? (
                 <div className="text-xs text-purple-800 font-medium">
                   Code: {appointment.clientCode}
                 </div>
-              )}
+              ) : appointment.leadId ? (
+                <div className="text-xs text-purple-700 font-medium">
+                  Lead scheduled for initial clinical assessment
+                </div>
+              ) : null}
             </div>
             {!isParent && (
-              <Link
-                href={`/clients/${appointment.clientId}`}
-                className="text-xs font-semibold text-purple-600 hover:text-purple-800 flex items-center gap-1"
-              >
-                <span>Profile</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
+              appointment.clientId ? (
+                <Link
+                  href={`/clients/${appointment.clientId}`}
+                  className="text-xs font-semibold text-purple-600 hover:text-purple-800 flex items-center gap-1"
+                >
+                  <span>Profile</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              ) : appointment.leadId ? (
+                <Link
+                  href="/leads"
+                  className="text-xs font-semibold text-purple-600 hover:text-purple-800 flex items-center gap-1"
+                >
+                  <span>View in Leads</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              ) : null
             )}
           </div>
         </div>

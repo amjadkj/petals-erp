@@ -43,7 +43,7 @@ export function EmployeesHero({
           className="flex items-center gap-2"
         >
           <UserPlus className="w-4 h-4" />
-          <span>+ Add employee</span>
+          <span>Add employee</span>
         </Button>
       </div>
     </div>

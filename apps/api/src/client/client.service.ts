@@ -235,6 +235,7 @@ export class ClientService {
       });
 
       for (const row of counts) {
+        if (!row.clientId) continue;
         const item = sessionCountsMap.get(row.clientId) || { scheduled: 0, attended: 0 };
         if (row.status === AppointmentStatus.SCHEDULED) {
           item.scheduled = row._count._all;

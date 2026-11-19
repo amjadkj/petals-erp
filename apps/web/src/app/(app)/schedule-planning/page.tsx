@@ -1,13 +1,18 @@
 'use client';
 
-import { SchedulePlanningView } from '@/features/schedule-planning';
-import { ModuleGuard } from '@/components/auth/ModuleGuard';
-import { AppModule } from '@petals/types';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SchedulePlanningPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/appointments?action=schedule-planning');
+  }, [router]);
+
   return (
-    <ModuleGuard module={AppModule.SCHEDULE_PLANNING} moduleName="Schedule Planning">
-      <SchedulePlanningView />
-    </ModuleGuard>
+    <div className="p-8 flex items-center justify-center text-sm text-gray-500 animate-pulse">
+      Redirecting to Appointments Schedule Planning...
+    </div>
   );
 }

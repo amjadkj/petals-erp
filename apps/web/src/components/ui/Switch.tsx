@@ -23,14 +23,19 @@ export function Switch({
   const switchId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <label htmlFor={switchId} className="inline-flex items-center gap-2.5 cursor-pointer select-none">
+    <div className="inline-flex items-center gap-2.5 select-none">
       <button
         id={switchId}
         type="button"
         role="switch"
         aria-checked={checked}
         disabled={disabled}
-        onClick={() => !disabled && onChange(!checked)}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!disabled) {
+            onChange(!checked);
+          }
+        }}
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-200 focus-visible:ring-offset-1',
@@ -46,7 +51,17 @@ export function Switch({
           )}
         />
       </button>
-      {label && <span className="text-sm font-medium text-ink">{label}</span>}
-    </label>
+      {label && (
+        <span
+          onClick={() => !disabled && onChange(!checked)}
+          className={cn(
+            'text-sm font-medium text-ink cursor-pointer',
+            disabled && 'opacity-50 cursor-not-allowed',
+          )}
+        >
+          {label}
+        </span>
+      )}
+    </div>
   );
 }

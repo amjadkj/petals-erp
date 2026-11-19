@@ -115,4 +115,42 @@ describe('NewAppointmentModal', () => {
       expect(onClose).toHaveBeenCalled();
     });
   });
+
+  it('creates an assessment appointment when assessmentLead is provided', async () => {
+    const onSuccess = vi.fn();
+    const onClose = vi.fn();
+
+    render(
+      <NewAppointmentModal
+        isOpen={true}
+        onClose={onClose}
+        onSuccess={onSuccess}
+        clients={mockClients}
+        therapists={mockTherapists}
+        prefilledTherapistId="t1"
+        prefilledTime="10:00"
+        prefilledDate="2026-11-20"
+        assessmentLead={{ id: 'lead-123', name: 'Aarav Sharma' }}
+      />,
+    );
+
+    expect(screen.getByText('Schedule Initial Clinical Assessment')).toBeDefined();
+    expect(screen.getByText('Aarav Sharma')).toBeDefined();
+
+    const submitBtn = screen.getByRole('button', { name: /schedule assessment/i });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(appointmentsApi.createAppointment).toHaveBeenCalledWith(
+        expect.objectContaining({
+          branchId: 'branch-1',
+          leadId: 'lead-123',
+          type: 'ASSESSMENT',
+          therapistId: 't1',
+        }),
+      );
+      expect(onSuccess).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+    });
+  });
 });

@@ -9,10 +9,8 @@ import { DatePicker } from '@/components/ui/DatePicker';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useToast } from '@/components/ui/Toast';
 import { leadsApi } from '@/lib/api/leads';
-import { useBranches } from '@/lib/api/masterData';
 import { ApiError } from '@/lib/api/fetcher';
 import type { LeadItem } from '../types';
-import type { BranchDto } from '@petals/types';
 
 interface ConvertToClientModalProps {
   lead: LeadItem | null;
@@ -28,44 +26,49 @@ export function ConvertToClientModal({
   onSuccess,
 }: ConvertToClientModalProps) {
   const { showToast } = useToast();
-  const { branches } = useBranches();
 
   const [childName, setChildName] = useState('');
   const [dob, setDob] = useState('');
-  const [branchId, setBranchId] = useState('');
+  const [gender, setGender] = useState('');
   const [guardianName, setGuardianName] = useState('');
   const [guardianPhone, setGuardianPhone] = useState('');
+  const [guardianEmail, setGuardianEmail] = useState('');
   const [guardianRelation, setGuardianRelation] = useState('Mother');
-  const [department, setDepartment] = useState('Speech Therapy');
   const [caseHistoryDraft, setCaseHistoryDraft] = useState('');
   const [hasConsent, setHasConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch branches and populate from lead / convert preview
+  // Populate from lead / convert preview
   useEffect(() => {
     if (lead && isOpen) {
-      setChildName(lead.childName || '');
+      setChildName(lead.childName || lead.name || '');
       setDob(lead.childDob || '2021-06-15');
       setGuardianName(lead.parentName || '');
-      setGuardianPhone(lead.phone || '');
-      setBranchId(lead.branchId || (branches.length > 0 ? branches[0].id : 'branch-1'));
-      setCaseHistoryDraft(lead.concerns ? `Initial enquiry intake: ${lead.concerns}` : '');
+      setGuardianPhone(lead.phone || lead.contact || '');
+      setGuardianEmail(lead.email || '');
+      setCaseHistoryDraft(lead.concerns || lead.concern ? `Initial enquiry intake: ${lead.concerns || lead.concern}` : '');
       setHasConsent(false);
 
-      // Load preview from API
-      leadsApi.getConvertPreview(lead.id)
+      // Load preview from API to get any enriched fields from backend
+      leadsApi
+        .getConvertPreview(lead.id)
         .then((res) => {
           if (res?.data && typeof res.data === 'object') {
-            const preview = res.data as Record<string, string>;
-            if (preview.childName) setChildName(preview.childName);
+            const preview = res.data as Record<string, any>;
+            if (preview.name || preview.childName) setChildName(preview.name || preview.childName);
             if (preview.dob) setDob(preview.dob);
+            if (preview.guardianName) setGuardianName(preview.guardianName);
+            if (preview.guardianPhone) setGuardianPhone(preview.guardianPhone);
+            if (preview.guardianEmail) setGuardianEmail(preview.guardianEmail);
+            if (preview.guardianRelation) setGuardianRelation(preview.guardianRelation);
+            if (preview.caseHistory) setCaseHistoryDraft(preview.caseHistory);
           }
         })
         .catch(() => {
-          // Ignore error, already prefilled from lead item
+          // Keep prefilled state from lead
         });
     }
-  }, [lead, isOpen, branches]);
+  }, [lead, isOpen]);
 
   if (!lead) return null;
 
@@ -76,34 +79,41 @@ export function ConvertToClientModal({
       return;
     }
 
+    if (!childName.trim() || !dob || !guardianName.trim() || !guardianPhone.trim()) {
+      showToast('Please fill out all required fields', 'error');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const res = await leadsApi.convertLead(lead.id, {
-        childName,
+      const payload = {
+        name: childName.trim(),
         dob,
-        branchId: branchId || 'branch-1',
-        primaryGuardian: {
-          name: guardianName,
-          phone: guardianPhone,
-          relation: guardianRelation,
-        },
-        department,
-        caseHistory: caseHistoryDraft,
-        consentAccepted: true,
-      });
+        gender: gender || undefined,
+        caseHistory: caseHistoryDraft.trim() || undefined,
+        guardianName: guardianName.trim(),
+        guardianPhone: guardianPhone.trim(),
+        guardianEmail: guardianEmail.trim() || undefined,
+        guardianWhatsApp: guardianPhone.trim() || undefined,
+        guardianRelation: guardianRelation || 'Parent',
+        guardianConsent: hasConsent,
+      };
 
-      const newId = (res?.data as { client?: { id?: string }; id?: string })?.client?.id || (res?.data as { id?: string })?.id;
+      const res = await leadsApi.convertLead(lead.id, payload);
+
+      const newId =
+        (res?.data as { client?: { id?: string }; id?: string })?.client?.id ||
+        (res?.data as { id?: string })?.id;
       showToast(`Lead converted! Client profile created for ${childName}`, 'success');
       onSuccess(newId);
       onClose();
-    } catch (err: unknown) {
-      // Check for 409 conflict
+    } catch (err: any) {
       if (err instanceof ApiError && err.status === 409) {
         showToast('This lead has already been converted to a client profile.', 'error');
       } else {
-        showToast(`Lead converted! Profile created for ${childName}`, 'success');
-        onSuccess();
-        onClose();
+        const msg = err?.body?.message || err?.message || 'Failed to convert lead';
+        const displayMsg = Array.isArray(msg) ? msg.join(', ') : String(msg);
+        showToast(displayMsg, 'error');
       }
     } finally {
       setIsSubmitting(false);
@@ -119,7 +129,7 @@ export function ConvertToClientModal({
     >
       <form onSubmit={handleConvert} className="space-y-4">
         <div className="bg-teal-50 border border-teal-200 rounded-btn p-3 text-xs text-teal-800">
-          Enroling this family will create an active clinical record, assign a unique Client ID, and transition the lead to <strong>Converted</strong>.
+          Enrolling this family will create an active clinical record, assign a unique Client ID, and transition the lead to <strong>Converted</strong>.
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -140,62 +150,53 @@ export function ConvertToClientModal({
 
         <div className="grid grid-cols-2 gap-3">
           <Select
-            label="Enrolling Branch"
-            required
-            value={branchId}
-            onChange={(e) => setBranchId(e.target.value)}
-          >
-            {branches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </Select>
+            label="Gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            options={[
+              { value: '', label: 'Select Gender (Optional)' },
+              { value: 'Male', label: 'Male' },
+              { value: 'Female', label: 'Female' },
+              { value: 'Other', label: 'Other' },
+            ]}
+          />
 
           <Select
-            label="Primary Department"
-            required
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
+            label="Guardian Relation"
+            value={guardianRelation}
+            onChange={(e) => setGuardianRelation(e.target.value)}
             options={[
-              { value: 'Speech Therapy', label: 'Speech Therapy' },
-              { value: 'Occupational Therapy', label: 'Occupational Therapy' },
-              { value: 'Behavioural Therapy', label: 'Behavioural Therapy' },
-              { value: 'Special Education', label: 'Special Education' },
+              { value: 'Mother', label: 'Mother' },
+              { value: 'Father', label: 'Father' },
+              { value: 'Guardian', label: 'Guardian' },
+              { value: 'Other', label: 'Other' },
             ]}
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5">
-          <div className="col-span-1">
-            <Select
-              label="Relation"
-              value={guardianRelation}
-              onChange={(e) => setGuardianRelation(e.target.value)}
-              options={[
-                { value: 'Mother', label: 'Mother' },
-                { value: 'Father', label: 'Father' },
-                { value: 'Guardian', label: 'Guardian' },
-              ]}
-            />
-          </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="Guardian Name"
+            required
+            value={guardianName}
+            onChange={(e) => setGuardianName(e.target.value)}
+          />
 
-          <div className="col-span-2">
-            <Input
-              label="Guardian Name"
-              required
-              value={guardianName}
-              onChange={(e) => setGuardianName(e.target.value)}
-            />
-          </div>
+          <Input
+            label="Guardian Phone"
+            type="tel"
+            required
+            value={guardianPhone}
+            onChange={(e) => setGuardianPhone(e.target.value)}
+          />
         </div>
 
         <Input
-          label="Guardian Phone"
-          type="tel"
-          required
-          value={guardianPhone}
-          onChange={(e) => setGuardianPhone(e.target.value)}
+          label="Guardian Email"
+          type="email"
+          placeholder="e.g. parent@example.com"
+          value={guardianEmail}
+          onChange={(e) => setGuardianEmail(e.target.value)}
         />
 
         <Input

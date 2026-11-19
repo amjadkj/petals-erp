@@ -15,7 +15,7 @@ import type {
   BranchWithStatsDto,
   UserBranchAssignmentDto,
 } from '@/features/role-access';
-import { accessApi } from '@/lib/api/access';
+import { accessApi, normalizeRoleDetail } from '@/lib/api/access';
 import { branchesApi } from '@/lib/api/branches';
 import { AccessRestricted } from '@/components/ui';
 
@@ -40,7 +40,9 @@ export default function RoleAccessPage() {
         branchesApi.getUsers().catch(() => ({ data: [] })),
       ]);
 
-      setRoles(rolesRes.data ?? []);
+      const rawRoles = rolesRes.data ?? [];
+      const normalizedRoles = rawRoles.map(normalizeRoleDetail);
+      setRoles(normalizedRoles);
       setBranches((branchesRes.data as BranchWithStatsDto[]) ?? []);
       setUsers((usersRes.data as UserBranchAssignmentDto[]) ?? []);
     } finally {

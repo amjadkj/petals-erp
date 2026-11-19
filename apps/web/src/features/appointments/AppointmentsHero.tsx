@@ -4,13 +4,17 @@ import React from 'react';
 import { Button } from '@/components/ui';
 import { Can } from '@/lib/permissions/Can';
 import { AppModule, PermissionAction } from '@petals/types';
-import { Plus } from 'lucide-react';
+import { Plus, CalendarClock } from 'lucide-react';
 
 interface AppointmentsHeroProps {
   onNewAppointment: () => void;
+  onSchedulePlanning?: () => void;
 }
 
-export function AppointmentsHero({ onNewAppointment }: AppointmentsHeroProps) {
+export function AppointmentsHero({
+  onNewAppointment,
+  onSchedulePlanning,
+}: AppointmentsHeroProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2">
       <div>
@@ -22,8 +26,20 @@ export function AppointmentsHero({ onNewAppointment }: AppointmentsHeroProps) {
         </p>
       </div>
 
-      <div>
+      <div className="flex items-center gap-2.5 flex-wrap">
         <Can module={AppModule.APPOINTMENTS} action={PermissionAction.CREATE}>
+          {onSchedulePlanning && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onSchedulePlanning}
+              className="flex items-center gap-1.5 h-9 px-3.5 text-xs md:text-sm font-semibold border-purple-200 text-purple-800 hover:bg-purple-50"
+            >
+              <CalendarClock className="w-4 h-4 text-purple-600" />
+              <span>Schedule planning</span>
+            </Button>
+          )}
+
           <Button
             type="button"
             variant="primary"

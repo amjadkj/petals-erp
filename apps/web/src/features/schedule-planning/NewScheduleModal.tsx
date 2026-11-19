@@ -1,17 +1,21 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Modal, Select, DatePicker, Button, useToast } from '@/components/ui';
 import { schedulesApi } from '@/lib/api/schedules';
+import { clientsApi } from '@/lib/api/clients';
 import { addDays, format, getDay } from 'date-fns';
-import { Calendar, Repeat, Clock } from 'lucide-react';
+import { Calendar, User, Clock, AlertCircle, ExternalLink } from 'lucide-react';
 
 interface NewScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  clients: Array<{ id: string; name: string; clientCode?: string }>;
-  treatmentPlans: Array<{
+  clients?: Array<{ id: string; name: string; clientCode?: string }>;
+  initialClientId?: string;
+  treatmentPlans?: Array<{
     id: string;
     clientId: string;
     departmentName: string;
@@ -31,8 +35,8 @@ const DAYS = [
 ];
 
 const TIME_SLOTS = [
-  '09:00', '09:45', '10:00', '10:30', '10:45', '11:15', '11:30',
-  '12:00', '14:00', '14:45', '15:30', '16:00', '16:15', '17:00',
+  '08:30 AM', '09:15 AM', '10:00 AM', '10:45 AM', '11:30 AM', '12:15 PM', '02:00 PM',
+  '02:45 PM', '03:30 PM', '04:30 PM', '05:15 PM',
 ];
 
 export function NewScheduleModal({
@@ -40,11 +44,14 @@ export function NewScheduleModal({
   onClose,
   onSuccess,
   clients = [],
+  initialClientId,
   treatmentPlans = [],
 }: NewScheduleModalProps) {
   const { showToast } = useToast();
 
-  const [selectedClientId, setSelectedClientId] = useState(clients[0]?.id || '');
+  const [selectedClientId, setSelectedClientId] = useState(
+    initialClientId || clients[0]?.id || '',
+  );
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [selectedDays, setSelectedDays] = useState<string[]>(['MO', 'WE']);
   const [startTime, setStartTime] = useState('10:00');
@@ -54,19 +61,75 @@ export function NewScheduleModal({
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Available plans for selected client
-  const clientPlans = useMemo(() => {
-    return treatmentPlans.filter((p) => p.clientId === selectedClientId);
-  }, [treatmentPlans, selectedClientId]);
+  // Sync initialClientId when prop changes or clients load
+  useEffect(() => {
+    if (initialClientId) {
+      setSelectedClientId(initialClientId);
+    } else if (!selectedClientId && clients.length > 0) {
+      setSelectedClientId(clients[0].id);
+    }
+  }, [initialClientId, clients, selectedClientId]);
 
-  React.useEffect(() => {
-    if (clientPlans.length > 0) {
-      setSelectedPlanId(clientPlans[0].id);
-      setDurationMinutes(String(clientPlans[0].durationMinutes || 45));
+  // Dynamically fetch treatment plans for the selected client
+  const { data: treatmentPlansData, isLoading: isLoadingPlans } = useQuery({
+    queryKey: ['client-treatment-plans', selectedClientId],
+    queryFn: async () => {
+      if (!selectedClientId) return [];
+      try {
+        const res = await clientsApi.getTreatmentPlans(selectedClientId);
+        return (res as any)?.data ?? res ?? [];
+      } catch {
+        return [];
+      }
+    },
+    enabled: isOpen && !!selectedClientId,
+    staleTime: 60 * 1000,
+  });
+
+  // Filter for active plans (or fallback to passed treatmentPlans props if provided)
+  const activePlans = useMemo(() => {
+    if (treatmentPlansData && Array.isArray(treatmentPlansData) && treatmentPlansData.length > 0) {
+      return treatmentPlansData.filter(
+        (p: any) => p.status === 'ACTIVE' || !p.status,
+      );
+    }
+    if (treatmentPlans && treatmentPlans.length > 0) {
+      return treatmentPlans.filter((p) => p.clientId === selectedClientId);
+    }
+    return [];
+  }, [treatmentPlansData, treatmentPlans, selectedClientId]);
+
+  // Synchronize selected plan and default duration
+  useEffect(() => {
+    if (activePlans.length > 0) {
+      const exists = activePlans.some((p: any) => p.id === selectedPlanId);
+      if (!exists) {
+        setSelectedPlanId(activePlans[0].id);
+        const dur =
+          activePlans[0].sessionMinutes ||
+          activePlans[0].sessionDurationMinutes ||
+          activePlans[0].durationMinutes ||
+          45;
+        setDurationMinutes(String(dur));
+      }
     } else {
       setSelectedPlanId('');
     }
-  }, [clientPlans]);
+  }, [activePlans, selectedPlanId]);
+
+  const selectedPlan = useMemo(() => {
+    return activePlans.find((p: any) => p.id === selectedPlanId) || activePlans[0] || null;
+  }, [activePlans, selectedPlanId]);
+
+  const therapistName =
+    selectedPlan?.therapist?.user?.name ||
+    selectedPlan?.therapistName ||
+    'Assigned Therapist';
+
+  const departmentName =
+    selectedPlan?.department?.name ||
+    selectedPlan?.departmentName ||
+    'Therapy';
 
   const handleToggleDay = (key: string) => {
     setSelectedDays((prev) =>
@@ -106,7 +169,7 @@ export function NewScheduleModal({
     const recurrenceRule = `FREQ=WEEKLY;BYDAY=${selectedDays.join(',')}`;
 
     try {
-      await schedulesApi.createSchedule({
+      const res = await schedulesApi.createSchedule({
         planId: selectedPlanId,
         recurrenceRule,
         startTime,
@@ -115,11 +178,17 @@ export function NewScheduleModal({
         endsOn: endsOn || undefined,
       });
 
-      showToast('24 sessions created across an 8-week rolling window!', 'success');
+      const count = (res as any)?.data?.generatedAppointmentsCount || 24;
+      showToast(
+        `${count} sessions generated for therapist ${therapistName}!`,
+        'success',
+      );
       onSuccess();
       onClose();
     } catch (err: any) {
-      const msg = err?.message || 'Recurring slot conflict detected for the selected therapist or client.';
+      const msg =
+        err?.message ||
+        'Recurring slot conflict detected for the selected therapist or client.';
       setConflictError(msg);
       showToast(msg, 'error');
     } finally {
@@ -132,9 +201,11 @@ export function NewScheduleModal({
     label: `${c.name} ${c.clientCode ? `(${c.clientCode})` : ''}`,
   }));
 
-  const planOptions = clientPlans.map((p) => ({
+  const planOptions = activePlans.map((p: any) => ({
     value: p.id,
-    label: `${p.departmentName} · ${p.therapistName}`,
+    label: `${p.department?.name || p.departmentName || 'Therapy'} — Therapist: ${
+      p.therapist?.user?.name || p.therapistName || 'Assigned'
+    } ${p.sessionsPerWeek ? `(${p.sessionsPerWeek} ses/wk)` : ''}`,
   }));
 
   return (
@@ -160,7 +231,7 @@ export function NewScheduleModal({
             disabled={!selectedPlanId || selectedDays.length === 0 || isSubmitting}
             className="h-10 px-5 text-xs md:text-sm font-semibold"
           >
-            {isSubmitting ? 'Generating...' : 'Create schedule'}
+            {isSubmitting ? 'Generating sessions...' : 'Create schedule'}
           </Button>
         </div>
       }
@@ -172,12 +243,6 @@ export function NewScheduleModal({
           </div>
         )}
 
-        {clientPlans.length === 0 && (
-          <div className="p-3 bg-amber-50 text-amber-800 text-xs rounded-btn border border-amber-200 font-medium leading-relaxed">
-            No active treatment plan found for this client. Please create a treatment plan first before setting up recurring schedules.
-          </div>
-        )}
-
         <Select
           label="Select Client"
           required
@@ -186,17 +251,87 @@ export function NewScheduleModal({
           options={clientOptions}
         />
 
-        <Select
-          label="Treatment Plan"
-          required
-          value={selectedPlanId}
-          onChange={(e) => {
-            setSelectedPlanId(e.target.value);
-            const found = clientPlans.find((p) => p.id === e.target.value);
-            if (found) setDurationMinutes(String(found.durationMinutes));
-          }}
-          options={planOptions}
-        />
+        {/* Treatment Plan & Therapist Assignment */}
+        {isLoadingPlans ? (
+          <div className="p-3.5 bg-gray-50 rounded-card border border-gray-100 animate-pulse text-xs text-gray-500 font-medium">
+            Checking active treatment plans...
+          </div>
+        ) : activePlans.length === 0 ? (
+          <div className="p-3.5 bg-amber-50 text-amber-900 text-xs rounded-card border border-amber-200 space-y-2">
+            <div className="flex items-center gap-1.5 font-bold text-amber-800">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>No Active Treatment Plan Found</span>
+            </div>
+            <p className="text-amber-700 leading-relaxed">
+              Recurring schedules require an active treatment plan with an assigned therapist. Please create or activate a treatment plan in the client's profile first before generating recurring sessions.
+            </p>
+            {selectedClientId && (
+              <Link
+                href={`/clients/${selectedClientId}?tab=treatment-plans`}
+                className="inline-flex items-center gap-1 font-semibold text-purple-700 hover:text-purple-900 underline pt-0.5"
+              >
+                <span>Open Client Profile</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {activePlans.length > 1 && (
+              <Select
+                label="Treatment Plan"
+                required
+                value={selectedPlanId}
+                onChange={(e) => {
+                  setSelectedPlanId(e.target.value);
+                  const found = activePlans.find((p: any) => p.id === e.target.value);
+                  if (found) {
+                    const dur =
+                      found.sessionMinutes ||
+                      found.sessionDurationMinutes ||
+                      found.durationMinutes ||
+                      45;
+                    setDurationMinutes(String(dur));
+                  }
+                }}
+                options={planOptions}
+              />
+            )}
+
+            {/* Assigned Therapist Badge Card */}
+            {selectedPlan && (
+              <div className="p-3 bg-purple-50/60 rounded-card border border-purple-200/80 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-semibold text-purple-900">
+                    <User className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Assigned Therapist:</span>
+                    <span className="font-bold text-ink">{therapistName}</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-200">
+                    {departmentName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-gray-600 text-[11px]">
+                  {selectedPlan.sessionsPerWeek && (
+                    <span>
+                      Target: <strong>{selectedPlan.sessionsPerWeek} sessions / week</strong>
+                    </span>
+                  )}
+                  <span>
+                    Default Duration:{' '}
+                    <strong>
+                      {selectedPlan.sessionMinutes ||
+                        selectedPlan.sessionDurationMinutes ||
+                        selectedPlan.durationMinutes ||
+                        45}{' '}
+                      mins
+                    </strong>
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Days of Week Chips */}
         <div className="space-y-1.5">

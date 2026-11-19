@@ -43,7 +43,7 @@ export function LeadsHero({
           className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>+ New lead</span>
+          <span>New lead</span>
         </Button>
       </div>
     </div>

@@ -62,7 +62,7 @@ describe('Leads Feature Components', () => {
     render(<LeadsHero onNewLead={handleNew} onExport={handleExport} />);
 
     expect(screen.getByText('Every enquiry is a new beginning.')).toBeInTheDocument();
-    const newBtn = screen.getByRole('button', { name: /\+ new lead/i });
+    const newBtn = screen.getByRole('button', { name: /new lead/i });
     expect(newBtn).toBeInTheDocument();
     fireEvent.click(newBtn);
     expect(handleNew).toHaveBeenCalledTimes(1);
