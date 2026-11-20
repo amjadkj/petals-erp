@@ -18,6 +18,10 @@ export function AccessRestricted({
   moduleName,
   backHref = '/dashboard',
 }: AccessRestrictedProps) {
+  const isDashboardRestricted = moduleName?.toLowerCase() === 'dashboard';
+  const effectiveBackHref = isDashboardRestricted ? '/appointments' : backHref;
+  const backLabel = isDashboardRestricted ? 'Go to Appointments' : 'Return to Dashboard';
+
   const displayTitle = title || (moduleName ? `${moduleName} Access Restricted` : 'Access Restricted');
   const displayDesc =
     description ||
@@ -37,10 +41,10 @@ export function AccessRestricted({
         {displayDesc}
       </p>
       <div className="pt-2">
-        <Link href={backHref}>
+        <Link href={effectiveBackHref}>
           <Button variant="outline" className="flex items-center gap-2 mx-auto">
             <ArrowLeft className="w-4 h-4" />
-            <span>Return to Dashboard</span>
+            <span>{backLabel}</span>
           </Button>
         </Link>
       </div>

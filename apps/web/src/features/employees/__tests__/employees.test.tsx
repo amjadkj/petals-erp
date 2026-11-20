@@ -64,7 +64,7 @@ describe('Employees Feature Components', () => {
     render(<EmployeesHero onAddEmployee={handleAdd} onExport={handleExport} />);
 
     expect(screen.getByText('The people behind every milestone.')).toBeInTheDocument();
-    const addBtn = screen.getByRole('button', { name: /\+ add employee/i });
+    const addBtn = screen.getByRole('button', { name: /add employee/i });
     expect(addBtn).toBeInTheDocument();
     fireEvent.click(addBtn);
     expect(handleAdd).toHaveBeenCalledTimes(1);
@@ -116,7 +116,7 @@ describe('Employees Feature Components', () => {
     expect(screen.getAllByText('₹75,000')[0]).toBeInTheDocument();
   });
 
-  it('PerformanceTab renders performance stat cards, progress bars, and assigned cases', () => {
+  it('PerformanceTab renders performance stat cards, quality snapshot, and handles real data', () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
@@ -127,21 +127,17 @@ describe('Employees Feature Components', () => {
     );
 
     expect(screen.getByText('Sessions completed')).toBeInTheDocument();
-    expect(screen.getByText('108')).toBeInTheDocument();
     expect(screen.getByText('Report timeliness')).toBeInTheDocument();
-    expect(screen.getByText('92%')).toBeInTheDocument();
     expect(screen.getByText('Attendance')).toBeInTheDocument();
-    expect(screen.getByText('96%')).toBeInTheDocument();
     expect(screen.getByText('Assigned clients')).toBeInTheDocument();
-    expect(screen.getByText('18')).toBeInTheDocument();
 
     // Care quality snapshot progress bars
-    expect(screen.getByText('Goals updated on time')).toBeInTheDocument();
-    expect(screen.getByText('Parent reports shared')).toBeInTheDocument();
-    expect(screen.getByText('Session notes complete')).toBeInTheDocument();
+    expect(screen.getByText('Reports filed on time')).toBeInTheDocument();
+    expect(screen.getByText('Reports shared with parent')).toBeInTheDocument();
+    expect(screen.getByText('Session attendance fulfillment')).toBeInTheDocument();
 
-    // Assigned cases
-    expect(screen.getByText('Aarav Sharma')).toBeInTheDocument();
-    expect(screen.getByText('Diya Patel')).toBeInTheDocument();
+    // Empty state rendered cleanly when no assigned cases yet
+    expect(screen.getByText('No Cases Assigned')).toBeInTheDocument();
+    expect(screen.getByText('No Recent Activity')).toBeInTheDocument();
   });
 });

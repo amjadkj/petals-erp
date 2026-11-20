@@ -401,6 +401,33 @@ export class AccessService {
       });
     }
 
+    // Auto-sync module enabled status: when all CRUD options are turned off, module toggle turns off
+    const affectedModules = Array.from(new Set(permissions.map((p) => p.module)));
+    for (const mod of affectedModules) {
+      const allModPerms = await this.prisma.unscopedClient.rolePermission.findMany({
+        where: {
+          roleId: role.id,
+          module: mod,
+        },
+      });
+
+      const hasAnyAllowed = allModPerms.some((p) => p.allowed);
+      await this.prisma.unscopedClient.roleModule.upsert({
+        where: {
+          roleId_module: {
+            roleId: role.id,
+            module: mod,
+          },
+        },
+        update: { enabled: hasAnyAllowed },
+        create: {
+          roleId: role.id,
+          module: mod,
+          enabled: hasAnyAllowed,
+        },
+      });
+    }
+
     // Invalidate caches
     await this.invalidateAllUserPermissions();
 

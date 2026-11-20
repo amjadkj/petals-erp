@@ -162,6 +162,31 @@ describe('AppointmentService', () => {
       expect(result[0].isHoliday).toBe(true);
       expect(result[0].holidayName).toBe('National Holiday');
     });
+
+    it('allows querying appointments by therapistId without date range', async () => {
+      prisma.unscopedClient.appointment.findMany.mockResolvedValue([
+        {
+          id: 'a1',
+          branchId: 'b1',
+          clientId: 'c1',
+          client: { name: 'Child A' },
+          therapistId: 't1',
+          startsAt: new Date('2026-03-15T10:00:00Z'),
+          endsAt: new Date('2026-03-15T10:45:00Z'),
+          status: AppointmentStatus.ATTENDED,
+        },
+      ]);
+
+      const result = await service.findCalendar(
+        { therapistId: 't1' },
+        'u1',
+        RoleKey.DIRECTOR,
+        [],
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('a1');
+    });
   });
 
   describe('Daily Schedule Cache & Caller Scoping', () => {

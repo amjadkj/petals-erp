@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { authApi } from '@/lib/api/auth';
 import { session } from '@/lib/auth/session';
+import { usePermissionsStore } from '@/lib/permissions/store';
+import { getFirstAccessiblePath } from '@/lib/permissions/navBuilder';
 import { Smartphone, ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function OtpLoginPage() {
@@ -108,7 +110,15 @@ export default function OtpLoginPage() {
         session.setUserId(data.user.id);
         session.setRoleKey(data.user.roleKey);
         session.setBranchIds(data.user.branchIds);
-        router.push('/dashboard');
+
+        try {
+          await usePermissionsStore.getState().loadPermissions();
+        } catch {
+          // ignore
+        }
+        const perms = usePermissionsStore.getState().permissions;
+        const targetPath = getFirstAccessiblePath(perms, data.user.roleKey);
+        router.push(targetPath);
         return;
       }
 

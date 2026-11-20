@@ -32,9 +32,12 @@ export interface ExtendedAppointment extends Partial<AppointmentDto> {
 }
 
 export const appointmentsApi = {
-  getAppointments: (params?: Record<string, string | number>) => {
+  getAppointments: (
+    params?: Record<string, string | number>,
+    options?: { skipBranchId?: boolean },
+  ) => {
     const qs = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return fetcher<ApiResponse<ExtendedAppointment[]>>(`/appointments${qs}`);
+    return fetcher<ApiResponse<ExtendedAppointment[]>>(`/appointments${qs}`, {}, options);
   },
 
   createAppointment: (dto: {

@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { OffsetPaginationDto } from '../../common/pagination';
 
 export class EmployeeGoalsQueryDto extends OffsetPaginationDto {
@@ -7,5 +7,9 @@ export class EmployeeGoalsQueryDto extends OffsetPaginationDto {
   @IsString()
   @IsOptional()
   sort?: string;
-}
 
+  @ApiPropertyOptional({ description: 'Optional branch ID filter' })
+  @IsOptional()
+  @IsUUID('4')
+  branchId?: string;
+}

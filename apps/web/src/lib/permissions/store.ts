@@ -11,6 +11,7 @@ interface PermissionsState {
   selectedBranchId: string;
   sidebarExpanded: boolean;
   isLoading: boolean;
+  initFromStorage: () => void;
   setSelectedBranchId: (branchId: string) => void;
   setSidebarExpanded: (expanded: boolean) => void;
   toggleSidebar: () => void;
@@ -21,26 +22,30 @@ interface PermissionsState {
 const STORAGE_KEY_BRANCH = 'petals.selectedBranchId';
 const STORAGE_KEY_SIDEBAR = 'petals.sidebar';
 
-function getInitialBranch(): string {
-  if (typeof window === 'undefined') return '';
-  const stored = localStorage.getItem(STORAGE_KEY_BRANCH);
-  if (stored && stored !== 'ALL') return stored;
-  return '';
-}
-
-function getInitialSidebar(): boolean {
-  if (typeof window === 'undefined') return true;
-  const stored = localStorage.getItem(STORAGE_KEY_SIDEBAR);
-  if (stored !== null) return stored === 'expanded';
-  return window.innerWidth >= 1200;
-}
-
 export const usePermissionsStore = create<PermissionsState>((set) => ({
   permissions: {},
   roleKey: null,
-  selectedBranchId: getInitialBranch(),
-  sidebarExpanded: getInitialSidebar(),
+  selectedBranchId: '',
+  sidebarExpanded: true,
   isLoading: false,
+
+  initFromStorage: () => {
+    if (typeof window === 'undefined') return;
+    const branch = localStorage.getItem(STORAGE_KEY_BRANCH);
+    const sidebar = localStorage.getItem(STORAGE_KEY_SIDEBAR);
+    const updates: Partial<PermissionsState> = {};
+    if (branch && branch !== 'ALL') {
+      updates.selectedBranchId = branch;
+    }
+    if (sidebar !== null) {
+      updates.sidebarExpanded = sidebar === 'expanded';
+    } else if (window.innerWidth < 1200) {
+      updates.sidebarExpanded = false;
+    }
+    if (Object.keys(updates).length > 0) {
+      set(updates);
+    }
+  },
 
   setSelectedBranchId: (selectedBranchId) => {
     if (typeof window !== 'undefined') {

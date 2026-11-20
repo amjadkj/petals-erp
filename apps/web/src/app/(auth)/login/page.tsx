@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { authApi } from '@/lib/api/auth';
 import { session } from '@/lib/auth/session';
+import { usePermissionsStore } from '@/lib/permissions/store';
+import { getFirstAccessiblePath } from '@/lib/permissions/navBuilder';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
@@ -61,7 +63,15 @@ export default function LoginPage() {
         if (data.user.name) session.setUserName(data.user.name);
         if (data.user.email) session.setUserEmail(data.user.email);
         session.setBranchIds(data.user.branchIds);
-        router.push('/dashboard');
+
+        try {
+          await usePermissionsStore.getState().loadPermissions();
+        } catch {
+          // ignore
+        }
+        const perms = usePermissionsStore.getState().permissions;
+        const targetPath = getFirstAccessiblePath(perms, data.user.roleKey);
+        router.push(targetPath);
         return;
       }
 

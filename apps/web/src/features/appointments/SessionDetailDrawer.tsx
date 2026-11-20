@@ -68,10 +68,13 @@ export function SessionDetailDrawer({
     queryKey: ['appointment-client-past', appointment?.clientId],
     queryFn: async () => {
       if (!appointment?.clientId) return [];
-      const res = await appointmentsApi.getAppointments({
-        clientId: appointment.clientId,
-        status: AppointmentStatus.ATTENDED,
-      });
+      const res = await appointmentsApi.getAppointments(
+        {
+          clientId: appointment.clientId,
+          status: AppointmentStatus.ATTENDED,
+        },
+        { skipBranchId: true },
+      );
       const list = (res as any)?.data ?? res ?? [];
       return Array.isArray(list) ? list : [];
     },

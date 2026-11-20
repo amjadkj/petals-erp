@@ -20,12 +20,16 @@ interface PermissionMatrixAccordionsProps {
     action: PermissionAction,
     allowed: boolean,
   ) => Promise<void>;
+  onUpdatePermissionsBatch?: (
+    items: Array<{ module: AppModule; action: PermissionAction; allowed: boolean }>,
+  ) => Promise<void>;
 }
 
 export function PermissionMatrixAccordions({
   role,
   onUpdateModule,
   onUpdatePermission,
+  onUpdatePermissionsBatch,
 }: PermissionMatrixAccordionsProps) {
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
 
@@ -42,6 +46,95 @@ export function PermissionMatrixAccordions({
 
   const toggleAccordion = (module: AppModule) => {
     setOpenModules((prev) => ({ ...prev, [module]: !prev[module] }));
+  };
+
+  const handleModuleToggle = async (module: AppModule, nextState: boolean) => {
+    if (isDirector) return;
+    try {
+      await onUpdateModule(module, nextState);
+      if (nextState) {
+        const currentPerms = role.permissions[module] || {};
+        const hasAnyAction = actionList.some((col) => Boolean(currentPerms[col.action]));
+        if (!hasAnyAction) {
+          await onUpdatePermission(module, PermissionAction.VIEW, true);
+        }
+      } else {
+        const clearedItems = actionList.map((col) => ({
+          module,
+          action: col.action,
+          allowed: false,
+        }));
+        if (onUpdatePermissionsBatch) {
+          await onUpdatePermissionsBatch(clearedItems);
+        } else {
+          for (const item of clearedItems) {
+            await onUpdatePermission(item.module, item.action, false);
+          }
+        }
+      }
+    } catch {
+      // handled
+    }
+  };
+
+  const handleActionToggle = async (
+    module: AppModule,
+    action: PermissionAction,
+    currentAllowed: boolean,
+  ) => {
+    if (isDirector) return;
+    const nextVal = !currentAllowed;
+
+    if (action === PermissionAction.VIEW && !nextVal) {
+      const clearedItems = actionList.map((col) => ({
+        module,
+        action: col.action,
+        allowed: false,
+      }));
+
+      if (onUpdatePermissionsBatch) {
+        await onUpdatePermissionsBatch(clearedItems);
+      } else {
+        for (const item of clearedItems) {
+          await onUpdatePermission(item.module, item.action, false);
+        }
+      }
+
+      await onUpdateModule(module, false);
+      return;
+    }
+
+    const currentPerms = role.permissions[module] || {};
+    const itemsToUpdate: Array<{ module: AppModule; action: PermissionAction; allowed: boolean }> = [];
+
+    if (action !== PermissionAction.VIEW && nextVal) {
+      const hasView = currentPerms[PermissionAction.VIEW];
+      if (!hasView) {
+        itemsToUpdate.push({ module, action: PermissionAction.VIEW, allowed: true });
+      }
+    }
+
+    itemsToUpdate.push({ module, action, allowed: nextVal });
+
+    if (onUpdatePermissionsBatch && itemsToUpdate.length > 1) {
+      await onUpdatePermissionsBatch(itemsToUpdate);
+    } else {
+      for (const item of itemsToUpdate) {
+        await onUpdatePermission(item.module, item.action, item.allowed);
+      }
+    }
+
+    const willHaveAnyAction = actionList.some((col) => {
+      const updated = itemsToUpdate.find((item) => item.action === col.action);
+      if (updated !== undefined) return updated.allowed;
+      return Boolean(currentPerms[col.action]);
+    });
+
+    if (!willHaveAnyAction) {
+      await onUpdateModule(module, false);
+    } else if (!role.modules[module]?.enabled) {
+      await onUpdateModule(module, true);
+    }
   };
 
   return (
@@ -87,7 +180,7 @@ export function PermissionMatrixAccordions({
                 <span className="text-[11px] text-gray-400">On</span>
                 <Switch
                   checked={isModuleOn}
-                  onChange={(checked) => onUpdateModule(row.module, checked)}
+                  onChange={(checked) => handleModuleToggle(row.module, checked)}
                   disabled={isDirector || row.directorOnly}
                   id={`mob-mod-${row.module}`}
                 />
@@ -124,9 +217,11 @@ export function PermissionMatrixAccordions({
                     <button
                       key={act.action}
                       type="button"
+                      aria-label={`${row.label} ${act.label}`}
+                      data-testid={`mob-action-${row.module}-${act.action}`}
                       disabled={isDirector || row.directorOnly}
                       onClick={() =>
-                        onUpdatePermission(row.module, act.action, !isAllowed)
+                        handleActionToggle(row.module, act.action, isAllowed)
                       }
                       className={cn(
                         'flex items-center justify-between p-2 rounded border transition-all',

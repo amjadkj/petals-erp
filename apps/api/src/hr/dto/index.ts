@@ -10,4 +10,4 @@ export * from './leave-decision.dto';
 export * from './director-availability.dto';
 export * from './employee-goals-query.dto';
 export * from './employee-activity-query.dto';
-
+export * from './employee-summary-query.dto';

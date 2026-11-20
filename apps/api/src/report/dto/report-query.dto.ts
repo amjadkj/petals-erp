@@ -1,9 +1,24 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ReportStatus, ReportType } from '@petals/types';
 import { OffsetPaginationDto } from '../../common/pagination';
 
 export class ReportQueryDto extends OffsetPaginationDto {
+  @ApiPropertyOptional({ description: 'Filter reports authored by specific employee ID' })
+  @IsOptional()
+  @IsUUID('4')
+  authorId?: string;
+
+  @ApiPropertyOptional({ description: 'Filter reports for specific client ID' })
+  @IsOptional()
+  @IsUUID('4')
+  clientId?: string;
+
+  @ApiPropertyOptional({ description: 'Filter reports by client branch ID' })
+  @IsOptional()
+  @IsUUID('4')
+  branchId?: string;
+
   @ApiPropertyOptional({ enum: ReportType })
   @IsOptional()
   @IsEnum(ReportType)
@@ -19,4 +34,3 @@ export class ReportQueryDto extends OffsetPaginationDto {
   @IsString()
   sort?: string;
 }
-

@@ -1,16 +1,18 @@
 import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { AppointmentStatus } from '@petals/types';
 
 export class AppointmentQueryDto {
-  @ApiProperty({ description: 'Start of calendar range (ISO date/datetime)', example: '2026-03-01' })
+  @ApiPropertyOptional({ description: 'Start of calendar range (ISO date/datetime)', example: '2026-03-01' })
+  @IsOptional()
   @IsDateString()
-  from!: string;
+  from?: string;
 
-  @ApiProperty({ description: 'End of calendar range (ISO date/datetime, max 31 days from start)', example: '2026-03-31' })
+  @ApiPropertyOptional({ description: 'End of calendar range (ISO date/datetime, max 31 days from start)', example: '2026-03-31' })
+  @IsOptional()
   @IsDateString()
-  to!: string;
+  to?: string;
 
   @ApiPropertyOptional({ description: 'Branch ID' })
   @IsOptional()
@@ -22,6 +24,11 @@ export class AppointmentQueryDto {
   @IsOptional()
   @IsUUID('4')
   therapistId?: string;
+
+  @ApiPropertyOptional({ description: 'Client ID' })
+  @IsOptional()
+  @IsUUID('4')
+  clientId?: string;
 
   @ApiPropertyOptional({ description: 'Department ID' })
   @IsOptional()

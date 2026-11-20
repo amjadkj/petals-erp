@@ -81,7 +81,6 @@ export function AppointmentsView() {
       const res = await employeesApi.getEmployees(selectedBranchId ? { branchId: selectedBranchId } : {});
       return res?.data ?? [];
     },
-    staleTime: 5 * 60 * 1000,
   });
 
   // Filter active therapists
@@ -93,16 +92,6 @@ export function AppointmentsView() {
     });
   }, [allEmployeesData]);
 
-  // Load departments
-  // const { data: departmentsData } = useQuery({
-  //   queryKey: ['departments'],
-  //   queryFn: async () => {
-  //     const res = await departmentsApi.getDepartments();
-  //     return res?.data ?? [];
-  //   },
-  //   staleTime: 5 * 60 * 1000,
-  // });
-
   // Load clients for appointment booking modal
   const { data: clientsData } = useQuery({
     queryKey: ['all-clients-list'],
@@ -110,7 +99,6 @@ export function AppointmentsView() {
       const res = await clientsApi.getClients({ page: 1, pageSize: 100 });
       return res?.data ?? [];
     },
-    staleTime: 5 * 60 * 1000,
   });
 
   // Calculate date window based on role:

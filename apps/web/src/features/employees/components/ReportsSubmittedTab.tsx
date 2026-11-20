@@ -27,7 +27,7 @@ export function ReportsSubmittedTab({ employeeId }: ReportsSubmittedTabProps) {
   const { data: res, isLoading } = useQuery({
     queryKey: ['employee-reports', employeeId],
     queryFn: () =>
-      fetcher<ApiResponse<ReportRow[]>>(`/reports?authorId=${employeeId}`).catch(
+      fetcher<ApiResponse<ReportRow[]>>(`/reports?authorId=${employeeId}`, {}, { skipBranchId: true }).catch(
         () => ({ data: [] } as any),
       ),
     enabled: !!employeeId,
@@ -64,12 +64,19 @@ export function ReportsSubmittedTab({ employeeId }: ReportsSubmittedTabProps) {
       key: 'status',
       header: 'Status',
       isStatus: true,
-      render: (row) => (
-        <StatusChip
-          status={row.status === 'PUBLISHED' || row.status === 'REVIEWED' ? 'paid' : 'active'}
-          label={row.status || 'Draft'}
-        />
-      ),
+      render: (row) => {
+        let chipStatus = 'pending';
+        if (row.status === 'SHARED' || row.status === 'PUBLISHED') chipStatus = 'paid';
+        else if (row.status === 'REVIEWED') chipStatus = 'attended';
+        else if (row.status === 'SUBMITTED') chipStatus = 'active';
+
+        return (
+          <StatusChip
+            status={chipStatus}
+            label={row.status || 'Draft'}
+          />
+        );
+      },
     },
   ];
 

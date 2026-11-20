@@ -34,6 +34,7 @@ import {
   DirectorAvailabilityDto,
   EmployeeGoalsQueryDto,
   EmployeeActivityQueryDto,
+  EmployeeSummaryQueryDto,
 } from './dto';
 
 @Injectable()
@@ -748,7 +749,12 @@ export class HrService {
    * Summary metrics for an employee:
    * Assigned cases, total sessions, reports submitted, on-time report rate.
    */
-  async getEmployeeSummary(employeeId: string, _user: IRequestContext) {
+  async getEmployeeSummary(
+    employeeId: string,
+    queryOrUser: EmployeeSummaryQueryDto | IRequestContext = {},
+    _user?: IRequestContext,
+  ) {
+    const query: EmployeeSummaryQueryDto = ('userId' in queryOrUser) ? {} : queryOrUser;
     const employee = await this.prisma.unscopedClient.employee.findUnique({
       where: { id: employeeId },
       include: {
@@ -766,6 +772,7 @@ export class HrService {
       where: {
         therapistId: employeeId,
         status: PlanStatus.ACTIVE,
+        ...(query.branchId ? { client: { branchId: query.branchId } } : {}),
       },
       select: {
         clientId: true,
@@ -788,6 +795,7 @@ export class HrService {
       where: {
         therapistId: employeeId,
         status: AppointmentStatus.ATTENDED,
+        ...(query.branchId ? { branchId: query.branchId } : {}),
       },
     });
 
@@ -796,6 +804,7 @@ export class HrService {
       where: {
         authorId: employeeId,
         status: { in: [ReportStatus.SUBMITTED, ReportStatus.REVIEWED, ReportStatus.SHARED] },
+        ...(query.branchId ? { client: { branchId: query.branchId } } : {}),
       },
       select: {
         id: true,
@@ -931,10 +940,15 @@ export class HrService {
     const limit = query.limit || 20;
     const pagination = buildCursorPagination(query.cursor, limit);
 
+    const where: any = {
+      userId: employee.userId,
+    };
+    if (query.branchId) {
+      where.OR = [{ branchId: query.branchId }, { branchId: null }];
+    }
+
     const items = await this.prisma.unscopedClient.auditLog.findMany({
-      where: {
-        userId: employee.userId,
-      },
+      where,
       take: pagination.take,
       ...(pagination.cursor ? { cursor: pagination.cursor, skip: pagination.skip } : {}),
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],

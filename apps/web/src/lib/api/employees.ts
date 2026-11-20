@@ -63,14 +63,18 @@ export const employeesApi = {
   getEmployee: (id: string) =>
     fetcher<ApiResponse<EmployeeDto>>(`/employees/${id}`),
 
-  getEmployeeSummary: (id: string) =>
-    fetcher<ApiResponse<unknown>>(`/employees/${id}/summary`),
+  getEmployeeSummary: (id: string, options?: { skipBranchId?: boolean }) =>
+    fetcher<ApiResponse<unknown>>(`/hr/employees/${id}/summary`, {}, { skipBranchId: true, ...options }),
 
-  getEmployeeGoals: (id: string) =>
-    fetcher<ApiResponse<unknown[]>>(`/hr/employees/${id}/goals`),
+  getEmployeeGoals: (id: string, options?: { skipBranchId?: boolean }) =>
+    fetcher<ApiResponse<unknown[]>>(`/hr/employees/${id}/goals`, {}, { skipBranchId: true, ...options }),
 
-  getEmployeeActivityLog: (id: string, cursor?: string) => {
+  getEmployeeActivityLog: (id: string, cursor?: string, options?: { skipBranchId?: boolean }) => {
     const qs = cursor ? `?cursor=${cursor}` : '';
-    return fetcher<ApiResponse<unknown[]>>(`/hr/employees/${id}/activity-log${qs}`);
+    return fetcher<ApiResponse<unknown[]>>(
+      `/hr/employees/${id}/activity-log${qs}`,
+      {},
+      { skipBranchId: true, ...options },
+    );
   },
 };

@@ -38,7 +38,12 @@ export function EmployeesView() {
   // Fetch employees
   const { data: employeesResponse, isLoading } = useQuery({
     queryKey: ['employees', selectedBranchId],
-    queryFn: () => employeesApi.getEmployees(),
+    queryFn: () =>
+      employeesApi.getEmployees(
+        selectedBranchId && selectedBranchId !== 'ALL'
+          ? { branchId: selectedBranchId }
+          : {},
+      ),
   });
 
   // Fetch departments from shared cache

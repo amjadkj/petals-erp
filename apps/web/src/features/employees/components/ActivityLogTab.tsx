@@ -11,6 +11,74 @@ interface ActivityLogTabProps {
   employeeId: string;
 }
 
+export function formatAuditEntry(act: {
+  action?: string;
+  entity?: string;
+  detail?: string;
+  metadata?: any;
+}) {
+  if (act.detail) {
+    return {
+      title: act.action || act.entity || 'Clinical Action',
+      detail: act.detail,
+    };
+  }
+
+  const action = (act.action || '').toUpperCase();
+  const entity = (act.entity || '').toLowerCase();
+  const meta = act.metadata || {};
+
+  let title = `${action} ${act.entity || ''}`.trim();
+  let detail = '';
+
+  if (entity.includes('appointment')) {
+    if (meta.status === 'ATTENDED' || action === 'ATTENDED') {
+      title = 'Session Attendance Recorded';
+      detail = 'Marked therapy appointment as attended';
+    } else if (action === 'CREATE') {
+      title = 'Appointment Scheduled';
+      detail = 'Created new appointment session';
+    } else if (action === 'CANCEL' || meta.status === 'CANCELLED') {
+      title = 'Appointment Cancelled';
+      detail = meta.cancelReason ? `Cancelled: ${meta.cancelReason}` : 'Cancelled appointment session';
+    } else {
+      title = 'Appointment Updated';
+      detail = 'Updated appointment session details';
+    }
+  } else if (entity.includes('report')) {
+    if (action === 'CREATE') {
+      title = 'Clinical Report Created';
+      detail = meta.title ? `Drafted report: ${meta.title}` : 'Drafted new clinical report';
+    } else if (action === 'SHARE' || action === 'PUBLISH') {
+      title = 'Report Shared';
+      detail = 'Shared clinical progress report with parents';
+    } else {
+      title = 'Report Updated';
+      detail = meta.title ? `Updated report: ${meta.title}` : 'Modified clinical documentation';
+    }
+  } else if (entity.includes('progress') || entity.includes('goal')) {
+    title = 'Goal Progress Recorded';
+    detail = meta.remarks || meta.response || 'Documented client goal milestone progress';
+  } else if (entity.includes('auth') || action === 'LOGIN') {
+    title = 'Portal Authentication';
+    detail = 'Logged into Petals ERP workspace';
+  } else if (entity.includes('attendance') || action.includes('CHECK')) {
+    title = action.includes('OUT') ? 'Staff Check-Out' : 'Staff Check-In';
+    detail = 'Recorded daily staff attendance entry';
+  } else {
+    title = `${action || 'ACTION'}${act.entity ? ` · ${act.entity}` : ''}`;
+    if (meta.name || meta.title || meta.description) {
+      detail = meta.name || meta.title || meta.description;
+    } else if (typeof meta === 'string') {
+      detail = meta;
+    } else {
+      detail = 'Audit event recorded';
+    }
+  }
+
+  return { title, detail };
+}
+
 export function ActivityLogTab({ employeeId }: ActivityLogTabProps) {
   const { data: res, isLoading } = useQuery({
     queryKey: ['employee-activity-log', employeeId],
@@ -48,22 +116,25 @@ export function ActivityLogTab({ employeeId }: ActivityLogTabProps) {
         </div>
       ) : logs.length > 0 ? (
         <div className="space-y-4 pl-2">
-          {logs.map((act) => (
-            <div
-              key={act.id}
-              className="border-l-2 border-purple-200 pl-4 py-1 text-sm space-y-1"
-            >
-              <div className="text-xs text-gray-400 font-medium">
-                {formatDateSafe(act.createdAt)}
+          {logs.map((act) => {
+            const { title, detail } = formatAuditEntry(act);
+            return (
+              <div
+                key={act.id}
+                className="border-l-2 border-purple-200 pl-4 py-1 text-sm space-y-1"
+              >
+                <div className="text-xs text-gray-400 font-medium">
+                  {formatDateSafe(act.createdAt)}
+                </div>
+                <div className="font-semibold text-ink">
+                  {title}
+                </div>
+                <div className="text-xs text-gray-600">
+                  {detail}
+                </div>
               </div>
-              <div className="font-semibold text-ink">
-                {act.action || act.entity || 'System Action'}
-              </div>
-              <div className="text-xs text-gray-600">
-                {act.detail || JSON.stringify(act.metadata || {})}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <EmptyState

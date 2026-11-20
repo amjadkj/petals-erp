@@ -108,9 +108,12 @@ export interface ProgressEntryItem {
 }
 
 export const clientsApi = {
-  getClients: (params?: Record<string, string | number>) => {
+  getClients: (
+    params?: Record<string, string | number>,
+    options?: { skipBranchId?: boolean },
+  ) => {
     const qs = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return fetcher<ApiResponse<ClientDto[]>>(`/clients${qs}`);
+    return fetcher<ApiResponse<ClientDto[]>>(`/clients${qs}`, {}, options);
   },
 
   getClient: (id: string) =>

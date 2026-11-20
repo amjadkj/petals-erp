@@ -74,6 +74,18 @@ export class ReportController {
     return this.reportService.createReport(clientId, dto, userId, roleKey, branchIds);
   }
 
+  @Get('reports')
+  @RequirePermission(AppModule.PROFILE_REPORTS, PermissionAction.VIEW)
+  @ApiOperation({ summary: 'List reports with filtering by authorId, clientId, status, and type' })
+  async findAllReports(
+    @Query() query: ReportQueryDto,
+    @CurrentUser('userId') userId: string,
+    @CurrentUser('roleKey') roleKey: RoleKey,
+    @CurrentUser('branchIds') branchIds: string[] = [],
+  ) {
+    return this.reportService.findAllReports(query, userId, roleKey, branchIds);
+  }
+
   @Get('reports/due')
   @RequirePermission(AppModule.REPORTS, PermissionAction.VIEW)
   @ApiOperation({ summary: 'Global due reports dashboard for Director and Manager' })

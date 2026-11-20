@@ -27,6 +27,7 @@ import {
   DirectorAvailabilityDto,
   EmployeeGoalsQueryDto,
   EmployeeActivityQueryDto,
+  EmployeeSummaryQueryDto,
 } from './dto';
 
 @ApiTags('HR')
@@ -172,23 +173,24 @@ export class HrController {
   // ─────────────────────────────────────────────────────────────
 
   @Get('employees/:id/summary')
-  @Roles(RoleKey.DIRECTOR)
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER)
   @ApiOperation({
     summary:
-      'Director employee summary: assigned cases, total sessions, reports submitted, on-time report rate',
+      'Director and Manager employee summary: assigned cases, total sessions, reports submitted, on-time report rate',
   })
   async getEmployeeSummary(
     @Param('id') id: string,
+    @Query() query: EmployeeSummaryQueryDto,
     @CurrentUser() user: IRequestContext,
   ) {
-    return this.hrService.getEmployeeSummary(id, user);
+    return this.hrService.getEmployeeSummary(id, query, user);
   }
 
   @Get('employees/:id/goals')
-  @Roles(RoleKey.DIRECTOR)
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER)
   @ApiOperation({
     summary:
-      'Director employee goals/sub-goals view: progress entries with description, response, remarks (paginated)',
+      'Director and Manager employee goals/sub-goals view: progress entries with description, response, remarks (paginated)',
   })
   async getEmployeeGoals(
     @Param('id') id: string,
@@ -199,9 +201,9 @@ export class HrController {
   }
 
   @Get('employees/:id/activity-log')
-  @Roles(RoleKey.DIRECTOR)
+  @Roles(RoleKey.DIRECTOR, RoleKey.MANAGER)
   @ApiOperation({
-    summary: 'Director employee activity log: everything the employee entered (cursor pagination)',
+    summary: 'Director and Manager employee activity log: everything the employee entered (cursor pagination)',
   })
   async getEmployeeActivityLog(
     @Param('id') id: string,

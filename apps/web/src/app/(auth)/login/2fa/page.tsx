@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { authApi } from '@/lib/api/auth';
 import { session } from '@/lib/auth/session';
+import { usePermissionsStore } from '@/lib/permissions/store';
+import { getFirstAccessiblePath } from '@/lib/permissions/navBuilder';
 import { ShieldCheck, ArrowLeft, AlertCircle, QrCode } from 'lucide-react';
 
 export default function TwoFactorPage() {
@@ -87,7 +89,15 @@ export default function TwoFactorPage() {
         if (typeof window !== 'undefined') {
           sessionStorage.removeItem('petals.tempToken');
         }
-        router.push('/dashboard');
+
+        try {
+          await usePermissionsStore.getState().loadPermissions();
+        } catch {
+          // ignore
+        }
+        const perms = usePermissionsStore.getState().permissions;
+        const targetPath = getFirstAccessiblePath(perms, data.user.roleKey);
+        router.push(targetPath);
         return;
       }
 

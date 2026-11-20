@@ -11,12 +11,12 @@ import Link from 'next/link';
 export function AssignedCasesTab({ employeeId }: { employeeId: string }) {
   const { data: clientsRes, isLoading } = useQuery({
     queryKey: ['employee-clients', employeeId],
-    queryFn: () => clientsApi.getClients({ primaryTherapistId: employeeId }),
+    queryFn: () => clientsApi.getClients({ therapistId: employeeId }, { skipBranchId: true }),
     enabled: !!employeeId,
   });
 
   const cases = useMemo(() => {
-    if (!clientsRes?.data || clientsRes.data.length === 0) return [];
+    if (!clientsRes?.data || !Array.isArray(clientsRes.data) || clientsRes.data.length === 0) return [];
     return clientsRes.data;
   }, [clientsRes]);
 

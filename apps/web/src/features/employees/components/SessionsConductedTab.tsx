@@ -22,7 +22,7 @@ interface SessionItem {
 export function SessionsConductedTab({ employeeId }: { employeeId: string }) {
   const { data: res, isLoading } = useQuery({
     queryKey: ['employee-sessions', employeeId],
-    queryFn: () => appointmentsApi.getAppointments({ therapistId: employeeId }),
+    queryFn: () => appointmentsApi.getAppointments({ therapistId: employeeId }, { skipBranchId: true }),
     enabled: !!employeeId,
   });
 

@@ -108,6 +108,100 @@ export class ReportService {
     });
   }
 
+  async findAllReports(
+    query: ReportQueryDto,
+    userId: string,
+    roleKey: RoleKey,
+    userBranchIds: string[],
+  ) {
+    const page = query.page ?? 1;
+    const pageSize = Math.min(query.pageSize ?? 20, 100);
+    const { skip, take } = buildOffsetPagination(page, pageSize);
+    const orderBy = buildOrderBy(query.sort, REPORT_SORT_FIELDS);
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (query.authorId) {
+      where.authorId = query.authorId;
+    }
+    if (query.clientId) {
+      where.clientId = query.clientId;
+    }
+    if (query.type) {
+      where.type = query.type;
+    }
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    if (roleKey === RoleKey.PARENT) {
+      where.sharedWithParent = true;
+      where.client = {
+        guardians: { some: { guardian: { userId } } },
+        deletedAt: null,
+      };
+    } else if (roleKey === RoleKey.THERAPIST) {
+      const emp = await this.prisma.unscopedClient.employee.findUnique({
+        where: { userId },
+      });
+      if (emp && !query.authorId) {
+        where.authorId = emp.id;
+      }
+    } else if (roleKey === RoleKey.MANAGER) {
+      where.client = {
+        branchId: { in: userBranchIds },
+        deletedAt: null,
+      };
+    } else {
+      where.client = {
+        deletedAt: null,
+      };
+    }
+
+    if (query.branchId) {
+      where.client = {
+        ...where.client,
+        branchId: query.branchId,
+      };
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.unscopedClient.report.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+        include: {
+          client: {
+            select: { id: true, name: true, clientCode: true, branchId: true },
+          },
+          author: {
+            select: {
+              id: true,
+              employeeCode: true,
+              user: { select: { id: true, name: true } },
+            },
+          },
+        },
+      }),
+      this.prisma.unscopedClient.report.count({ where }),
+    ]);
+
+    const formatted = items.map((r) => ({
+      ...r,
+      clientName: r.client?.name || 'Client',
+      clientCode: r.client?.clientCode,
+      authorName: r.author?.user?.name || 'Therapist',
+    }));
+
+    return {
+      data: formatted,
+      meta: buildOffsetMeta(total, page, pageSize),
+    };
+  }
+
   async findClientReports(
     clientId: string,
     query: ReportQueryDto,

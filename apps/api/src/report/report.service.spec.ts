@@ -319,4 +319,41 @@ describe('ReportService & StorageService', () => {
       ).rejects.toThrow(BadRequestException);
     });
   });
+
+  describe('findAllReports (Staff & Global List)', () => {
+    it('returns reports filtered by authorId and formats author and client names', async () => {
+      const mockReports = [
+        {
+          id: 'rep-1',
+          title: 'Speech Progress Evaluation',
+          type: ReportType.PROGRESS,
+          status: ReportStatus.SUBMITTED,
+          authorId: 'emp-1',
+          clientId: 'client-1',
+          createdAt: new Date(),
+          client: { id: 'client-1', name: 'Aarav Sharma', clientCode: 'PTL-C001' },
+          author: { id: 'emp-1', employeeCode: 'PTL-E001', user: { id: 'u-1', name: 'Dr. Jane' } },
+        },
+      ];
+
+      mockPrisma.unscopedClient.report.findMany.mockResolvedValueOnce(mockReports);
+      mockPrisma.unscopedClient.report.count.mockResolvedValueOnce(1);
+
+      const res = await service.findAllReports(
+        { authorId: 'emp-1', page: 1, pageSize: 20 },
+        'user-dir',
+        RoleKey.DIRECTOR,
+        [],
+      );
+
+      expect(res.data).toHaveLength(1);
+      expect(res.data[0].clientName).toBe('Aarav Sharma');
+      expect(res.data[0].authorName).toBe('Dr. Jane');
+      expect(mockPrisma.unscopedClient.report.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ authorId: 'emp-1', deletedAt: null }),
+        }),
+      );
+    });
+  });
 });

@@ -20,7 +20,7 @@ describe('AccessService', () => {
           upsert: jest.fn(),
         },
         rolePermission: {
-          findMany: jest.fn(),
+          findMany: jest.fn().mockResolvedValue([]),
           upsert: jest.fn(),
         },
         userOverride: {
@@ -316,6 +316,76 @@ describe('AccessService', () => {
       expect(result.userCount).toBe(5);
       expect(result.modules[AppModule.CLIENTS]).toEqual({ enabled: true });
       expect(result.permissions[AppModule.CLIENTS][PermissionAction.VIEW]).toBe(true);
+    });
+  });
+
+  describe('Auto-sync RoleModule when permissions update', () => {
+    it('automatically sets roleModule.enabled = false when all CRUD options for a module are false', async () => {
+      mockPrisma.unscopedClient.role.findUniqueOrThrow.mockResolvedValue({
+        id: 'role-mgr-id',
+        key: RoleKey.MANAGER,
+      });
+
+      // DB returns all permissions for REPORTS as false
+      mockPrisma.unscopedClient.rolePermission.findMany.mockResolvedValue([
+        { roleId: 'role-mgr-id', module: AppModule.REPORTS, action: PermissionAction.VIEW, allowed: false },
+        { roleId: 'role-mgr-id', module: AppModule.REPORTS, action: PermissionAction.CREATE, allowed: false },
+      ]);
+
+      await service.updateRolePermissions(
+        RoleKey.MANAGER,
+        [{ module: AppModule.REPORTS, action: PermissionAction.VIEW, allowed: false }],
+        'director-1',
+      );
+
+      expect(mockPrisma.unscopedClient.roleModule.upsert).toHaveBeenCalledWith({
+        where: {
+          roleId_module: {
+            roleId: 'role-mgr-id',
+            module: AppModule.REPORTS,
+          },
+        },
+        update: { enabled: false },
+        create: {
+          roleId: 'role-mgr-id',
+          module: AppModule.REPORTS,
+          enabled: false,
+        },
+      });
+    });
+
+    it('automatically sets roleModule.enabled = true when at least one action is allowed', async () => {
+      mockPrisma.unscopedClient.role.findUniqueOrThrow.mockResolvedValue({
+        id: 'role-mgr-id',
+        key: RoleKey.MANAGER,
+      });
+
+      // DB returns at least one permission as allowed
+      mockPrisma.unscopedClient.rolePermission.findMany.mockResolvedValue([
+        { roleId: 'role-mgr-id', module: AppModule.REPORTS, action: PermissionAction.VIEW, allowed: true },
+        { roleId: 'role-mgr-id', module: AppModule.REPORTS, action: PermissionAction.CREATE, allowed: false },
+      ]);
+
+      await service.updateRolePermissions(
+        RoleKey.MANAGER,
+        [{ module: AppModule.REPORTS, action: PermissionAction.VIEW, allowed: true }],
+        'director-1',
+      );
+
+      expect(mockPrisma.unscopedClient.roleModule.upsert).toHaveBeenCalledWith({
+        where: {
+          roleId_module: {
+            roleId: 'role-mgr-id',
+            module: AppModule.REPORTS,
+          },
+        },
+        update: { enabled: true },
+        create: {
+          roleId: 'role-mgr-id',
+          module: AppModule.REPORTS,
+          enabled: true,
+        },
+      });
     });
   });
 });

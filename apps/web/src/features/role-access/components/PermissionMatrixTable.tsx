@@ -57,6 +57,27 @@ export function PermissionMatrixTable({
     if (isDirector) return;
     try {
       await onUpdateModule(module, nextState);
+      if (nextState) {
+        const currentPerms = role.permissions[module] || {};
+        const hasAnyAction = actionColumns.some((col) => Boolean(currentPerms[col.action]));
+        if (!hasAnyAction) {
+          await onUpdatePermission(module, PermissionAction.VIEW, true);
+        }
+      } else {
+        // Clear all actions when module toggle is explicitly turned off
+        const clearedItems = actionColumns.map((col) => ({
+          module,
+          action: col.action,
+          allowed: false,
+        }));
+        if (onUpdatePermissionsBatch) {
+          await onUpdatePermissionsBatch(clearedItems);
+        } else {
+          for (const item of clearedItems) {
+            await onUpdatePermission(item.module, item.action, false);
+          }
+        }
+      }
     } catch {
       // handled
     }
@@ -77,36 +98,61 @@ export function PermissionMatrixTable({
         `${rowDef?.label ?? module}: View is off, so Create, Update, ViewAll and Delete are cleared.`,
       );
 
+      const clearedItems = actionColumns.map((col) => ({
+        module,
+        action: col.action,
+        allowed: false,
+      }));
+
       if (onUpdatePermissionsBatch) {
-        await onUpdatePermissionsBatch([
-          { module, action: PermissionAction.VIEW, allowed: false },
-          { module, action: PermissionAction.CREATE, allowed: false },
-          { module, action: PermissionAction.UPDATE, allowed: false },
-          { module, action: PermissionAction.VIEW_ALL, allowed: false },
-          { module, action: PermissionAction.DELETE, allowed: false },
-        ]);
-        return;
+        await onUpdatePermissionsBatch(clearedItems);
+      } else {
+        for (const item of clearedItems) {
+          await onUpdatePermission(item.module, item.action, false);
+        }
       }
 
-      // Disable View and clear all other actions
-      await onUpdatePermission(module, PermissionAction.VIEW, false);
-      await onUpdatePermission(module, PermissionAction.CREATE, false);
-      await onUpdatePermission(module, PermissionAction.UPDATE, false);
-      await onUpdatePermission(module, PermissionAction.VIEW_ALL, false);
-      await onUpdatePermission(module, PermissionAction.DELETE, false);
+      // Rule: When all CRUD options are all turned off in a module the module toggle should turn off
+      await onUpdateModule(module, false);
       return;
     }
 
     // Rule: View is required for Create, Update, ViewAll, Delete
+    const currentPerms = role.permissions[module] || {};
+    const itemsToUpdate: Array<{ module: AppModule; action: PermissionAction; allowed: boolean }> = [];
+
     if (action !== PermissionAction.VIEW && nextVal) {
-      const hasView = role.permissions[module]?.[PermissionAction.VIEW];
+      const hasView = currentPerms[PermissionAction.VIEW];
       if (!hasView) {
         // Automatically enable view first
-        await onUpdatePermission(module, PermissionAction.VIEW, true);
+        itemsToUpdate.push({ module, action: PermissionAction.VIEW, allowed: true });
       }
     }
 
-    await onUpdatePermission(module, action, nextVal);
+    itemsToUpdate.push({ module, action, allowed: nextVal });
+
+    if (onUpdatePermissionsBatch && itemsToUpdate.length > 1) {
+      await onUpdatePermissionsBatch(itemsToUpdate);
+    } else {
+      for (const item of itemsToUpdate) {
+        await onUpdatePermission(item.module, item.action, item.allowed);
+      }
+    }
+
+    // Check if any action remains allowed in this module after this toggle
+    const willHaveAnyAction = actionColumns.some((col) => {
+      const updated = itemsToUpdate.find((item) => item.action === col.action);
+      if (updated !== undefined) return updated.allowed;
+      return Boolean(currentPerms[col.action]);
+    });
+
+    // Rule: When all CRUD options are all turned off in a module the module toggle should turn off
+    if (!willHaveAnyAction) {
+      await onUpdateModule(module, false);
+    } else if (!role.modules[module]?.enabled) {
+      // If an action is turned on but module was disabled, turn module on
+      await onUpdateModule(module, true);
+    }
   };
 
   return (
@@ -249,6 +295,8 @@ export function PermissionMatrixTable({
                         <td key={col.action} className="px-4 text-center">
                           <button
                             type="button"
+                            aria-label={`${row.label} ${col.label}`}
+                            data-testid={`action-${row.module}-${col.action}`}
                             disabled={isDirector || row.directorOnly}
                             onClick={() =>
                               handleActionToggle(row.module, col.action, isAllowed)

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -12,12 +12,23 @@ import { ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { permissions, roleKey, sidebarExpanded, toggleSidebar, loadPermissions } =
-    usePermissionsStore();
+  const [mounted, setMounted] = useState(false);
+  const {
+    permissions,
+    roleKey,
+    sidebarExpanded,
+    toggleSidebar,
+    loadPermissions,
+    initFromStorage,
+  } = usePermissionsStore();
 
   useEffect(() => {
+    setMounted(true);
+    initFromStorage();
     loadPermissions();
-  }, [loadPermissions]);
+  }, [initFromStorage, loadPermissions]);
+
+  const isExpanded = mounted ? sidebarExpanded : true;
 
   // Keyboard shortcut [ to toggle sidebar
   useEffect(() => {
@@ -42,17 +53,17 @@ export function Sidebar() {
       suppressHydrationWarning
       className={cn(
         'hidden md:flex flex-col bg-white border-r border-[#E6D8F1]/60 sticky top-0 h-screen z-30 transition-[width] duration-150 ease-out select-none',
-        sidebarExpanded ? 'w-[240px]' : 'w-[72px]',
+        isExpanded ? 'w-[240px]' : 'w-[72px]',
       )}
     >
       {/* Toggle button on edge */}
       <button
         type="button"
         onClick={toggleSidebar}
-        aria-label={sidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+        aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
         className="absolute -right-3 top-20 z-40 w-6 h-6 rounded-full bg-white border border-[#D9D4DE] text-gray-500 hover:text-purple-600 hover:border-purple-600 shadow-sm flex items-center justify-center transition-colors"
       >
-        {sidebarExpanded ? (
+        {isExpanded ? (
           <ChevronLeft className="w-3.5 h-3.5" />
         ) : (
           <ChevronRight className="w-3.5 h-3.5" />
@@ -68,7 +79,7 @@ export function Sidebar() {
             <img src="/icons/logo.png" alt="" />
           </div>
 
-          {sidebarExpanded && (
+          {isExpanded && (
             <div className="flex flex-col min-w-0 transition-opacity duration-150">
               <span className="font-quicksand font-bold text-lg text-purple-600 leading-tight">
                 Petals
@@ -83,7 +94,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-1">
-        {sidebarExpanded && (
+        {isExpanded && (
           <div className="px-3 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
             Workspace
           </div>
@@ -100,18 +111,18 @@ export function Sidebar() {
               href={item.href}
               className={cn(
                 'flex items-center h-[44px] rounded-btn transition-colors font-medium text-sm',
-                sidebarExpanded ? 'px-3 gap-3' : 'justify-center w-[46px] mx-auto',
+                isExpanded ? 'px-3 gap-3' : 'justify-center w-[46px] mx-auto',
                 isActive
                   ? 'bg-purple-600 text-white shadow-sm'
                   : 'text-gray-700 hover:bg-purple-50 hover:text-purple-800',
               )}
             >
               <Icon className="w-5 h-5 shrink-0" />
-              {sidebarExpanded && <span className="truncate">{item.label}</span>}
+              {isExpanded && <span className="truncate">{item.label}</span>}
             </Link>
           );
 
-          if (!sidebarExpanded) {
+          if (!isExpanded) {
             return (
               <Tooltip key={item.href} label={item.label} side="right">
                 {linkContent}

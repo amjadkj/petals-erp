@@ -97,9 +97,15 @@ export function buildNav(
   const perms = permissions || {};
 
   return ALL_NAV_ITEMS.filter((item) => {
-    // Dashboard is always visible to authenticated users
-    if (item.label === 'Dashboard') return true;
     if (!item.module) return true;
     return !!perms[item.module]?.enabled;
   });
+}
+
+export function getFirstAccessiblePath(
+  permissions: PermissionsMap | undefined,
+  roleKey: RoleKey | null,
+): string {
+  const items = buildNav(permissions, roleKey);
+  return items[0]?.href || '/dashboard';
 }

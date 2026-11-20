@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { RoleCardsPanel } from '../components/RoleCardsPanel';
 import { PermissionMatrixTable } from '../components/PermissionMatrixTable';
@@ -356,6 +356,55 @@ describe('Role Access Components', () => {
     expect(normalized.modules[AppModule.FINANCIAL_PNL]).toEqual({ enabled: false });
     expect(normalized.permissions[AppModule.CLIENTS][PermissionAction.VIEW]).toBe(true);
     expect(normalized.permissions[AppModule.CLIENTS][PermissionAction.DELETE]).toBe(false);
+  });
+
+  it('automatically turns off module toggle when all CRUD options are turned off (e.g. View is turned off)', async () => {
+    const onUpdateModule = vi.fn().mockResolvedValue(undefined);
+    const onUpdatePermission = vi.fn().mockResolvedValue(undefined);
+    const onUpdatePermissionsBatch = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <PermissionMatrixTable
+        role={mockManagerRole}
+        onUpdateModule={onUpdateModule}
+        onUpdatePermission={onUpdatePermission}
+        onUpdatePermissionsBatch={onUpdatePermissionsBatch}
+      />,
+    );
+
+    // Click the View button for Appointments
+    const viewBtn = screen.getByTestId('action-APPOINTMENTS-VIEW');
+    fireEvent.click(viewBtn);
+
+    // Verify batch update was called with allowed: false for all actions
+    await waitFor(() => {
+      expect(onUpdatePermissionsBatch).toHaveBeenCalled();
+      expect(onUpdateModule).toHaveBeenCalledWith(AppModule.APPOINTMENTS, false);
+    });
+  });
+
+  it('automatically turns on module toggle when an action is enabled on a disabled module', async () => {
+    const onUpdateModule = vi.fn().mockResolvedValue(undefined);
+    const onUpdatePermission = vi.fn().mockResolvedValue(undefined);
+    const onUpdatePermissionsBatch = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <PermissionMatrixTable
+        role={mockManagerRole}
+        onUpdateModule={onUpdateModule}
+        onUpdatePermission={onUpdatePermission}
+        onUpdatePermissionsBatch={onUpdatePermissionsBatch}
+      />,
+    );
+
+    // PROFILE_ASSESSMENT is disabled for mockManagerRole
+    const createBtn = screen.getByTestId('action-PROFILE_ASSESSMENT-CREATE');
+    fireEvent.click(createBtn);
+
+    // Should call onUpdateModule with true because an action was enabled on a disabled module
+    await waitFor(() => {
+      expect(onUpdateModule).toHaveBeenCalledWith(AppModule.PROFILE_ASSESSMENT, true);
+    });
   });
 });
 

@@ -102,23 +102,36 @@ export class AppointmentService {
     roleKey: RoleKey,
     userBranchIds: string[],
   ) {
-    const fromDate = new Date(query.from);
-    const toDate = new Date(query.to);
+    let fromDate: Date | null = null;
+    let toDate: Date | null = null;
 
-    const diffDays = (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24);
-    if (diffDays < 0 || diffDays > 31) {
-      throw new BadRequestException('Calendar date range cannot exceed 31 days');
+    if (query.from && query.to) {
+      fromDate = new Date(query.from);
+      toDate = new Date(query.to);
+
+      const diffDays = (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24);
+      if (diffDays < 0 || diffDays > 31) {
+        throw new BadRequestException('Calendar date range cannot exceed 31 days');
+      }
+    } else if (query.from || query.to) {
+      throw new BadRequestException('Both "from" and "to" must be provided together');
+    } else if (!query.therapistId && !query.clientId) {
+      throw new BadRequestException('Either a date range (from/to) or a therapistId/clientId must be provided');
     }
 
-    const where: any = {
-      startsAt: { gte: fromDate, lte: toDate },
-    };
+    const where: any = {};
+    if (fromDate && toDate) {
+      where.startsAt = { gte: fromDate, lte: toDate };
+    }
 
     if (query.branchId) {
       where.branchId = query.branchId;
     }
     if (query.therapistId) {
       where.therapistId = query.therapistId;
+    }
+    if (query.clientId) {
+      where.clientId = query.clientId;
     }
     if (query.status) {
       where.status = query.status;
@@ -147,9 +160,10 @@ export class AppointmentService {
     }
 
     // 1. Fetch appointments using lean select
+    const orderBy = fromDate && toDate ? { startsAt: 'asc' as const } : { startsAt: 'desc' as const };
     const appointments = await this.prisma.unscopedClient.appointment.findMany({
       where,
-      orderBy: { startsAt: 'asc' },
+      orderBy,
       select: {
         id: true,
         branchId: true,
@@ -175,8 +189,8 @@ export class AppointmentService {
       },
     });
 
-    // 2. Fetch holidays and approved leaves for flagging
-    const [holidays, leaves] = await Promise.all([
+    // 2. Fetch holidays and approved leaves for flagging (only when a date range is provided)
+    const [holidays, leaves] = fromDate && toDate ? await Promise.all([
       this.prisma.unscopedClient.holiday.findMany({
         where: {
           date: { gte: fromDate, lte: toDate },
@@ -195,7 +209,7 @@ export class AppointmentService {
           toDate: true,
         },
       }),
-    ]);
+    ]) : [[], []];
 
     // 3. Format and flag appointments
     return appointments.map((appt) => {

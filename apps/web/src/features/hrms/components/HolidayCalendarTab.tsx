@@ -131,7 +131,7 @@ export function HolidayCalendarTab({
             className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Add holiday</span>
+            <span>Add holiday</span>
           </Button>
         )}
       </div>

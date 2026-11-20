@@ -191,6 +191,7 @@ export function PermissionsTab({
               role={activeRole}
               onUpdateModule={handleUpdateModule}
               onUpdatePermission={handleUpdatePermission}
+              onUpdatePermissionsBatch={handleUpdatePermissionsBatch}
             />
           </div>
         </div>
